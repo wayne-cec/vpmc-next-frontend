@@ -1,0 +1,15 @@
+.Kanban{
+  @apply relative w-[980px] h-[380px] overflow-hidden;
+  .ImgWrapper{
+    @apply absolute top-0 left-0 h-full w-full;
+    .ImgParent{
+      @apply relative w-full h-full;
+    }
+  }
+  .kanbanImg{
+    @apply h-full;
+  }
+  .KanbanContent{
+    @apply absolute flex flex-col h-full w-full top-0 p-7 justify-center;
+  }
+}

@@ -1,0 +1,31 @@
+.footer{
+    @apply w-full h-fit bg-bg-darkGrey flex flex-col items-center;
+    // clip-path: ellipse(100% 55% at 50% 56%);
+    min-height: 400px;
+    .footerMap{
+        @apply h-fit flex flex-row items-start justify-center flex-wrap w-3/4 my-6;
+        .tree{
+            @apply w-[220px] h-fit mx-2;
+            @mixin text {
+                @apply text-white cursor-pointer;
+                &:hover{
+                    @apply text-main-accent bg-white px-2 rounded-md;
+                }
+            }
+            .title{
+                @apply text-2xl my-4;
+                font-weight: 700;
+                @include text;
+            }
+            .content{
+                @apply text-lg my-2;
+                font-weight: 100;
+                @include text;
+            }
+        }
+    }
+    .copyRightContainer{
+        @apply text-white h-fit flex flex-col justify-center items-center border-t w-3/4 py-4;
+        font-weight: 100;
+    }
+}

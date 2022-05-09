@@ -1,0 +1,13 @@
+.main{
+    @apply flex justify-center items-center relative;
+    .bgContainer{
+        @apply relative w-full h-[500px] text-5xl flex justify-center items-center text-white;
+        background-image: url('/unavailable/bg.jpg');
+        background-size:     cover;
+        background-repeat:   no-repeat;
+        background-position: center center;
+        span{
+            @apply bg-main-primary p-4 rounded-md;
+        }
+    }
+}

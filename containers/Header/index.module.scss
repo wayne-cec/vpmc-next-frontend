@@ -1,0 +1,55 @@
+.headerContainer{
+    @apply fixed z-30 w-full h-fit;
+    .header{
+        @apply w-full h-fit bg-main-second shadow-xl py-4 px-6 flex items-center justify-between sticky z-10;
+        min-height: 75px;
+        .contentGroup{
+            @apply flex items-center;
+            .iconContainer{
+                @apply flex mr-2 items-center relative border-r bg-main-primary rounded-md shadow-md;
+                @media(max-width: 1100px){
+                    @apply border-0;
+                }
+                span{
+                    @apply cursor-pointer;
+                }
+            }
+            .buttonGroup{
+                @media(max-width: 1100px){
+                    @apply hidden;
+                }
+            }
+        }
+        .contact{
+            @media(max-width: 1100px){
+                @apply hidden;
+            }
+        }
+        .burger{
+            @apply hidden;
+            @media(max-width: 1100px){
+                @apply block;
+            }
+        }
+        
+    }
+    
+    .subDrawer{
+        @apply w-full h-0 bg-black relative p-4 z-10;
+        &.show{
+            @apply h-20;
+            transition: 0.4s;
+        }
+        &.hide{
+            @apply h-0 p-0;
+            transition: 0.4s;
+        }
+        .linkContainer{
+            @apply hidden h-5 w-full relative;
+            &.show{
+                @apply block;
+                transition: 0.4s;
+            }
+        }
+    }
+}

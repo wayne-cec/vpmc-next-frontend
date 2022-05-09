@@ -1,0 +1,19 @@
+.IntervalKanban{
+  @apply relative w-[980px] h-[380px] overflow-hidden;
+  .KanbanItem{
+    @apply absolute top-0 left-0 w-full h-full;
+  }
+  .active{
+    @apply z-[1];
+  }
+  .hide{
+    @apply hidden;
+  }
+  .controller{
+    @apply absolute bottom-0 left-1/2;
+    transform: translateX(-50%);
+    .ctrlBtn{
+      @apply cursor-pointer text-white mx-1;
+    }
+  }
+}

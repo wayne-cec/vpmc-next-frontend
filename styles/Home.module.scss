@@ -1,0 +1,27 @@
+.main{
+  // @apply flex flex-col justify-center items-center;
+  .contentContainer{
+    @apply flex flex-col items-center w-full bg-main-primary;
+    clip-path: ellipse(100% 55% at 50% 44%);
+    .title{
+      @apply font-extrabold text-6xl text-text-main ;
+      transition: 0.3s;
+      &:hover{
+        text-shadow: 6px 6px 0px rgba(0,0,0,0.2); 
+      }
+    }
+    .paragraph{
+      @apply text-center text-lg font-light text-text-main;
+    }
+    .subtitle{
+      @apply font-normal text-2xl text-text-main;
+    } 
+  }
+  .articleContainer{
+    @apply flex flex-col items-center w-full ;
+    .containerBox{
+      @apply flex flex-row items-center flex-wrap max-w-[1200px] justify-center;
+    } 
+  }
+  
+}

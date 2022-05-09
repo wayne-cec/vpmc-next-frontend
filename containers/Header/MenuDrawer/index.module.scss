@@ -1,0 +1,42 @@
+.menuDrawer{
+    @apply fixed max-w-[350px] h-screen bg-main-accent right-0 top-0 z-20 p-4 overflow-hidden bg-bg-darkGrey ; // bg-gradient-to-r from-main-accent to-main-primary
+    transition: max-width 0.3s;
+    &.hide{
+        @apply max-w-0 overflow-auto p-0;
+    }
+    .header{
+        @apply w-[280px] h-[75px] border-b flex flex-row-reverse items-center text-white;
+        p{
+            @apply cursor-pointer;
+        }
+    }
+    .content{
+        @apply max-h-[550px] w-full overflow-auto;
+        .tree{
+            @apply w-[220px] h-fit mx-2;
+            @mixin text {
+                @apply text-white cursor-pointer;
+                &:hover{
+                    @apply text-main-accent bg-white px-2 rounded-md;
+                }
+            }
+            .title{
+                @apply text-2xl my-4;
+                font-weight: 700;
+                @include text;
+            }
+            .content{
+                @apply text-lg my-2;
+                font-weight: 100;
+                @include text;
+            }
+        }
+    }
+}
+.backgroundGray{
+    @apply fixed left-0 top-0 w-screen h-screen z-10 bg-black;
+    opacity: 0.6;
+    &.hide{
+        @apply hidden;
+    }
+}

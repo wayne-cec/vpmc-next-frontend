@@ -1,0 +1,16 @@
+.navButton{
+    @apply text-base px-4 text-black py-2 mx-2 rounded-md bg-main-second;
+
+    @mixin hover {
+        @apply bg-main-primary text-main-second shadow-md;
+        transition: 0.3s;
+    }
+
+    &:hover{
+        @include hover;
+    }
+
+    &.outlined{
+        @apply border border-main-primary;
+    }
+}
