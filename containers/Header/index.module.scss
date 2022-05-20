@@ -1,5 +1,5 @@
 .headerContainer{
-    @apply fixed z-30 w-full h-fit;
+    @apply z-30 w-full h-fit;
     .header{
         @apply w-full h-fit bg-main-second shadow-xl py-4 px-6 flex items-center justify-between sticky z-10;
         min-height: 75px;
@@ -14,10 +14,10 @@
                     @apply cursor-pointer;
                 }
             }
-            .buttonGroup{
-                @media(max-width: 1100px){
-                    @apply hidden;
-                }
+        }
+        .buttonGroup{
+            @media(max-width: 1100px){
+                @apply hidden;
             }
         }
         .contact{

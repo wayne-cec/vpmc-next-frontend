@@ -1,0 +1,10 @@
+.main{
+    @apply relative w-full bg-teal-300 flex flex-row;
+    height: calc(100vh - 75px);
+    .content{
+        @apply w-full h-full bg-slate-200;
+        .drawerBtn{
+            @apply absolute right-0 top-0 z-10;
+        }
+    }
+}

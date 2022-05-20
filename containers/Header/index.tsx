@@ -36,11 +36,18 @@ export const rentLink = [
   { name: '雅房', route: '/rent/merge-suit' }
 ]
 
+export const aprV2Link = [
+  { name: '實價登陸2.0', route: '/aprV2' },
+  { name: '地區總體', route: '/aprV2/region' },
+  { name: '社區個別', route: '/aprV2/commitee' }
+]
+
 const Header = () => {
   const [menuDrawerOpen, setmenuDrawerOpen] = useState<boolean>(false)
   const [newBuilding, setnewBuilding] = useState<boolean>(false)
   const [preOwned, setpreOwned] = useState<boolean>(false)
   const [rent, setrent] = useState<boolean>(false)
+  const [aprV2, setaprV2] = useState<boolean>(false)
 
   return (
     <div className={style.headerContainer}>
@@ -51,40 +58,41 @@ const Header = () => {
               onClick={() => { Router.push('/') }}
             ></Image>
           </div>
-          <div className={style.buttonGroup}>
-            <NavButton
-              onClick={() => { Router.push('/new-case') }}
-              onMouseOver={() => { setnewBuilding(true) }}
-              onMouseLeave={() => { setnewBuilding(false) }}
-            >新建案</NavButton>
-            <NavButton
-              onClick={() => { Router.push('/pre-owned') }}
-              onMouseOver={() => { setpreOwned(true) }}
-              onMouseLeave={() => { setpreOwned(false) }}
-            >中古屋</NavButton>
-            <NavButton
-              onClick={() => { Router.push('/rent') }}
-              onMouseOver={() => { setrent(true) }}
-              onMouseLeave={() => { setrent(false) }}
-            >租屋</NavButton>
-            <NavButton
-              onClick={() => { Router.push('/store') }}
-            >店面</NavButton>
-            <NavButton
-              onClick={() => { Router.push('/office') }}
-            >辦公</NavButton>
-            <NavButton
-              onClick={() => { Router.push('/factory') }}
-            >廠房土地</NavButton>
-            <NavButton
-              onClick={() => { Router.push('/news') }}
-            >新聞</NavButton>
-            <NavButton
-              onClick={() => { Router.push('/aprV2') }}
-            >實價登陸2.0</NavButton>
-          </div>
         </div>
-
+        <div className={style.buttonGroup}>
+          <NavButton
+            onClick={() => { Router.push('/new-case') }}
+            onMouseOver={() => { setnewBuilding(true) }}
+            onMouseLeave={() => { setnewBuilding(false) }}
+          >新建案</NavButton>
+          <NavButton
+            onClick={() => { Router.push('/pre-owned') }}
+            onMouseOver={() => { setpreOwned(true) }}
+            onMouseLeave={() => { setpreOwned(false) }}
+          >中古屋</NavButton>
+          <NavButton
+            onClick={() => { Router.push('/rent') }}
+            onMouseOver={() => { setrent(true) }}
+            onMouseLeave={() => { setrent(false) }}
+          >租屋</NavButton>
+          <NavButton
+            onClick={() => { Router.push('/store') }}
+          >店面</NavButton>
+          <NavButton
+            onClick={() => { Router.push('/office') }}
+          >辦公</NavButton>
+          <NavButton
+            onClick={() => { Router.push('/factory') }}
+          >廠房土地</NavButton>
+          <NavButton
+            onClick={() => { Router.push('/news') }}
+          >新聞</NavButton>
+          <NavButton
+            onClick={() => { Router.push('/aprV2') }}
+            onMouseOver={() => { setaprV2(true) }}
+            onMouseLeave={() => { setaprV2(false) }}
+          >實價登陸2.0</NavButton>
+        </div>
         <div className={style.contact}>
           <NavButton
             onClick={() => { Router.push('/introduction/contact') }}
@@ -138,7 +146,22 @@ const Header = () => {
         onMouseLeave={() => { setrent(false) }}
       >
         {
-          rentLink.map((link, index) => {
+          aprV2Link.map((link, index) => {
+            return <NavButton
+              key={index}
+              onClick={() => { Router.push(link.route) }}
+            >{link.name}</NavButton>
+          })
+        }
+      </HeaderDrawer>
+
+      <HeaderDrawer
+        open={aprV2}
+        onMouseOver={() => { setaprV2(true) }}
+        onMouseLeave={() => { setaprV2(false) }}
+      >
+        {
+          aprV2Link.map((link, index) => {
             return <NavButton
               key={index}
               onClick={() => { Router.push(link.route) }}

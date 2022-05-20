@@ -9,9 +9,9 @@
         transition: 0.4s;
     }
     .linkContainer{
-        @apply hidden h-5 w-full relative;
+        @apply hidden h-fit w-full ;
         &.show{
-            @apply block;
+            @apply flex justify-center;
             transition: 0.4s;
         }
     }

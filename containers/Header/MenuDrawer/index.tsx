@@ -2,7 +2,7 @@ import React from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import Router from 'next/router'
-import { newBuildingLink, preOwnedLink, rentLink } from '..'
+import { newBuildingLink, preOwnedLink, rentLink } from '../index'
 
 export interface IMenuDrawer {
   open: boolean
