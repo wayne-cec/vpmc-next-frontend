@@ -6,6 +6,6 @@
     //     @apply w-0 overflow-auto p-0;
     // }
     &.show{
-        @apply flex flex-wrap w-[960px] overflow-y-auto overflow-x-hidden;
+        @apply flex flex-wrap w-[985px] overflow-y-auto overflow-x-hidden p-2;
     }
 }
