@@ -17,8 +17,10 @@ const EsriMap = (props: IEsriMap) => {
       map: map,
       center: [-118.805, 34.027],
       zoom: 13,
-      container: 'mapBox'
+      container: 'mapBox',
+      ui: undefined
     })
+    // mapView.ui.remove('attribution')
   }, [])
 
   return (

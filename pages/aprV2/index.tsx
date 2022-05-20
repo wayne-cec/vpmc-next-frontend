@@ -5,6 +5,11 @@ import { useState } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import CommiteeCard from '../../components/CommiteeCard'
+import Image from 'next/image'
+import doubleRight from '../../public/aprV2/doubleRight.png'
+import doubleLeft from '../../public/aprV2/doubleLeft.png'
+import doubleRightHover from '../../public/aprV2/doubleRight-hover.png'
+import doubleLeftHover from '../../public/aprV2/doubleLeft-hover.png'
 
 const MapContainer = dynamic(
   () => import('../../components/MapContainer/EsriMap'),
@@ -13,6 +18,7 @@ const MapContainer = dynamic(
 
 const AprV2: NextPage = () => {
   const [first, setfirst] = useState<boolean>(false)
+  const [drawerBtn, setdrawerBtn] = useState<string>(doubleRight.src)
   return (
     <>
       <Head>
@@ -42,14 +48,48 @@ const AprV2: NextPage = () => {
           <CommiteeCard />
           <CommiteeCard />
           <CommiteeCard />
-
         </Drawer>
         <div className={style.content}>
-          <button
-            className={style.drawerBtn}
-            onClick={() => { setfirst(prev => !prev) }}
-          >open</button>
-          <MapContainer basemap='gray' />
+
+          <div className={style.mapContainer}>
+            <MapContainer basemap='gray' />
+          </div>
+
+          <div className={style.footer}>
+            {/* <a
+              className={style.drawerBtn}
+              onClick={() => { setfirst(prev => !prev) }}
+            >aa</a> */}
+            {/* <img src={'/aprV2/doubleRight.png'} /> */}
+            <Image
+              className={style.drawerBtn}
+              src={drawerBtn} width='30px' height='30px'
+              onMouseMove={() => {
+                if (!first) {
+                  setdrawerBtn(doubleRightHover.src)
+                } else {
+                  setdrawerBtn(doubleLeftHover.src)
+                }
+              }}
+              onMouseLeave={() => {
+                if (!first) {
+                  setdrawerBtn(doubleRight.src)
+                } else {
+                  setdrawerBtn(doubleLeft.src)
+                }
+              }}
+              onClick={() => {
+                setfirst(prev => !prev)
+                // setdrawerBtn(doubleLeft.src)
+                if (!first) {
+                  setdrawerBtn(doubleLeft.src)
+                } else {
+                  setdrawerBtn(doubleRight.src)
+                }
+              }}
+            />
+          </div>
+
         </div>
       </div>
     </>
