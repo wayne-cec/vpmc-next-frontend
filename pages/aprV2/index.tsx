@@ -12,12 +12,12 @@ import doubleRightHover from '../../public/aprV2/doubleRight-hover.png'
 import doubleLeftHover from '../../public/aprV2/doubleLeft-hover.png'
 
 const MapContainer = dynamic(
-  () => import('../../components/MapContainer/EsriMap'),
+  () => import('../../components/MapContainer/AprV2Map'),
   { ssr: false }
 )
 
 const AprV2: NextPage = () => {
-  const [first, setfirst] = useState<boolean>(false)
+  const [first, setfirst] = useState<boolean>(true)
   const [drawerBtn, setdrawerBtn] = useState<string>(doubleRight.src)
   return (
     <>
@@ -56,11 +56,6 @@ const AprV2: NextPage = () => {
           </div>
 
           <div className={style.footer}>
-            {/* <a
-              className={style.drawerBtn}
-              onClick={() => { setfirst(prev => !prev) }}
-            >aa</a> */}
-            {/* <img src={'/aprV2/doubleRight.png'} /> */}
             <Image
               className={style.drawerBtn}
               src={drawerBtn} width='30px' height='30px'
