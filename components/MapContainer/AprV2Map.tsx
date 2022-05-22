@@ -1,13 +1,20 @@
-import React, { Children } from 'react'
+import React, { useEffect } from 'react'
 import style from './index.module.scss'
 import Map from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
-import { useState, useEffect } from 'react'
 import * as watchUtils from '@arcgis/core/core/watchUtils'
 import FeatureLayer from '@arcgis/core/layers/FeatureLayer'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import Graphic from '@arcgis/core/Graphic'
-import Renderer from "@arcgis/core/renderers/Renderer"
+import Point from "@arcgis/core/geometry/Point"
+import TextSymbol from "@arcgis/core/symbols/TextSymbol"
+import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
+import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol"
+import * as projection from "@arcgis/core/geometry/projection"
+import SpatialReference from "@arcgis/core/geometry/SpatialReference"
+import Extent from "@arcgis/core/geometry/Extent"
+
+const square = 3.305785
 
 export interface IEsriMap {
   basemap: string
@@ -45,8 +52,14 @@ const towns: { [key: string]: number[] } = {
   "八里區": [121.412884, 25.1382297]
 }
 
+export interface IExtent {
+  xmin: number
+  ymin: number
+  xmax: number
+  ymax: number
+}
+
 const AprV2Map = (props: IEsriMap) => {
-  // const [townDataFetched, settownDataFetched] = useState<boolean>(false)
 
   const fetchTownData = async (map: Map) => {
     const promises: any[] = []
@@ -59,17 +72,55 @@ const AprV2Map = (props: IEsriMap) => {
       )
     }
     Promise.allSettled([promises]).then(async ([result]: any[]) => {
-      const features: any[] = []
+      const infoGraphics: Graphic[] = []
+      const graphics: Graphic[] = []
       for (let i = 0; i < result.value.length; i++) {
         const response = await result.value[i]
         const responseContent = await response.json()
-
-        features.push({
-          geometry: {
-            type: "point",
+        const unitPrice = Math.round(responseContent.avg * square / 1000) / 10
+        const unitPriceGraphic = new Graphic({
+          geometry: new Point({
             x: towns[responseContent.town][0],
             y: towns[responseContent.town][1]
+          }),
+          attributes: {
+            avg: Number(responseContent.avg),
+            county: responseContent.county,
+            town: responseContent.town
           },
+          symbol: new TextSymbol({
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: `${unitPrice}萬`,
+            xoffset: 0,
+            yoffset: -10
+          })
+        })
+        const townGraphic = new Graphic({
+          geometry: new Point({
+            x: towns[responseContent.town][0],
+            y: towns[responseContent.town][1]
+          }),
+          attributes: {
+            avg: Number(responseContent.avg),
+            county: responseContent.county,
+            town: responseContent.town
+          },
+          symbol: new TextSymbol({
+            color: "white",
+            haloColor: "black",
+            haloSize: "1px",
+            text: `${responseContent.town}`,
+            xoffset: 0,
+            yoffset: 5
+          })
+        })
+        const bgGraphic = new Graphic({
+          geometry: new Point({
+            x: towns[responseContent.town][0],
+            y: towns[responseContent.town][1]
+          }),
           attributes: {
             ObjectID: i,
             avg: Number(responseContent.avg),
@@ -77,36 +128,51 @@ const AprV2Map = (props: IEsriMap) => {
             town: responseContent.town
           }
         })
+        graphics.push(bgGraphic)
+        infoGraphics.push(unitPriceGraphic)
+        infoGraphics.push(townGraphic)
       }
-
-      const layer = new FeatureLayer({
-        source: features,
-        objectIdField: "ObjectID",
-        renderer: {
-          //@ts-ignore
-          type: "simple",
-          symbol: {
-            type: "simple-marker",
-            size: 15,
-            color: "black",
-            outline: {
-              width: 0.5,
-              color: "white"
-            }
-          }
-        }
+      const infoLayer = new GraphicsLayer({
+        id: 'townInfoLayer',
+        graphics: infoGraphics,
+        visible: false
       })
-
-      // const layer = new GraphicsLayer({
-      //   graphics: features
-      // })
-
+      const layer = new FeatureLayer({
+        id: 'townBgLayer',
+        source: graphics,
+        objectIdField: "ObjectID",
+        renderer: new SimpleRenderer({
+          symbol: new SimpleMarkerSymbol({
+            size: 80,
+            color: [255, 56, 0, 1]
+          })
+        }),
+        visible: false
+      })
       map.add(layer)
+      map.add(infoLayer)
     })
+  }
+
+  const fetchCommiteeByExtent = async (map: Map, extent: Extent, WGS84: SpatialReference) => {
+
+    const convertedExtent = projection.project(extent, WGS84) as Extent
+    // console.log(convertedExtent)
+    const response = await fetch(
+      `http://140.122.82.98:9085/api/Commitee/listCommiteeByExtent?xmin=${convertedExtent.xmin}&ymin=${convertedExtent.ymin}&xmax=${convertedExtent.xmax}&ymax=${convertedExtent.ymax}`,
+      {
+        method: 'GET',
+        redirect: 'follow'
+      }
+    )
+    console.log(await response.json())
   }
 
   useEffect(() => {
 
+    const WGS84 = new SpatialReference({
+      wkid: 4326
+    })
     const map = new Map({
       basemap: props.basemap
     })
@@ -115,15 +181,26 @@ const AprV2Map = (props: IEsriMap) => {
       center: [121.4640139307843, 25.013838580240503],
       zoom: 13,
       container: 'mapBox',
-      ui: undefined
+      ui: undefined,
+      constraints: {
+        minZoom: 12,
+        maxZoom: 17
+      }
     })
 
 
     fetchTownData(map)
-
     watchUtils.whenTrue(mapView, 'stationary', async () => {
-      // console.log(mapView.zoom)
-      if (mapView.zoom <= 14 && mapView.zoom > 11) {
+      console.log(mapView.zoom)
+      if (mapView.zoom <= 15) {
+        if (map.findLayerById('townBgLayer') && map.findLayerById('townInfoLayer')) {
+          map.findLayerById('townBgLayer').visible = true
+          map.findLayerById('townInfoLayer').visible = true
+        }
+      } else {
+        map.findLayerById('townBgLayer').visible = false
+        map.findLayerById('townInfoLayer').visible = false
+        fetchCommiteeByExtent(map, mapView.extent, WGS84)
       }
     })
   }, [])

@@ -17,7 +17,7 @@ const MapContainer = dynamic(
 )
 
 const AprV2: NextPage = () => {
-  const [first, setfirst] = useState<boolean>(true)
+  const [first, setfirst] = useState<boolean>(false)
   const [drawerBtn, setdrawerBtn] = useState<string>(doubleRight.src)
   return (
     <>
@@ -52,7 +52,7 @@ const AprV2: NextPage = () => {
         <div className={style.content}>
 
           <div className={style.mapContainer}>
-            <MapContainer basemap='gray' />
+            <MapContainer basemap='satellite' />
           </div>
 
           <div className={style.footer}>
