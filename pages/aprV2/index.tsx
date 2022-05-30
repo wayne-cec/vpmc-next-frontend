@@ -10,6 +10,10 @@ import doubleRight from '../../public/aprV2/doubleRight.png'
 import doubleLeft from '../../public/aprV2/doubleLeft.png'
 import doubleRightHover from '../../public/aprV2/doubleRight-hover.png'
 import doubleLeftHover from '../../public/aprV2/doubleLeft-hover.png'
+import { useSelector } from 'react-redux'
+import { selectCommitee } from '../../store/slice/commitee'
+import { square } from '../../components/MapContainer/AprV2Map'
+import { parseCommitee } from '../../lib/parseCommitee'
 
 const MapContainer = dynamic(
   () => import('../../components/MapContainer/AprV2Map'),
@@ -17,6 +21,7 @@ const MapContainer = dynamic(
 )
 
 const AprV2: NextPage = () => {
+  const commiteeInfo = useSelector(selectCommitee)
   const [first, setfirst] = useState<boolean>(false)
   const [drawerBtn, setdrawerBtn] = useState<string>(doubleRight.src)
   return (
@@ -33,21 +38,26 @@ const AprV2: NextPage = () => {
           open={first}
           onClose={() => { setfirst(false) }}
         >
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
-          <CommiteeCard />
+          {
+            commiteeInfo.commiteeInExtent.map((commitee, index) => {
+              const unitPrice = Math.round(Number(commitee.value?.avg_unit_price) * square / 1000) / 10
+              if (unitPrice !== 0) {
+                // return <></>
+                return <CommiteeCard key={index}
+                  id={commitee.id}
+                  unitPrice={unitPrice}
+                  commiteeName={parseCommitee(commitee.organization)}
+                  buildingType={commitee.value?.building_type!}
+                  address={commitee.address}
+                  completionDate={commitee.value?.completion_date!}
+                  aprCount={commitee.value?.apr_count!}
+                />
+              } else {
+                return <></>
+              }
+            })
+          }
+
         </Drawer>
         <div className={style.content}>
 

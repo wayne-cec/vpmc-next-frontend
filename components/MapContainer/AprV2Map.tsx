@@ -1,21 +1,23 @@
 import React, { useEffect } from 'react'
 import style from './index.module.scss'
 import Map from '@arcgis/core/Map'
-import MapView from '@arcgis/core/views/MapView'
-import * as watchUtils from '@arcgis/core/core/watchUtils'
-import FeatureLayer from '@arcgis/core/layers/FeatureLayer'
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import Graphic from '@arcgis/core/Graphic'
 import Point from "@arcgis/core/geometry/Point"
+import MapView from '@arcgis/core/views/MapView'
+import Extent from "@arcgis/core/geometry/Extent"
 import TextSymbol from "@arcgis/core/symbols/TextSymbol"
+import FeatureLayer from '@arcgis/core/layers/FeatureLayer'
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol"
-import * as projection from "@arcgis/core/geometry/projection"
 import SpatialReference from "@arcgis/core/geometry/SpatialReference"
-import Extent from "@arcgis/core/geometry/Extent"
+import * as watchUtils from '@arcgis/core/core/watchUtils'
+import * as projection from "@arcgis/core/geometry/projection"
 import { parseCommitee } from '../../lib/parseCommitee'
+import { useDispatch } from 'react-redux'
+import { initCommiteeInExtent } from '../../store/slice/commitee'
 
-const square = 3.305785
+export const square = 3.305785
 
 export interface IEsriMap {
   basemap: string
@@ -77,6 +79,7 @@ export interface ISimpleCommiteeData {
 }
 
 const AprV2Map = (props: IEsriMap) => {
+  const dispatch = useDispatch()
 
   const fetchTownData = async (map: Map) => {
     const promises: any[] = []
@@ -266,8 +269,9 @@ const AprV2Map = (props: IEsriMap) => {
       if (layer) {
         // @ts-ignore
         layer.graphics = infoGraphics
-        // @ts-ignore
-        // bgLayer.graphics = bgGraphics
+        dispatch(
+          initCommiteeInExtent(commiteeData)
+        )
       }
     })
   }
