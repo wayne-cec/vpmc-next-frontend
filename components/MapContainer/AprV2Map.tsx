@@ -13,6 +13,7 @@ import SimpleMarkerSymbol from "@arcgis/core/symbols/SimpleMarkerSymbol"
 import * as projection from "@arcgis/core/geometry/projection"
 import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import Extent from "@arcgis/core/geometry/Extent"
+import { parseCommitee } from '../../lib/parseCommitee'
 
 const square = 3.305785
 
@@ -59,6 +60,22 @@ export interface IExtent {
   ymax: number
 }
 
+export interface ICommitee {
+  address: string
+  id: string
+  latitude: number
+  longitude: number
+  organization: string
+  value: ISimpleCommiteeData | undefined
+}
+
+export interface ISimpleCommiteeData {
+  avg_unit_price: string
+  apr_count: string
+  completion_date: string
+  building_type: string
+}
+
 const AprV2Map = (props: IEsriMap) => {
 
   const fetchTownData = async (map: Map) => {
@@ -94,7 +111,10 @@ const AprV2Map = (props: IEsriMap) => {
             haloSize: "1px",
             text: `${unitPrice}萬`,
             xoffset: 0,
-            yoffset: -10
+            yoffset: -10,
+            font: {
+              size: 16
+            }
           })
         })
         const townGraphic = new Graphic({
@@ -113,7 +133,10 @@ const AprV2Map = (props: IEsriMap) => {
             haloSize: "1px",
             text: `${responseContent.town}`,
             xoffset: 0,
-            yoffset: 5
+            yoffset: 5,
+            font: {
+              size: 12
+            }
           })
         })
         const bgGraphic = new Graphic({
@@ -155,9 +178,7 @@ const AprV2Map = (props: IEsriMap) => {
   }
 
   const fetchCommiteeByExtent = async (map: Map, extent: Extent, WGS84: SpatialReference) => {
-
     const convertedExtent = projection.project(extent, WGS84) as Extent
-    // console.log(convertedExtent)
     const response = await fetch(
       `http://140.122.82.98:9085/api/Commitee/listCommiteeByExtent?xmin=${convertedExtent.xmin}&ymin=${convertedExtent.ymin}&xmax=${convertedExtent.xmax}&ymax=${convertedExtent.ymax}`,
       {
@@ -165,7 +186,99 @@ const AprV2Map = (props: IEsriMap) => {
         redirect: 'follow'
       }
     )
-    console.log(await response.json())
+    const commiteeData: ICommitee[] = await response.json()
+    const infoGraphics: Graphic[] = []
+    const promises: any[] = []
+    for (let i = 0; i < commiteeData.length; i++) {
+      promises.push(
+        fetch(`http://140.122.82.98:9085/api/Commitee/getSimpleInfo?commiteeId=${commiteeData[i].id}&bufferRadius=35`, {
+          method: 'GET',
+          redirect: 'follow'
+        })
+      )
+    }
+    Promise.allSettled([promises]).then(async ([result]: any[]) => {
+      for (let i = 0; i < result.value.length; i++) {
+        const response = await result.value[i]
+        if (response.status === 200) {
+          const commiteeValue: ISimpleCommiteeData = await response.json()
+          commiteeData[i].value = commiteeValue
+          const unitPrice = Math.round(Number(commiteeData[i].value?.avg_unit_price) * square / 1000) / 10
+          if (unitPrice !== 0) {
+
+            const bgGraphic = new Graphic({
+              geometry: new Point({
+                x: commiteeData[i].longitude,
+                y: commiteeData[i].latitude
+              }),
+              symbol: new SimpleMarkerSymbol({
+                size: 30,
+                color: [255, 107, 107, 1],
+                style: "square"
+              })
+            })
+            infoGraphics.push(bgGraphic)
+            const unitPriceGraphic = new Graphic({
+              geometry: new Point({
+                x: commiteeData[i].longitude,
+                y: commiteeData[i].latitude
+              }),
+              attributes: {
+              },
+              symbol: new TextSymbol({
+                color: "white",
+                haloColor: "black",
+                haloSize: "1px",
+                text: `${unitPrice}萬`,
+                xoffset: 0,
+                yoffset: -10,
+                font: {
+                  size: 18
+                }
+              })
+            })
+            const commiteeTitleGraphic = new Graphic({
+              geometry: new Point({
+                x: commiteeData[i].longitude,
+                y: commiteeData[i].latitude
+              }),
+              attributes: {
+              },
+              symbol: new TextSymbol({
+                color: "white",
+                haloColor: "black",
+                haloSize: "1px",
+                text: `${parseCommitee(commiteeData[i].organization)}`,
+                xoffset: 0,
+                yoffset: 5,
+                font: {
+                  size: 14
+                }
+              })
+            })
+            infoGraphics.push(unitPriceGraphic)
+            infoGraphics.push(commiteeTitleGraphic)
+          }
+        }
+      }
+      const layer = map.findLayerById('commiteeInfoLayer') as GraphicsLayer | undefined
+      // const bgLayer = map.findLayerById('commiteeBgLayer') as GraphicsLayer | undefined
+      if (layer) {
+        // @ts-ignore
+        layer.graphics = infoGraphics
+        // @ts-ignore
+        // bgLayer.graphics = bgGraphics
+      }
+    })
+  }
+
+  const loadCommiteeLayer = (map: Map) => {
+    const infoLayer = new GraphicsLayer({
+      id: 'commiteeInfoLayer',
+      graphics: [],
+      visible: false
+    })
+    map.add(infoLayer)
   }
 
   useEffect(() => {
@@ -184,22 +297,24 @@ const AprV2Map = (props: IEsriMap) => {
       ui: undefined,
       constraints: {
         minZoom: 12,
-        maxZoom: 17
+        maxZoom: 20
       }
     })
 
-
     fetchTownData(map)
+    loadCommiteeLayer(map)
     watchUtils.whenTrue(mapView, 'stationary', async () => {
       console.log(mapView.zoom)
-      if (mapView.zoom <= 15) {
+      if (mapView.zoom <= 16) {
         if (map.findLayerById('townBgLayer') && map.findLayerById('townInfoLayer')) {
           map.findLayerById('townBgLayer').visible = true
           map.findLayerById('townInfoLayer').visible = true
+          map.findLayerById('commiteeInfoLayer').visible = false
         }
       } else {
         map.findLayerById('townBgLayer').visible = false
         map.findLayerById('townInfoLayer').visible = false
+        map.findLayerById('commiteeInfoLayer').visible = true
         fetchCommiteeByExtent(map, mapView.extent, WGS84)
       }
     })

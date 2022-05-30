@@ -52,7 +52,7 @@ const AprV2: NextPage = () => {
         <div className={style.content}>
 
           <div className={style.mapContainer}>
-            <MapContainer basemap='satellite' />
+            <MapContainer basemap='gray' />
           </div>
 
           <div className={style.footer}>
