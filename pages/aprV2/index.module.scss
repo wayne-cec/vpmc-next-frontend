@@ -1,0 +1,18 @@
+.main{
+    @apply relative w-full bg-transparent flex flex-row;
+    height: calc(100vh - 75px);
+    .content{
+        @apply w-full h-full bg-transparent;
+        
+        .mapContainer{
+            @apply w-full h-full bg-transparent;
+            height: calc(100% - 75px);
+        }
+        .footer{
+            @apply h-[75px] w-full bg-transparent flex items-center;
+            .drawerBtn{
+                @apply cursor-pointer;
+            }
+        }
+    }
+}

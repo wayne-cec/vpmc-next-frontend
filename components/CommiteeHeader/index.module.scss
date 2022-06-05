@@ -1,0 +1,10 @@
+.commiteeHeader{
+    @apply w-1/2 h-fit rounded-md p-4;
+    background: linear-gradient(181deg,#ebebeb 16%,#ffffff 99%);
+    .commiteeTitle{
+        @apply text-3xl font-semibold;
+    }
+    .chipContainer{
+        
+    }
+}

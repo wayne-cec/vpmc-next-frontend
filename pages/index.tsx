@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import style from '../styles/Home.module.scss'
 import PageHeader from '../containers/PageHeader'
+// import { applyBaseLayout } from '../layout'
 
 const Home: NextPage = () => {
   return (

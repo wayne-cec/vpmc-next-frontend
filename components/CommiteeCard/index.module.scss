@@ -1,0 +1,50 @@
+.commiteeCard{
+    @apply w-[300px] h-[306px] m-2 rounded-md 
+    bg-transparent border border-gray-300 cursor-pointer;
+    &:hover{
+        @apply shadow-lg;
+    }
+    .commiteeImageWrap{
+        @apply relative w-full;
+        .commiteeImage{
+            @apply rounded-t-md;
+        }
+    }
+    .contentContainer{
+        @apply bg-transparent p-2;
+        .priceTitle{
+            @apply text-sm font-light;
+            color: #999;
+            .unitPrice{
+                @apply text-red-600 text-3xl font-bold;
+            }
+            .unit{
+                @apply text-red-600 text-sm mx-2 font-normal;
+            }
+        }
+        .commiteeName{
+            @apply text-lg;
+        }
+        .commiteeInfo{
+            span{
+                @apply text-sm font-normal px-1;
+                color: #666;
+                &.divider{
+                    @apply border-r;
+                    border-color: #666;
+                }
+            }
+            // .divider{
+            //     @apply inline-block h-[10px] w-0 border-l mx-2;
+            //     border-color: #666;
+            // }
+        }
+        .address{
+            @apply text-sm font-normal;
+            color: #666;
+        }
+    }
+    // .commiteeImage{
+    //     @apply rounded-t-md;
+    // }
+}

@@ -1,0 +1,11 @@
+.drawer{
+    @apply w-0 h-full
+    left-0 top-0 z-20 overflow-hidden bg-white ; // bg-gradient-to-r from-main-accent to-main-primary
+    transition: 0.3s;
+    // &.hide{
+    //     @apply w-0 overflow-auto p-0;
+    // }
+    &.show{
+        @apply flex flex-wrap w-[985px] overflow-y-auto overflow-x-hidden p-2;
+    }
+}
