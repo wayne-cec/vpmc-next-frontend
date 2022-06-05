@@ -76,6 +76,7 @@ export interface ISimpleCommiteeData {
   apr_count: string
   completion_date: string
   building_type: string
+  calculatedUnitPrice: number | undefined
 }
 
 const AprV2Map = (props: IEsriMap) => {
@@ -205,9 +206,19 @@ const AprV2Map = (props: IEsriMap) => {
         const response = await result.value[i]
         if (response.status === 200) {
           const commiteeValue: ISimpleCommiteeData = await response.json()
-          commiteeData[i].value = commiteeValue
-          const unitPrice = Math.round(Number(commiteeData[i].value?.avg_unit_price) * square / 1000) / 10
-          if (unitPrice !== 0) {
+
+
+          let unitPrice
+          try {
+            unitPrice = Math.round(Number(commiteeValue.avg_unit_price) * square / 1000) / 10
+            commiteeValue.calculatedUnitPrice = unitPrice
+            commiteeData[i].value = commiteeValue
+          } catch {
+            commiteeValue.calculatedUnitPrice = undefined
+            commiteeData[i].value = commiteeValue
+          }
+
+          if (unitPrice !== 0 && commiteeData[i].value) {
 
             const bgGraphic = new Graphic({
               geometry: new Point({
@@ -314,6 +325,9 @@ const AprV2Map = (props: IEsriMap) => {
           map.findLayerById('townBgLayer').visible = true
           map.findLayerById('townInfoLayer').visible = true
           map.findLayerById('commiteeInfoLayer').visible = false
+          dispatch(
+            initCommiteeInExtent([])
+          )
         }
       } else {
         map.findLayerById('townBgLayer').visible = false

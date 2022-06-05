@@ -12,8 +12,6 @@ import doubleRightHover from '../../public/aprV2/doubleRight-hover.png'
 import doubleLeftHover from '../../public/aprV2/doubleLeft-hover.png'
 import { useSelector } from 'react-redux'
 import { selectCommitee } from '../../store/slice/commitee'
-import { square } from '../../components/MapContainer/AprV2Map'
-import { parseCommitee } from '../../lib/parseCommitee'
 
 const MapContainer = dynamic(
   () => import('../../components/MapContainer/AprV2Map'),
@@ -39,23 +37,14 @@ const AprV2: NextPage = () => {
           onClose={() => { setfirst(false) }}
         >
           {
-            commiteeInfo.commiteeInExtent.map((commitee, index) => {
-              const unitPrice = Math.round(Number(commitee.value?.avg_unit_price) * square / 1000) / 10
-              if (unitPrice !== 0) {
-                // return <></>
+            commiteeInfo.commiteeInExtent.length !== 0
+              ?
+              commiteeInfo.commiteeInExtent.map((commitee, index) => {
                 return <CommiteeCard key={index}
-                  id={commitee.id}
-                  unitPrice={unitPrice}
-                  commiteeName={parseCommitee(commitee.organization)}
-                  buildingType={commitee.value?.building_type!}
-                  address={commitee.address}
-                  completionDate={commitee.value?.completion_date!}
-                  aprCount={commitee.value?.apr_count!}
+                  {...commitee}
                 />
-              } else {
-                return <></>
-              }
-            })
+              }) :
+              <p>範圍內無社區，請放大地圖</p>
           }
 
         </Drawer>

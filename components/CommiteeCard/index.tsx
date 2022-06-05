@@ -1,8 +1,13 @@
-import React, { Children } from 'react'
+import React, { useState, useEffect } from 'react'
 import style from './index.module.scss'
 import Image from 'next/image'
 import Router from 'next/router'
 import { getAge } from '../../lib/calculateAge'
+import { ICommitee } from '../MapContainer/AprV2Map'
+import { square } from '../MapContainer/AprV2Map'
+import { parseCommitee } from '../../lib/parseCommitee'
+import { useDispatch } from 'react-redux'
+import { initCurrentCommitee } from '../../store/slice/commitee'
 
 export enum buildingType {
   apartmentComplex = 0, // 住宅大樓(11層含以上有電梯)
@@ -34,20 +39,39 @@ const buildingTypeDecode: { [key: number]: string } = {
   11: '農舍',
 }
 
-export interface ICommiteeCard {
-  id: string
-  unitPrice: number
-  commiteeName: string
-  buildingType: string
-  address: string
-  completionDate: string
-  aprCount: string
-}
+// export interface ICommiteeCard {
+//   id: string
+//   unitPrice: number
+//   commiteeName: string
+//   buildingType: string
+//   address: string
+//   completionDate: string
+//   aprCount: string
+// }
 
-const CommiteeCard = (props: ICommiteeCard) => {
+const CommiteeCard = (props: ICommitee) => {
+  const dispatch = useDispatch()
+  const [uniPrice, setuniPrice] = useState<number | undefined>(undefined)
+
   const handleCommiteeCardClick = () => {
+    dispatch(
+      initCurrentCommitee(props)
+    )
     Router.push(`/aprV2/commiteeInfo/${props.id}`)
   }
+
+  useEffect(() => {
+    // if (props.value?.avg_unit_price) {
+    //   // console.log(props.value.avg_unit_price)
+    //   try {
+    //     // const unitP = Math.round(Number(props.value.avg_unit_price) * square / 1000) / 10
+    //     // setuniPrice(unitP)
+    //   } catch {
+    //     setuniPrice(undefined)
+    //   }
+    // }
+  }, [])
+
 
   return (
     <>
@@ -65,30 +89,42 @@ const CommiteeCard = (props: ICommiteeCard) => {
         </div>
 
         <div className={style.contentContainer}>
-          <p className={style.priceTitle}>
-            <span className={style.unitPrice}>
-              {String(props.unitPrice)}
-            </span>
-            <span className={style.unit}>
-              萬/坪
-            </span>
-            (成交均價)
-          </p>
+          {
+            props.value?.avg_unit_price
+              ? <p className={style.priceTitle}>
+                <span className={style.unitPrice}>
+                  {props.value.calculatedUnitPrice}
+                </span>
+                <span className={style.unit}>
+                  萬/坪
+                </span>
+                (成交均價)
+              </p>
+              : <></>
+          }
           <p className={style.commiteeName}>
-            {props.commiteeName}
+            {parseCommitee(props.organization)}
           </p>
           <p className={style.commiteeInfo}>
-            <span className={style.divider}>
-              {
-                buildingTypeDecode[Number(props.buildingType)]
-              }
-            </span>
-            <span className={style.divider}>
-              {getAge(props.completionDate)}年
-            </span>
-            <span>
-              近期交易{props.aprCount}戶
-            </span>
+
+            {
+              props.value?.avg_unit_price ?
+                <>
+                  <span className={style.divider}>
+                    {
+                      buildingTypeDecode[Number(props.value?.building_type)]
+                    }
+                  </span>
+
+                  <span className={style.divider}>
+                    {getAge(props.value?.completion_date!)}年
+                  </span>
+
+                  <span>
+                    近期交易{props.value?.apr_count}戶
+                  </span>
+                </> : <span>近期無交易紀錄</span>
+            }
           </p>
           <p className={style.address}>
             {props.address}
