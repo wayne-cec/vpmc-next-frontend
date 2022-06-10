@@ -61,34 +61,12 @@ const Header = () => {
         </div>
         <div className={style.buttonGroup}>
           <NavButton
-            onClick={() => { Router.push('/new-case') }}
-            onMouseOver={() => { setnewBuilding(true) }}
-            onMouseLeave={() => { setnewBuilding(false) }}
-          >新建案</NavButton>
+          >估價分析</NavButton>
           <NavButton
-            onClick={() => { Router.push('/pre-owned') }}
-            onMouseOver={() => { setpreOwned(true) }}
-            onMouseLeave={() => { setpreOwned(false) }}
-          >中古屋</NavButton>
+          >線上支援</NavButton>
           <NavButton
-            onClick={() => { Router.push('/rent') }}
-            onMouseOver={() => { setrent(true) }}
-            onMouseLeave={() => { setrent(false) }}
-          >租屋</NavButton>
+          >統計及行情</NavButton>
           <NavButton
-            onClick={() => { Router.push('/store') }}
-          >店面</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/office') }}
-          >辦公</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/factory') }}
-          >廠房土地</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/news') }}
-          >新聞</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/aprV2') }}
             onMouseOver={() => { setaprV2(true) }}
             onMouseLeave={() => { setaprV2(false) }}
           >實價登陸2.0</NavButton>
@@ -110,7 +88,7 @@ const Header = () => {
 
       </header>
 
-      <HeaderDrawer
+      {/* <HeaderDrawer
         open={newBuilding}
         onMouseOver={() => { setnewBuilding(true) }}
         onMouseLeave={() => { setnewBuilding(false) }}
@@ -153,7 +131,7 @@ const Header = () => {
             >{link.name}</NavButton>
           })
         }
-      </HeaderDrawer>
+      </HeaderDrawer> */}
 
       <HeaderDrawer
         open={aprV2}
