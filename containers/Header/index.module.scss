@@ -1,7 +1,7 @@
 .headerContainer{
     @apply z-30 w-full h-fit;
     .header{
-        @apply w-full h-fit bg-main-second shadow-xl py-4 px-6 flex items-center justify-between sticky z-30;
+        @apply w-full h-fit bg-main-second shadow-md py-4 px-6 flex items-center justify-between sticky z-30;
         min-height: 75px;
         .contentGroup{
             @apply flex items-center;

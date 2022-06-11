@@ -7,46 +7,33 @@ import Router from 'next/router'
 // import classNames from 'classnames'
 import HeaderDrawer from './HeaderDrawer'
 
-export const newBuildingLink = [
-  { name: '所有新建案', route: '/new-case/all' },
-  { name: '預售屋', route: '/new-case/pre-sale' },
-  { name: '最新公開銷售', route: '/new-case/newest' },
-  { name: '新成屋', route: '/new-case/new' },
-  { name: '捷運宅', route: '/new-case/mrt' }
+export const appraisalAnalysis = [
+  { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet' },
+  { name: '市場比較法', route: '/appraisalAnalysis/marketCompare' },
+  { name: '土勘分析法', route: '/appraisalAnalysis/landSurvey' }
 ]
 
-export const preOwnedLink = [
-  { name: '所有房源', route: '/pre-owned/all' },
-  { name: '地圖找房', route: '/pre-owned/map' },
-  { name: '屋主房源', route: '/pre-owned/owner' },
-  { name: '降價房源', route: '/pre-owned/price-cut' },
-  { name: '急售房源', route: '/pre-owned/urgent' },
-  { name: '法拍屋', route: '/pre-owned/foreclosure' }
+export const onlineSupport = [
+  { name: '網站使用手冊', route: '/onlineSupport/manual' },
+  { name: '估價相關法令', route: '/onlineSupport/law' },
+  { name: '技術公報/範本', route: '/onlineSupport/report' }
 ]
 
-export const rentLink = [
-  { name: '所有房源', route: '/rent/all' },
-  { name: '房東出租', route: '/rent/landlord' },
-  { name: '整層住家', route: '/rent/whole-layer' },
-  { name: '地圖找房', route: '/rent/map' },
-  { name: '獨立套房', route: '/rent/suit' },
-  { name: '捷運找房', route: '/rent/mrt' },
-  { name: '分租套房', route: '/rent/split-suit' },
-  { name: '學校找房', route: '/rent/campus' },
-  { name: '雅房', route: '/rent/merge-suit' }
+export const statistic = [
+  { name: '使照建照', route: '/statistic/license' },
+  { name: '臺灣總經蓋覽', route: '/statistic/economic' }
 ]
 
 export const aprV2Link = [
-  { name: '實價登陸2.0', route: '/aprV2' },
-  { name: '地區總體', route: '/aprV2/region' },
-  { name: '社區個別', route: '/aprV2/commitee' }
+  { name: '社區個別', route: '/aprV2/commitee' },
+  { name: '地區總體', route: '/aprV2/region' }
 ]
 
 const Header = () => {
   const [menuDrawerOpen, setmenuDrawerOpen] = useState<boolean>(false)
-  const [newBuilding, setnewBuilding] = useState<boolean>(false)
-  const [preOwned, setpreOwned] = useState<boolean>(false)
-  const [rent, setrent] = useState<boolean>(false)
+  const [appAnalysis, setappAnalysis] = useState<boolean>(false)
+  const [onlineSup, setonlineSup] = useState<boolean>(false)
+  const [staticsOpen, setstaticsOpen] = useState<boolean>(false)
   const [aprV2, setaprV2] = useState<boolean>(false)
 
   return (
@@ -61,34 +48,18 @@ const Header = () => {
         </div>
         <div className={style.buttonGroup}>
           <NavButton
-            onClick={() => { Router.push('/new-case') }}
-            onMouseOver={() => { setnewBuilding(true) }}
-            onMouseLeave={() => { setnewBuilding(false) }}
-          >新建案</NavButton>
+            onMouseOver={() => { setappAnalysis(true) }}
+            onMouseLeave={() => { setappAnalysis(false) }}
+          >估價分析</NavButton>
           <NavButton
-            onClick={() => { Router.push('/pre-owned') }}
-            onMouseOver={() => { setpreOwned(true) }}
-            onMouseLeave={() => { setpreOwned(false) }}
-          >中古屋</NavButton>
+            onMouseOver={() => { setonlineSup(true) }}
+            onMouseLeave={() => { setonlineSup(false) }}
+          >線上支援</NavButton>
           <NavButton
-            onClick={() => { Router.push('/rent') }}
-            onMouseOver={() => { setrent(true) }}
-            onMouseLeave={() => { setrent(false) }}
-          >租屋</NavButton>
+            onMouseOver={() => { setstaticsOpen(true) }}
+            onMouseLeave={() => { setstaticsOpen(false) }}
+          >統計及行情</NavButton>
           <NavButton
-            onClick={() => { Router.push('/store') }}
-          >店面</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/office') }}
-          >辦公</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/factory') }}
-          >廠房土地</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/news') }}
-          >新聞</NavButton>
-          <NavButton
-            onClick={() => { Router.push('/aprV2') }}
             onMouseOver={() => { setaprV2(true) }}
             onMouseLeave={() => { setaprV2(false) }}
           >實價登陸2.0</NavButton>
@@ -111,12 +82,12 @@ const Header = () => {
       </header>
 
       <HeaderDrawer
-        open={newBuilding}
-        onMouseOver={() => { setnewBuilding(true) }}
-        onMouseLeave={() => { setnewBuilding(false) }}
+        open={appAnalysis}
+        onMouseOver={() => { setappAnalysis(true) }}
+        onMouseLeave={() => { setappAnalysis(false) }}
       >
         {
-          newBuildingLink.map((link, index) => {
+          appraisalAnalysis.map((link, index) => {
             return <NavButton
               key={index}
               onClick={() => { Router.push(link.route) }}
@@ -126,12 +97,12 @@ const Header = () => {
       </HeaderDrawer>
 
       <HeaderDrawer
-        open={preOwned}
-        onMouseOver={() => { setpreOwned(true) }}
-        onMouseLeave={() => { setpreOwned(false) }}
+        open={onlineSup}
+        onMouseOver={() => { setonlineSup(true) }}
+        onMouseLeave={() => { setonlineSup(false) }}
       >
         {
-          preOwnedLink.map((link, index) => {
+          onlineSupport.map((link, index) => {
             return <NavButton
               key={index}
               onClick={() => { Router.push(link.route) }}
@@ -141,12 +112,12 @@ const Header = () => {
       </HeaderDrawer>
 
       <HeaderDrawer
-        open={rent}
-        onMouseOver={() => { setrent(true) }}
-        onMouseLeave={() => { setrent(false) }}
+        open={staticsOpen}
+        onMouseOver={() => { setstaticsOpen(true) }}
+        onMouseLeave={() => { setstaticsOpen(false) }}
       >
         {
-          aprV2Link.map((link, index) => {
+          statistic.map((link, index) => {
             return <NavButton
               key={index}
               onClick={() => { Router.push(link.route) }}
@@ -169,7 +140,6 @@ const Header = () => {
           })
         }
       </HeaderDrawer>
-
 
     </div>
   )

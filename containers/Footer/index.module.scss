@@ -1,5 +1,5 @@
 .footer{
-    @apply w-full h-fit bg-bg-darkGrey flex flex-col items-center;
+    @apply w-full h-fit bg-bg-darkGrey flex flex-col items-center justify-between;
     // clip-path: ellipse(100% 55% at 50% 56%);
     min-height: 400px;
     .footerMap{
@@ -13,9 +13,9 @@
                 }
             }
             .title{
-                @apply text-2xl my-4;
+                @apply text-2xl my-4 text-white;
                 font-weight: 700;
-                @include text;
+                // @include text;
             }
             .content{
                 @apply text-lg my-2;
