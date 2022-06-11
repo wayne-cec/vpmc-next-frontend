@@ -25,7 +25,6 @@ export const statistic = [
 ]
 
 export const aprV2Link = [
-  { name: '實價登陸2.0', route: '/aprV2' },
   { name: '地區總體', route: '/aprV2/region' },
   { name: '社區個別', route: '/aprV2/commitee' }
 ]
