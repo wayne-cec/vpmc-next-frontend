@@ -8,4 +8,7 @@
     &.show{
         @apply flex flex-wrap w-[985px] overflow-y-auto overflow-x-hidden p-2;
     }
+    &.showCol{
+        @apply flex flex-col flex-wrap w-[985px] overflow-y-auto overflow-x-hidden p-2;
+    }
 }

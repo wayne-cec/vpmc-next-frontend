@@ -16,6 +16,7 @@ import * as projection from "@arcgis/core/geometry/projection"
 import { parseCommitee } from '../../lib/parseCommitee'
 import { useDispatch } from 'react-redux'
 import { initCommiteeInExtent } from '../../store/slice/commitee'
+import '@arcgis/core/assets/esri/themes/light/main.css'
 
 export const square = 3.305785
 

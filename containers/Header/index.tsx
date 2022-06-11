@@ -25,8 +25,8 @@ export const statistic = [
 ]
 
 export const aprV2Link = [
-  { name: '地區總體', route: '/aprV2/region' },
-  { name: '社區個別', route: '/aprV2/commitee' }
+  { name: '社區個別', route: '/aprV2/commitee' },
+  { name: '地區總體', route: '/aprV2/region' }
 ]
 
 const Header = () => {

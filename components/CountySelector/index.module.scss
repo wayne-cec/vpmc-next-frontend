@@ -1,0 +1,27 @@
+.countySelector{
+    @apply w-[130px] h-[40px] rounded-md border 
+    border-border m-2 cursor-pointer;
+}
+.popPanel{
+    @apply w-[500px] h-[400px] bg-white absolute 
+     rounded-b-md border-t-2
+    border-main-primary shadow-2xl hidden;
+
+    @keyframes slidein {
+        from {
+          @apply top-[60px] bg-transparent;
+        }
+      
+        to {
+            @apply top-[75px] bg-opacity-100;
+        }
+      }
+
+    &.show{
+        animation-name: slidein;
+        animation-duration: 0.2s;
+        animation-timing-function: ease-out;
+        
+        @apply top-[75px] block;
+    }
+}

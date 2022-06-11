@@ -18,7 +18,8 @@ module.exports = {
         },
         'bg': {
           'darkGrey': '#333333'
-        }
+        },
+        'border': '#e6e6e6'
       }
     },
   },
