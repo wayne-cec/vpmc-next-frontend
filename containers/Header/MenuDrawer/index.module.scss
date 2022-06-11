@@ -21,9 +21,9 @@
                 }
             }
             .title{
-                @apply text-2xl my-4;
+                @apply text-2xl my-4 text-white;
                 font-weight: 700;
-                @include text;
+                // @include text;
             }
             .content{
                 @apply text-lg my-2;
