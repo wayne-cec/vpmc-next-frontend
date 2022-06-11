@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
+import Image from 'next/image'
 
 const countyData: { [key: string]: { name: string, marked: boolean }[] } = {
   "北部": [
@@ -36,6 +37,7 @@ const countyData: { [key: string]: { name: string, marked: boolean }[] } = {
 }
 
 const CountySelector = () => {
+  const [selectedCounty, setselectedCounty] = useState<string>('台北市')
   const [open, setopen] = useState<boolean>(false)
   return (
     <div>
@@ -43,7 +45,13 @@ const CountySelector = () => {
         onClick={() => {
           setopen(prev => !prev)
         }}
-      ></div>
+      >
+        <div className={style.titleContainer}>
+          <Image src={'/aprRegion/locate.png'} width='25px' height='25px' />
+          <p>{selectedCounty}</p>
+        </div>
+        <Image src={'/aprRegion/expand.png'} width='25px' height='25px' />
+      </div>
 
       <div className={classNames({
         [style.popPanel]: true,
@@ -63,6 +71,10 @@ const CountySelector = () => {
                         [style.chip]: true,
                         [style.marked]: county.marked
                       })}
+                      onClick={() => {
+                        setselectedCounty(county.name)
+                        setopen(false)
+                      }}
                     >{county.name}</span>
                   })
                 }
