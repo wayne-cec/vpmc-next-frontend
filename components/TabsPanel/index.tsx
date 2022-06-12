@@ -7,6 +7,8 @@ import TabPanel from '@mui/lab/TabPanel'
 import style from './index.module.scss'
 import { IResult, IResultStatistics } from '../../api/prod'
 import { buildingTypeDecode } from '../CommiteeCard'
+import { ECharts } from 'echarts'
+import ReactEcharts from 'echarts-for-react'
 
 export interface ITabsPanel {
   displayData: {
@@ -17,11 +19,15 @@ export interface ITabsPanel {
 }
 
 const TabsPanel = (props: ITabsPanel) => {
-  const [value, setValue] = React.useState('1')
+  const [value, setValue] = React.useState('0')
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue)
   }
+
+  // useEffect(() => {
+  //   ECharts.
+  // }, [])
 
   return (
     <Box sx={{ width: '100%', typography: 'body1' }}>
@@ -39,13 +45,35 @@ const TabsPanel = (props: ITabsPanel) => {
             }
           </TabList>
         </Box>
-        {/* <TabPanel value="1"></TabPanel>
-        <TabPanel value="2">Item Two</TabPanel>
-        <TabPanel value="3">Item Three</TabPanel> */}
         {
           Object.keys(props.displayData).map((buildingType, index) => {
-            return <TabPanel value={buildingType} key={index}>
-              {buildingTypeDecode[Number(buildingType)]}
+            const option = {
+              xAxis: {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+              },
+              yAxis: {
+                type: 'value'
+              },
+              series: [
+                {
+                  data: [820, 932, 901, 934, 1290, 1330, 1320],
+                  type: 'line',
+                  smooth: true
+                }
+              ]
+            }
+
+            return <TabPanel
+              className={style.containerWrap}
+              value={buildingType}
+              key={index}
+            >
+              <div className={style.chartsContainer}>
+                <ReactEcharts option={option} />
+                <ReactEcharts option={option} />
+                <ReactEcharts option={option} />
+              </div>
             </TabPanel>
           })
         }

@@ -1,3 +1,9 @@
-.aa{
-    @apply w-[50px] h-[50px] bg-cyan-300;
+.containerWrap{
+    padding: 24px !important;
+    @media(max-width: 1100px){
+        padding: 0px !important;
+    }
+    .chartsContainer{
+        @apply w-[390px] h-[500px] overflow-y-auto ;
+     }
 }
