@@ -24,7 +24,7 @@ export enum buildingType {
   farmhouse = 11        // 農舍
 }
 
-const buildingTypeDecode: { [key: number]: string } = {
+export const buildingTypeDecode: { [key: number]: string } = {
   0: '住宅大樓',
   1: '辦公商業大樓',
   2: '其他',

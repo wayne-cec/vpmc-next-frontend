@@ -3,6 +3,9 @@
     border-border m-2 cursor-pointer flex items-center justify-between px-2;
     .titleContainer{
         @apply flex items-center;
+        p{
+            @apply ml-1;
+        }
     }
     .arrow{
         content: '\e6b5';
@@ -10,11 +13,14 @@
         font-size: 12px;
         margin-left: auto;
     }
+    &.show{
+        @apply border-main-primary;
+    }
 }
 .popPanel{
     @apply w-[500px] h-fit bg-white absolute 
     rounded-b-md border-t-2
-    border-main-primary shadow-2xl hidden p-4;
+    border-main-primary shadow-2xl hidden p-4 z-50;
     @media(max-width: 1100px){
         @apply w-[300px];
     }
