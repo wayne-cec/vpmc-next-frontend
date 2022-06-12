@@ -3,12 +3,18 @@
     border-border m-2 cursor-pointer flex items-center justify-between px-2;
     .titleContainer{
         @apply flex items-center;
+        p{
+            @apply ml-1;
+        }
     }
     .arrow{
         content: '\e6b5';
         color: #999;
         font-size: 12px;
         margin-left: auto;
+    }
+    &.show{
+        @apply border-main-primary;
     }
 }
 .popPanel{

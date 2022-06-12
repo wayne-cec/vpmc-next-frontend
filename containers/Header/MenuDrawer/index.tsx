@@ -29,7 +29,10 @@ const MenuDrawer = (props: IMenuDrawer) => {
                 return <p
                   key={index}
                   className={style.content}
-                  onClick={() => { Router.push(link.route) }}
+                  onClick={() => {
+                    Router.push(link.route)
+                    props.onClose()
+                  }}
                 >{link.name}</p>
               })
             }
@@ -41,7 +44,10 @@ const MenuDrawer = (props: IMenuDrawer) => {
                 return <p
                   key={index}
                   className={style.content}
-                  onClick={() => { Router.push(link.route) }}
+                  onClick={() => {
+                    Router.push(link.route)
+                    props.onClose()
+                  }}
                 >{link.name}</p>
               })
             }
@@ -53,7 +59,10 @@ const MenuDrawer = (props: IMenuDrawer) => {
                 return <p
                   key={index}
                   className={style.content}
-                  onClick={() => { Router.push(link.route) }}
+                  onClick={() => {
+                    Router.push(link.route)
+                    props.onClose()
+                  }}
                 >{link.name}</p>
               })
             }
@@ -65,7 +74,10 @@ const MenuDrawer = (props: IMenuDrawer) => {
                 return <p
                   key={index}
                   className={style.content}
-                  onClick={() => { Router.push(link.route) }}
+                  onClick={() => {
+                    Router.push(link.route)
+                    props.onClose()
+                  }}
                 >{link.name}</p>
               })
             }
