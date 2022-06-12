@@ -7,9 +7,8 @@ import TabPanel from '@mui/lab/TabPanel'
 import style from './index.module.scss'
 import { IResult, IResultStatistics } from '../../api/prod'
 import { buildingTypeDecode } from '../CommiteeCard'
-import { ECharts } from 'echarts'
 import ReactEcharts from 'echarts-for-react'
-import { square } from '../MapContainer/AprRegionMap'
+// import { square } from '../MapContainer/AprRegionMap'
 
 export interface ITabsPanel {
   displayData: {
@@ -94,7 +93,7 @@ const TabsPanel = (props: ITabsPanel) => {
                 name: "單位(萬/坪)",
                 axisLabel: {
                   formatter: (function (value: string) {
-                    const newVlaue = Math.round(Math.round(Number(value) * square / 1000) / 10)
+                    const newVlaue = Math.round(Math.round(Number(value) * 3.305785 / 1000) / 10)
                     return newVlaue
                   }),
                   align: 'center'
