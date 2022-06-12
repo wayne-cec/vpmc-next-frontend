@@ -5,5 +5,8 @@
     }
     .chartsContainer{
         @apply w-[390px] h-[500px] overflow-y-auto ;
-     }
+        .title{
+            @apply text-lg border-t pt-2;
+        }
+    }
 }
