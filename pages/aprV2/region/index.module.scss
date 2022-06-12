@@ -6,9 +6,9 @@
     }
     .panel{ 
         @apply flex flex-col h-fit absolute z-10 bg-white m-2 p-4 rounded-md
-        shadow-md;
+        shadow-md w-[440px];
         @media(max-width: 1100px){
-            @apply static m-0 ;
+            @apply static m-0 w-auto;
         }
         .filterGroup{
             @apply flex justify-center;
@@ -27,7 +27,7 @@
             }
         }
         .graphGroup{
-            @apply w-full h-14 bg-black;
+            @apply w-full h-fit bg-transparent;
         }
     }
     .content{

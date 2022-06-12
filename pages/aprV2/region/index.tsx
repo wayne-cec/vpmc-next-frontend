@@ -7,7 +7,11 @@ import CountySelector from '../../../components/CountySelector'
 import TownSelector from '../../../components/TownSelector'
 import Image from 'next/image'
 import { useDispatch, useSelector } from 'react-redux'
-import { initAprRegionCounty, selectAprRegion, initAprRegionTown } from '../../../store/slice/aprRegion'
+import {
+  initAprRegionCounty,
+  selectAprRegion, initAprRegionTown,
+  initAprRegionDisplayData
+} from '../../../store/slice/aprRegion'
 import api from '../../../api'
 import TabsPanel from '../../../components/TabsPanel'
 
@@ -89,7 +93,11 @@ const AprRegion: NextPage = () => {
 
   const handleSearch = async () => {
     const { statusCode, responseContent } = await api.prod.getTownInfo(aprRegionInfo.county!, aprRegionInfo.town!)
-    console.log(responseContent)
+    if (statusCode === 200) {
+      dispatch(
+        initAprRegionDisplayData(responseContent)
+      )
+    }
   }
 
   return (
@@ -136,7 +144,13 @@ const AprRegion: NextPage = () => {
           </div>
 
           <div className={style.graphGroup}>
-            <TabsPanel></TabsPanel>
+            {
+              aprRegionInfo.displayData
+                ? <TabsPanel
+                  displayData={aprRegionInfo.displayData}
+                ></TabsPanel>
+                : <></>
+            }
           </div>
 
         </div>

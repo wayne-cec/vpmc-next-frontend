@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-interface IResult {
+export interface IResult {
   buildingType: number
   priceWithoutParking: number
   unitPrice: number
@@ -9,7 +9,7 @@ interface IResult {
   age: number
 }
 
-interface IResultStatistics {
+export interface IResultStatistics {
   priceWithoutParking_MEAN: number
   unitPrice_MEAN: number
   age_MEAN: number
