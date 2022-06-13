@@ -10,10 +10,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import {
   initAprRegionCounty,
   selectAprRegion, initAprRegionTown,
-  initAprRegionDisplayData
+  initAprRegionDisplayData,
+  initCountyData,
+  initTownData
 } from '../../../store/slice/aprRegion'
 import api from '../../../api'
 import TabsPanel from '../../../components/TabsPanel'
+import { useEffect } from 'react'
 
 const RegionMapContainer = dynamic(
   () => import('../../../components/MapContainer/AprRegionMap'),
@@ -100,6 +103,33 @@ const AprRegion: NextPage = () => {
     }
   }
 
+  const reFetchTownData = async (county: string) => {
+    const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
+    if (statusCode === 200) {
+      dispatch(
+        initTownData(responseContent2)
+      )
+    }
+  }
+
+  useEffect(() => {
+    const fetchDefaultCountyData = async () => {
+      const { statusCode, responseContent } = await api.prod.listCountiesByRegion()
+      if (statusCode === 200) {
+        dispatch(
+          initCountyData(responseContent)
+        )
+        const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(responseContent['北部'][0].name)
+        if (statusCode === 200) {
+          dispatch(
+            initTownData(responseContent2)
+          )
+        }
+      }
+    }
+    fetchDefaultCountyData()
+  }, [])
+
   return (
     <>
       <Head>
@@ -114,17 +144,18 @@ const AprRegion: NextPage = () => {
           <div className={style.filterGroup}>
 
             <CountySelector
-              countyData={countyData}
+              countyData={aprRegionInfo.countyData!}
               selectedCounty={aprRegionInfo.county}
               onCountyChange={(county) => {
                 dispatch(
                   initAprRegionCounty(county)
                 )
+                reFetchTownData(county)
               }}
             />
 
             <TownSelector
-              townData={townData}
+              townData={aprRegionInfo.townData!}
               selectedTown={aprRegionInfo.town}
               onTownChange={(town) => {
                 dispatch(
