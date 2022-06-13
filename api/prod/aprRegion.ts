@@ -42,23 +42,3 @@ export const getTownInfo = async (county: string, town: string) => {
   }
   return { statusCode, responseContent }
 }
-
-export const listCountiesByRegion = async () => {
-  const response = await fetch("http://140.122.82.98:9085/api/Utility/listCountiesByRegion", {
-    method: 'GET',
-    redirect: 'follow'
-  })
-  const statusCode = response.status
-  const responseContent = await response.json() as ICountyData
-  return { statusCode, responseContent }
-}
-
-export const listTownsByCounty = async (county: string) => {
-  const response = await fetch(`http://140.122.82.98:9085/api/Utility/listTownsByCounty?county=${county}`, {
-    method: 'GET',
-    redirect: 'follow'
-  })
-  const statusCode = response.status
-  const responseContent2 = await response.json() as ITownData
-  return { statusCode, responseContent2 }
-}

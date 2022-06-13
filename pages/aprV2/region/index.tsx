@@ -16,7 +16,7 @@ import {
 } from '../../../store/slice/aprRegion'
 import api from '../../../api'
 import TabsPanel from '../../../components/TabsPanel'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const RegionMapContainer = dynamic(
   () => import('../../../components/MapContainer/AprRegionMap'),
@@ -93,6 +93,17 @@ const townData: { [key: string]: { name: string, marked: boolean }[] } = {
 const AprRegion: NextPage = () => {
   const dispatch = useDispatch()
   const aprRegionInfo = useSelector(selectAprRegion)
+  const [townGeojson, settownGeojson] = useState<any | null>(null)
+
+  const handleFetchTownGeography = async () => {
+    const { statusCode, responseContent } = await api.prod.getVillageGeographyByTown(
+      aprRegionInfo.county!,
+      aprRegionInfo.town!
+    )
+    if (statusCode === 200) {
+      settownGeojson(responseContent)
+    }
+  }
 
   const handleSearch = async () => {
     const { statusCode, responseContent } = await api.prod.getTownInfo(aprRegionInfo.county!, aprRegionInfo.town!)
@@ -100,6 +111,7 @@ const AprRegion: NextPage = () => {
       dispatch(
         initAprRegionDisplayData(responseContent)
       )
+      await handleFetchTownGeography()
     }
   }
 
@@ -188,7 +200,10 @@ const AprRegion: NextPage = () => {
 
         <div className={style.content}>
           <div className={style.mapContainer}>
-            <RegionMapContainer basemap='gray' />
+            <RegionMapContainer
+              townGeojson={townGeojson}
+              basemap='gray'
+            />
           </div>
         </div>
 

@@ -9,6 +9,7 @@ import { IResult, IResultStatistics } from '../../api/prod'
 import { buildingTypeDecode } from '../CommiteeCard'
 import ReactEcharts from 'echarts-for-react'
 // import { square } from '../MapContainer/AprRegionMap'
+import { EChartsOption } from 'echarts'
 
 export interface ITabsPanel {
   displayData: {
@@ -58,7 +59,7 @@ const TabsPanel = (props: ITabsPanel) => {
               countValues.push(yearD.count)
             })
 
-            const meanPriceOption = {
+            const meanPriceOption: EChartsOption = {
               xAxis: {
                 type: 'category',
                 data: years
@@ -69,7 +70,7 @@ const TabsPanel = (props: ITabsPanel) => {
                 axisLabel: {
                   formatter: (function (value: string) {
                     const newVlaue = Math.round(Number(value) / 1000000)
-                    return newVlaue
+                    return newVlaue.toString()
                   }),
                   align: 'center'
                 }
@@ -80,10 +81,23 @@ const TabsPanel = (props: ITabsPanel) => {
                   type: 'line',
                   smooth: true
                 }
-              ]
+              ],
+              tooltip: {
+                trigger: 'axis',
+                formatter: function (param: any, value) {
+                  // console.log(param[0].value)
+                  const newVlaue = Math.round(Number(param[0].value) / 1000000)
+                  if (Math.floor(newVlaue / 10) !== 0) {
+                    return `${Math.floor(newVlaue / 10)}千${newVlaue % 10}百萬`
+                  } else {
+                    return `${newVlaue % 10}百萬`
+                  }
+                  
+                }
+              }
             }
 
-            const meanUnitPriceOption = {
+            const meanUnitPriceOption : EChartsOption = {
               xAxis: {
                 type: 'category',
                 data: years
@@ -94,7 +108,7 @@ const TabsPanel = (props: ITabsPanel) => {
                 axisLabel: {
                   formatter: (function (value: string) {
                     const newVlaue = Math.round(Math.round(Number(value) * 3.305785 / 1000) / 10)
-                    return newVlaue
+                    return newVlaue.toString()
                   }),
                   align: 'center'
                 }
@@ -108,7 +122,7 @@ const TabsPanel = (props: ITabsPanel) => {
               ]
             }
 
-            const meanAgeOption = {
+            const meanAgeOption: EChartsOption = {
               xAxis: {
                 type: 'category',
                 data: years
@@ -126,7 +140,7 @@ const TabsPanel = (props: ITabsPanel) => {
               ]
             }
 
-            const countOption = {
+            const countOption: EChartsOption = {
               xAxis: {
                 type: 'category',
                 data: years
@@ -136,7 +150,7 @@ const TabsPanel = (props: ITabsPanel) => {
                 name: "交易數量(千)",
                 axisLabel: {
                   formatter: (function (value: string) {
-                    return Number(value) / 1000
+                    return (Number(value) / 1000).toString()
                   }),
                   align: 'center'
                 }
