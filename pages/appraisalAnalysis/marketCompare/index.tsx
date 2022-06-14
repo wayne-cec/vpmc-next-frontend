@@ -2,10 +2,12 @@ import type { NextPage } from 'next'
 import style from './index.module.scss'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import { TextField } from '@mui/material'
 import classNames from 'classnames'
 import Image from 'next/image'
 import CoordinateSelector from '../../../components/CoordinateSelector'
+import { useState } from 'react'
+import { TextField } from '@mui/material'
+import api from '../../../api'
 
 const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
@@ -13,6 +15,25 @@ const MarketMapContainer = dynamic(
 )
 
 const AprRegion: NextPage = () => {
+  const [longitude, setlongitude] = useState<number | null>(null)
+  const [latitude, setlatitude] = useState<number | null>(null)
+  const [locatedCounty, setlocatedCounty] = useState<string | null>(null)
+  const [locatedTown, setlocatedTown] = useState<string | null>(null)
+  const [isSelectorActive, setisCoordinateSelectorActive] = useState<boolean>(false)
+
+  const handleCoordinateSelect = async (longitude: number, latitude: number) => {
+    setlongitude(longitude)
+    setlatitude(latitude)
+    setisCoordinateSelectorActive(false)
+    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude, latitude)
+    if (statusCode === 200) {
+      setlocatedCounty(responseContent.countyname)
+      setlocatedTown(responseContent.townname)
+    } else {
+      setlocatedCounty(null)
+      setlocatedTown(null)
+    }
+  }
 
   return (
     <>
@@ -31,11 +52,16 @@ const AprRegion: NextPage = () => {
               [style.filterSection]: true,
               [style.divide]: true
             })}>
-              {/* <TextField
-                sx={{ borderColor: 'red' }}
-                size='small'
-              ></TextField> */}
-              <CoordinateSelector />
+              <CoordinateSelector
+                longitude={longitude}
+                latitude={latitude}
+                locatedCounty={locatedCounty}
+                locatedTown={locatedTown}
+                active={isSelectorActive}
+                onClick={() => {
+                  setisCoordinateSelectorActive(prev => !prev)
+                }}
+              />
             </div>
 
             <div className={classNames({
@@ -43,7 +69,6 @@ const AprRegion: NextPage = () => {
               [style.divide]: true
             })}>
               <TextField
-                sx={{ borderColor: 'red' }}
                 size='small'
               ></TextField>
             </div>
@@ -64,6 +89,8 @@ const AprRegion: NextPage = () => {
         <div className={style.content}>
           <div className={style.mapContainer}>
             <MarketMapContainer
+              active={isSelectorActive}
+              onCoordinateSelect={handleCoordinateSelect}
             />
           </div>
         </div>

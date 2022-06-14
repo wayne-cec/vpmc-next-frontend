@@ -7,13 +7,25 @@
             @apply ml-1;
         }
     }
+    .regionTitle{
+        @apply border-l border-border pl-2;
+    }
     .arrow{
         content: '\e6b5';
         color: #999;
         font-size: 12px;
         margin-left: auto;
     }
-    &.show{
+    &.active{
         @apply border-main-primary;
     }
+    @mixin textNoneSelectable {
+        -webkit-touch-callout: none; 
+        -webkit-user-select: none;
+        -khtml-user-select: none; 
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+        user-select: none; 
+    }
+    @include textNoneSelectable;
 }
