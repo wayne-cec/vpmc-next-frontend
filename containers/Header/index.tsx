@@ -10,7 +10,7 @@ import HeaderDrawer from './HeaderDrawer'
 export const appraisalAnalysis = [
   { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet' },
   { name: '市場比較法', route: '/appraisalAnalysis/marketCompare' },
-  { name: '土勘分析法', route: '/appraisalAnalysis/landSurvey' }
+  { name: '土開分析法', route: '/appraisalAnalysis/landSurvey' }
 ]
 
 export const onlineSupport = [
@@ -21,7 +21,7 @@ export const onlineSupport = [
 
 export const statistic = [
   { name: '使照建照', route: '/statistic/license' },
-  { name: '臺灣總經蓋覽', route: '/statistic/economic' }
+  { name: '臺灣總經概覽', route: '/statistic/economic' }
 ]
 
 export const aprV2Link = [
