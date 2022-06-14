@@ -6,13 +6,142 @@ import Head from 'next/head'
 import CountySelector from '../../../components/CountySelector'
 import TownSelector from '../../../components/TownSelector'
 import Image from 'next/image'
+import { useDispatch, useSelector } from 'react-redux'
+import {
+  initAprRegionCounty,
+  selectAprRegion, initAprRegionTown,
+  initAprRegionDisplayData,
+  initCountyData,
+  initTownData
+} from '../../../store/slice/aprRegion'
+import api from '../../../api'
+import TabsPanel from '../../../components/TabsPanel'
+import { useEffect, useState } from 'react'
 
 const RegionMapContainer = dynamic(
   () => import('../../../components/MapContainer/AprRegionMap'),
   { ssr: false }
 )
 
+const countyData: { [key: string]: { name: string, marked: boolean }[] } = {
+  "北部": [
+    { name: '台北市', marked: true },
+    { name: '新北市', marked: true },
+    { name: '桃園市', marked: true },
+    { name: '新竹市', marked: false },
+    { name: '新竹縣', marked: false },
+    { name: '宜蘭縣', marked: false },
+    { name: '基隆市', marked: false }
+  ],
+  "中部": [
+    { name: '台中市', marked: true },
+    { name: '彰化縣', marked: false },
+    { name: '雲林縣', marked: false },
+    { name: '苗栗縣', marked: false },
+    { name: '南投縣', marked: false }
+  ],
+  "南部": [
+    { name: '高雄市', marked: true },
+    { name: '台南市', marked: true },
+    { name: '嘉義市', marked: false },
+    { name: '嘉義縣', marked: false },
+    { name: '屏東縣', marked: false }
+  ],
+  "東部": [
+    { name: '台東縣', marked: false },
+    { name: '花蓮縣', marked: false },
+    { name: '澎湖縣', marked: false },
+    { name: '金門縣', marked: false },
+    { name: '連江縣', marked: false }
+  ]
+}
+
+const townData: { [key: string]: { name: string, marked: boolean }[] } = {
+  "鄉鎮市區": [
+    { name: '林口區', marked: true },
+    { name: '新店區', marked: true },
+    { name: '板橋區', marked: true },
+    { name: '永和區', marked: true },
+    { name: '中和區', marked: true },
+    { name: '新莊區', marked: true },
+    { name: '泰山區', marked: true },
+    { name: '蘆洲區', marked: true },
+    { name: '萬里區', marked: false },
+    { name: '金山區', marked: false },
+    { name: '汐止區', marked: false },
+    { name: '深坑區', marked: false },
+    { name: '石碇區', marked: false },
+    { name: '瑞芳區', marked: false },
+    { name: '平溪區', marked: false },
+    { name: '雙溪區', marked: false },
+    { name: '貢寮區', marked: false },
+    { name: '坪林區', marked: false },
+    { name: '烏來區', marked: false },
+    { name: '土城區', marked: false },
+    { name: '三峽區', marked: false },
+    { name: '樹林區', marked: false },
+    { name: '鶯歌區', marked: false },
+    { name: '三重區', marked: false },
+    { name: '五股區', marked: false },
+    { name: '八里區', marked: false },
+    { name: '淡水區', marked: false },
+    { name: '三芝區', marked: false },
+    { name: '石門區', marked: false }
+  ]
+}
+
 const AprRegion: NextPage = () => {
+  const dispatch = useDispatch()
+  const aprRegionInfo = useSelector(selectAprRegion)
+  const [townGeojson, settownGeojson] = useState<any | null>(null)
+
+  const handleFetchTownGeography = async () => {
+    const { statusCode, responseContent } = await api.prod.getVillageGeographyByTown(
+      aprRegionInfo.county!,
+      aprRegionInfo.town!
+    )
+    if (statusCode === 200) {
+      settownGeojson(responseContent)
+    }
+  }
+
+  const handleSearch = async () => {
+    const { statusCode, responseContent } = await api.prod.getTownInfo(aprRegionInfo.county!, aprRegionInfo.town!)
+    if (statusCode === 200) {
+      dispatch(
+        initAprRegionDisplayData(responseContent)
+      )
+      await handleFetchTownGeography()
+    }
+  }
+
+  const reFetchTownData = async (county: string) => {
+    const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
+    if (statusCode === 200) {
+      dispatch(
+        initTownData(responseContent2)
+      )
+    }
+  }
+
+  useEffect(() => {
+    const fetchDefaultCountyData = async () => {
+      const { statusCode, responseContent } = await api.prod.listCountiesByRegion()
+      if (statusCode === 200) {
+        dispatch(
+          initCountyData(responseContent)
+        )
+        const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(responseContent['北部'][0].name)
+        if (statusCode === 200) {
+          dispatch(
+            initTownData(responseContent2)
+          )
+        }
+      }
+    }
+    fetchDefaultCountyData()
+  }, [])
+
   return (
     <>
       <Head>
@@ -25,26 +154,59 @@ const AprRegion: NextPage = () => {
         <div className={style.panel}>
 
           <div className={style.filterGroup}>
-            <CountySelector />
-            <TownSelector />
-            <div className={style.searchBtn}>
+
+            <CountySelector
+              countyData={aprRegionInfo.countyData!}
+              selectedCounty={aprRegionInfo.county}
+              onCountyChange={(county) => {
+                dispatch(
+                  initAprRegionCounty(county)
+                )
+                reFetchTownData(county)
+              }}
+            />
+
+            <TownSelector
+              townData={aprRegionInfo.townData!}
+              selectedTown={aprRegionInfo.town}
+              onTownChange={(town) => {
+                dispatch(
+                  initAprRegionTown(town)
+                )
+              }}
+            />
+
+            <div className={style.searchBtn}
+              onClick={() => {
+                handleSearch()
+              }}
+            >
               <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
               <p>查詢</p>
             </div>
           </div>
 
-          {/* <div className={style.graphGroup}>
-          </div> */}
+          <div className={style.graphGroup}>
+            {
+              aprRegionInfo.displayData
+                ? <TabsPanel
+                  displayData={aprRegionInfo.displayData}
+                ></TabsPanel>
+                : <></>
+            }
+          </div>
 
         </div>
 
         <div className={style.content}>
-
           <div className={style.mapContainer}>
-            <RegionMapContainer basemap='gray' />
+            <RegionMapContainer
+              townGeojson={townGeojson}
+              basemap='gray'
+            />
           </div>
-
         </div>
+
       </div>
     </>
   )

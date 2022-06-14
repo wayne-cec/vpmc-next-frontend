@@ -32,6 +32,7 @@ const AprV2: NextPage = () => {
       <div className={style.main}>
         <Drawer
           open={first}
+          direction={'row'}
           onClose={() => { setfirst(false) }}
         >
           {
