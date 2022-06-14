@@ -1,0 +1,49 @@
+.main{
+    @apply relative w-full bg-transparent flex;
+    height: calc(100vh - 75px);
+    @media(max-width: 1100px){
+        @apply flex flex-col;
+    }
+    .panel{ 
+        @apply flex flex-col h-fit absolute z-10 bg-white m-2 p-4 rounded-md
+        shadow-md w-[440px];
+        @media(max-width: 1100px){
+            @apply static m-0 w-auto;
+        }
+        .filterGroup{
+            @apply flex justify-center;
+            .searchBtn{
+                @apply w-[100px] h-[40px] bg-main-primary m-2 
+                rounded-md text-white cursor-pointer flex items-center
+                p-2 justify-evenly;
+                &:hover{
+                    @apply shadow-md;
+                }
+                p{
+                    @media(max-width: 1100px){
+                        @apply hidden;
+                    }
+                }
+            }
+        }
+        .graphGroup{
+            @apply w-full h-fit bg-transparent;
+        }
+    }
+    .content{
+        @apply w-full h-full bg-transparent absolute z-0;
+        @media(max-width: 1100px){
+            @apply static;
+        }
+        .mapContainer{
+            @apply w-full h-full bg-transparent;
+            // height: calc(100% - 75px);
+        }
+        .footer{
+            @apply h-[75px] w-full bg-transparent flex items-center;
+            .drawerBtn{
+                @apply cursor-pointer;
+            }
+        }
+    }
+}
