@@ -2,6 +2,10 @@ import type { NextPage } from 'next'
 import style from './index.module.scss'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
+import { TextField } from '@mui/material'
+import classNames from 'classnames'
+import Image from 'next/image'
+import CoordinateSelector from '../../../components/CoordinateSelector'
 
 const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
@@ -23,45 +27,36 @@ const AprRegion: NextPage = () => {
 
           <div className={style.filterGroup}>
 
-            {/* <CountySelector
-              countyData={aprRegionInfo.countyData!}
-              selectedCounty={aprRegionInfo.county}
-              onCountyChange={(county) => {
-                dispatch(
-                  initAprRegionCounty(county)
-                )
-                reFetchTownData(county)
-              }}
-            />
+            <div className={classNames({
+              [style.filterSection]: true,
+              [style.divide]: true
+            })}>
+              {/* <TextField
+                sx={{ borderColor: 'red' }}
+                size='small'
+              ></TextField> */}
+              <CoordinateSelector />
+            </div>
 
-            <TownSelector
-              townData={aprRegionInfo.townData!}
-              selectedTown={aprRegionInfo.town}
-              onTownChange={(town) => {
-                dispatch(
-                  initAprRegionTown(town)
-                )
-              }}
-            />
+            <div className={classNames({
+              [style.filterSection]: true,
+              [style.divide]: true
+            })}>
+              <TextField
+                sx={{ borderColor: 'red' }}
+                size='small'
+              ></TextField>
+            </div>
 
             <div className={style.searchBtn}
-              onClick={() => {
-                handleSearch()
-              }}
             >
               <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
               <p>查詢</p>
-            </div> */}
+            </div>
+
           </div>
 
           <div className={style.graphGroup}>
-            {/* {
-              aprRegionInfo.displayData
-                ? <TabsPanel
-                  displayData={aprRegionInfo.displayData}
-                ></TabsPanel>
-                : <></>
-            } */}
           </div>
 
         </div>
@@ -69,7 +64,6 @@ const AprRegion: NextPage = () => {
         <div className={style.content}>
           <div className={style.mapContainer}>
             <MarketMapContainer
-              basemap='gray'
             />
           </div>
         </div>

@@ -11,11 +11,11 @@
             @apply static m-0 w-auto;
         }
         .filterGroup{
-            @apply flex justify-center;
+            @apply flex justify-center flex-col items-center;
             .searchBtn{
-                @apply w-[100px] h-[40px] bg-main-primary m-2 
+                @apply h-[40px] w-full bg-main-primary m-2 
                 rounded-md text-white cursor-pointer flex items-center
-                p-2 justify-evenly;
+                p-2 justify-center;
                 &:hover{
                     @apply shadow-md;
                 }
@@ -23,6 +23,12 @@
                     @media(max-width: 1100px){
                         @apply hidden;
                     }
+                }
+            }
+            .filterSection{
+                @apply h-fit py-4 w-full;
+                &.divide{
+                    @apply border-b border-gray-400;
                 }
             }
         }
