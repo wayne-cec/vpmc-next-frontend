@@ -16,6 +16,14 @@ export interface IResultStatistics {
   count: number
 }
 
+export interface ICountyData {
+  [key: string]: { name: string, marked: boolean }[]
+}
+
+export interface ITownData {
+  [key: string]: { name: string, marked: boolean }[]
+}
+
 export const getTownInfo = async (county: string, town: string) => {
   const response = await axios.request({
     method: "get",

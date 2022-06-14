@@ -9,3 +9,11 @@ export const getAge = (dateString: string) => {
   }
   return age;
 }
+
+export function createGeoJSONURL (geojson: any) {
+  return URL.createObjectURL(
+    new Blob([JSON.stringify(geojson)], {
+      type: "application/json"
+    })
+  )
+}
