@@ -39,6 +39,11 @@ const AprRegion: NextPage = () => {
   const [assetTypeCode, setassetTypeCode] = useState<number | null>(0)
   const [bufferRadius, setbufferRadius] = useState<number | null>(300)
   const [transactionTime, settransactionTime] = useState<number | null>(null)
+  const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
+  const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
+  const [age, setage] = useState<number | null>(null)
+  const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
+  const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
 
   const handleCoordinateSelect = async (longitude: number, latitude: number) => {
     setlongitude(longitude)
@@ -170,6 +175,7 @@ const AprRegion: NextPage = () => {
                     checked={isBuildingAreaFiltered}
                     onClick={() => {
                       setisBuildingAreaFiltered(prev => !prev)
+                      setbuildingTransferArea(0)
                     }}
                   />
                 </Grid>
@@ -181,8 +187,13 @@ const AprRegion: NextPage = () => {
                       label="建坪面積"
                       id="building-transfer-area-select"
                       size='small'
-                      fullWidth
+                      value={isBuildingAreaFiltered ? buildingTransferArea : null}
+                      onChange={(event) => {
+                        setbuildingTransferArea(Number(event.target.value))
+                      }}
                       disabled={!isBuildingAreaFiltered}
+                      autoFocus={isBuildingAreaFiltered}
+                      fullWidth
                     >
                       {
                         Object.keys(buildingTransactionAreaSet).map((assetCode, index) => {
@@ -203,6 +214,7 @@ const AprRegion: NextPage = () => {
                     checked={isLandAreaFiltered}
                     onClick={() => {
                       setisLandAreaFiltered(prev => !prev)
+                      setlandTransferArea(0)
                     }}
                   />
                 </Grid>
@@ -215,6 +227,11 @@ const AprRegion: NextPage = () => {
                       id="land-transfer-area-select"
                       size='small'
                       fullWidth
+                      value={isLandAreaFiltered ? landTransferArea : null}
+                      onChange={(event) => {
+                        setlandTransferArea(Number(event.target.value))
+                      }}
+                      autoFocus={isLandAreaFiltered}
                       disabled={!isLandAreaFiltered}
                     >
                       {
@@ -236,6 +253,7 @@ const AprRegion: NextPage = () => {
                     checked={isAgeFiltered}
                     onClick={() => {
                       setisAgeFiltered(prev => !prev)
+                      setage(0)
                     }}
                   />
                 </Grid>
@@ -247,8 +265,13 @@ const AprRegion: NextPage = () => {
                       label="屋齡"
                       id="age-select"
                       size='small'
-                      fullWidth
+                      value={isAgeFiltered ? age : null}
+                      onChange={(event) => {
+                        setage(Number(event.target.value))
+                      }}
                       disabled={!isAgeFiltered}
+                      autoFocus={isAgeFiltered}
+                      fullWidth
                     >
                       {
                         Object.keys(ageSet).map((assetCode, index) => {
@@ -269,6 +292,7 @@ const AprRegion: NextPage = () => {
                     checked={isParkSpaceFiltered}
                     onClick={() => {
                       setisParkSpaceFiltered(prev => !prev)
+                      setparkSpaceType(0)
                     }}
                   />
                 </Grid>
@@ -281,6 +305,11 @@ const AprRegion: NextPage = () => {
                       id="park-space-select"
                       size='small'
                       fullWidth
+                      value={isParkSpaceFiltered ? parkSpaceType : null}
+                      onChange={(event) => {
+                        setparkSpaceType(Number(event.target.value))
+                      }}
+                      autoFocus={isParkSpaceFiltered}
                       disabled={!isParkSpaceFiltered}
                     >
                       {
@@ -302,6 +331,7 @@ const AprRegion: NextPage = () => {
                     checked={isUrbanUsageFiltered}
                     onClick={() => {
                       setisUrbanUsageFiltered(prev => !prev)
+                      seturbanLandUse(0)
                     }}
                   />
                 </Grid>
@@ -314,6 +344,11 @@ const AprRegion: NextPage = () => {
                       id="land-use-select"
                       size='small'
                       fullWidth
+                      value={isUrbanUsageFiltered ? urbanLandUse : null}
+                      onChange={(event) => {
+                        seturbanLandUse(Number(event.target.value))
+                      }}
+                      autoFocus={isUrbanUsageFiltered}
                       disabled={!isUrbanUsageFiltered}
                     >
                       {
