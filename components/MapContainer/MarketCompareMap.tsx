@@ -25,8 +25,9 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
 
   useEffect(() => {
     if (props.active && mapView) {
-      mapView.on("click", (event) => {
+      const remove = mapView.on("click", (event) => {
         props.onCoordinateSelect(event.mapPoint.longitude, event.mapPoint.latitude)
+        remove.remove()
       })
     }
   }, [props.active])

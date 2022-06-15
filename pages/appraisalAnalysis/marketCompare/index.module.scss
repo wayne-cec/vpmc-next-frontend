@@ -30,6 +30,9 @@
                 &.divide{
                     @apply border-b border-gray-400;
                 }
+                .filterRow{
+                    @apply flex flex-row;
+                }
             }
         }
         .graphGroup{

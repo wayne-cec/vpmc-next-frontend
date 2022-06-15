@@ -6,9 +6,15 @@
         p{
             @apply ml-1;
         }
+        @media(max-width: 1100px){
+            @apply text-xs;
+        }
     }
     .regionTitle{
         @apply border-l border-border pl-2;
+        @media(max-width: 1100px){
+            @apply text-xs;
+        }
     }
     .arrow{
         content: '\e6b5';
