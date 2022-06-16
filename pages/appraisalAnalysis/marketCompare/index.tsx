@@ -735,7 +735,7 @@ const AprRegion: NextPage = () => {
                                 ]
                               }
 
-                              return <div className={style.chartsContainer}>
+                              return <div className={style.chartsContainer} key={index}>
                                 <p className={style.title}>平均成交價格</p>
                                 <ReactEcharts option={meanPriceOption} />
                                 <p className={style.title}>平均成交單價</p>
