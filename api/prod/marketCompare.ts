@@ -37,13 +37,13 @@ export const marketCompare = async (params: IMarketCompare) => {
   if (params.transactionTimeStart && params.transactionTimeEnd) {
     url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
   }
-  if (params.buildingAreaStart && params.buildingAreaEnd) {
+  if (params.buildingAreaStart !== undefined && params.buildingAreaEnd) {
     url += `&buildingAreaStart=${params.buildingAreaStart}&buildingAreaEnd=${params.buildingAreaEnd}`
   }
-  if (params.landAreaStart && params.landAreaEnd) {
+  if (params.landAreaStart !== undefined && params.landAreaEnd) {
     url += `&landAreaStart=${params.landAreaStart}&landAreaEnd=${params.landAreaEnd}`
   }
-  if (params.ageStart && params.ageEnd) {
+  if (params.ageStart !== undefined && params.ageEnd) {
     url += `&ageStart=${params.ageStart}&ageEnd=${params.ageEnd}`
   }
   if (params.parkingSpaceType) {

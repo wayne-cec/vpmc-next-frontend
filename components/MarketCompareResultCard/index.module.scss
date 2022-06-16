@@ -1,0 +1,29 @@
+.marketCompareResultCard{
+    @apply py-6 border-t border-gray-400 flex flex-row; // justify-evenly flex flex-row
+    .chip{
+        @apply p-2 rounded-md text-sm;
+        color: #4e71a5;
+        background-color: #ecf3ff;
+    }
+    .unit{
+        @apply text-red-500 text-sm font-light;
+    }
+    .unitPrice{
+        @apply text-red-500 text-xl font-extrabold;
+    }
+    .smtext{
+        @apply text-sm font-light;
+    }
+    .price{
+        @apply text-base font-extrabold;
+    }
+    .xstext{
+        @apply text-xs font-extralight;
+    }
+    .totalPrice{
+        @apply text-xl font-extrabold;
+    }
+    &:hover{
+        background-color: #ecf3ff;
+    }
+}

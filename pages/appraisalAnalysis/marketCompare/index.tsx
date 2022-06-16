@@ -18,6 +18,7 @@ import {
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
 import moment from 'moment'
 import api from '../../../api'
+import MarketCompareResultCard from '../../../components/MarketCompareResultCard'
 
 const square = 3.305785
 
@@ -59,6 +60,8 @@ const AprRegion: NextPage = () => {
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
   // const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
 
+  const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
+
   const handleCoordinateSelect = async (longitude: number, latitude: number) => {
     setlongitude(longitude)
     setlatitude(latitude)
@@ -83,10 +86,10 @@ const AprRegion: NextPage = () => {
       }
       if (isTransactionTimeFiltered && transactionTime) {
         const dateNow = new Date()
-        params.transactionTimeStart = moment(dateNow).format('YYYY/MM/DD')
-        params.transactionTimeEnd = moment(dateNow).add(-transactionTime, 'year').format('YYYY/MM/DD')
+        params.transactionTimeStart = moment(dateNow).add(-transactionTime, 'year').format('YYYY/MM/DD')
+        params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
       }
-      if (isBuildingAreaFiltered && buildingTransferArea) {
+      if (isBuildingAreaFiltered && buildingTransferArea !== null) {
         if (buildingTransferArea === 0) {
           params.buildingAreaStart = 0
           params.buildingAreaEnd = 25 * square
@@ -101,7 +104,7 @@ const AprRegion: NextPage = () => {
           params.buildingAreaEnd = 10000 * square
         }
       }
-      if (isLandAreaFiltered && landTransferArea) {
+      if (isLandAreaFiltered && landTransferArea !== null) {
         if (landTransferArea === 0) {
           params.landAreaStart = 0
           params.landAreaEnd = 50 * square
@@ -113,7 +116,7 @@ const AprRegion: NextPage = () => {
           params.landAreaEnd = 100000 * square
         }
       }
-      if (isAgeFiltered && age) {
+      if (isAgeFiltered && age !== null) {
         if (age === 0) {
           params.ageStart = 0
           params.ageEnd = 5
@@ -137,8 +140,9 @@ const AprRegion: NextPage = () => {
       const { statusCode, responseContent } = await api.prod.marketCompare(params)
       if (statusCode === 200) {
         console.log(responseContent)
+        setfilteredResults(responseContent)
       } else {
-
+        setfilteredResults(null)
       }
     } else {
       alert('請輸入必填參數')
@@ -189,6 +193,7 @@ const AprRegion: NextPage = () => {
                       label="資產類型"
                       id="asset-type-select"
                       value={assetTypeCode}
+                      // value={''}
                       onChange={(event) => { setassetTypeCode(Number(event.target.value)) }}
                       size='small'
                       fullWidth
@@ -211,6 +216,7 @@ const AprRegion: NextPage = () => {
                     size='small'
                     InputProps={{ inputProps: { min: 0 } }}
                     value={bufferRadius}
+                    // value={''}
                     onChange={(event) => { setbufferRadius(Number(event.target.value)) }}
                   ></TextField>
                 </Grid>
@@ -237,7 +243,7 @@ const AprRegion: NextPage = () => {
                       label="交易時間"
                       id="transaction-time-select"
                       size='small'
-                      value={isTransactionTimeFiltered ? transactionTime : null}
+                      value={isTransactionTimeFiltered ? transactionTime : ''}
                       disabled={!isTransactionTimeFiltered}
                       // autoFocus={isTransactionTimeFiltered}
                       onChange={(event) => {
@@ -281,7 +287,7 @@ const AprRegion: NextPage = () => {
                       label="建坪面積"
                       id="building-transfer-area-select"
                       size='small'
-                      value={isBuildingAreaFiltered ? buildingTransferArea : null}
+                      value={isBuildingAreaFiltered ? buildingTransferArea : ''}
                       onChange={(event) => {
                         setbuildingTransferArea(Number(event.target.value))
                         setisBuildingAreaFosced(true)
@@ -327,7 +333,7 @@ const AprRegion: NextPage = () => {
                       id="land-transfer-area-select"
                       size='small'
                       fullWidth
-                      value={isLandAreaFiltered ? landTransferArea : null}
+                      value={isLandAreaFiltered ? landTransferArea : ''}
                       onChange={(event) => {
                         setlandTransferArea(Number(event.target.value))
                         setisLandAreaFosced(true)
@@ -370,7 +376,7 @@ const AprRegion: NextPage = () => {
                       label="屋齡"
                       id="age-select"
                       size='small'
-                      value={isAgeFiltered ? age : null}
+                      value={isAgeFiltered ? age : ''}
                       onChange={(event) => {
                         setage(Number(event.target.value))
                         setisAgeFosced(true)
@@ -430,7 +436,7 @@ const AprRegion: NextPage = () => {
                       id="park-space-select"
                       size='small'
                       fullWidth
-                      value={isParkSpaceFiltered ? parkSpaceType : null}
+                      value={isParkSpaceFiltered ? parkSpaceType : ''}
                       onChange={(event) => {
                         setparkSpaceType(Number(event.target.value))
                         setisParkSpaceFosced(true)
@@ -499,17 +505,46 @@ const AprRegion: NextPage = () => {
 
             </div>
 
-            <div className={style.searchBtn}
-              onClick={handleFormSubmit}
-            >
-              <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
-              <p>查詢</p>
+
+
+            <div className={style.controlSet}>
+              <div className={style.settingBtn}
+              >
+                <Image src={'/aprRegion/setting.png'} width='30px' height='30px' />
+                <p>自訂義參數</p>
+              </div>
+
+              <div className={style.searchBtn}
+                onClick={handleFormSubmit}
+              >
+                <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
+                <p>查詢</p>
+              </div>
             </div>
 
           </div>
 
-          <div className={style.graphGroup}>
-          </div>
+          {
+            filteredResults && filteredResults.length !== 0
+              ?
+              <>
+                <p className={style.resultStatus}>共有
+                  <span className={style.count}>{filteredResults.length}</span>
+                  筆實價登陸紀錄
+                </p>
+                <div className={style.graphGroup}>
+                  {
+                    filteredResults.map((result, index) => {
+                      return <MarketCompareResultCard
+                        key={index}
+                        {...result}
+                      />
+                    })
+                  }
+                </div>
+              </>
+              : <></>
+          }
 
         </div>
 
