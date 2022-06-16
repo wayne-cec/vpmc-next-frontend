@@ -34,14 +34,14 @@ const AprRegion: NextPage = () => {
   const [isLandAreaFiltered, setisLandAreaFiltered] = useState<boolean>(false)
   const [isAgeFiltered, setisAgeFiltered] = useState<boolean>(false)
   const [isParkSpaceFiltered, setisParkSpaceFiltered] = useState<boolean>(false)
-  const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
+  // const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
 
   const [isTransactionTimeFosced, setisTransactionTimeFosced] = useState<boolean>(false)
   const [isBuildingAreaFosced, setisBuildingAreaFosced] = useState<boolean>(false)
   const [isLandAreaFosced, setisLandAreaFosced] = useState<boolean>(false)
   const [isAgeFosced, setisAgeFosced] = useState<boolean>(false)
   const [isParkSpaceFosced, setisParkSpaceFosced] = useState<boolean>(false)
-  const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
+  // const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
 
   const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
   const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
@@ -53,7 +53,7 @@ const AprRegion: NextPage = () => {
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
   const [age, setage] = useState<number | null>(null)
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
-  const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
+  // const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
 
   const handleCoordinateSelect = async (longitude: number, latitude: number) => {
     setlongitude(longitude)
@@ -384,7 +384,7 @@ const AprRegion: NextPage = () => {
                 </Grid>
 
                 {/* 使用分區 */}
-                <Grid item xs={2}>
+                {/* <Grid item xs={2}>
                   <Checkbox
                     checked={isUrbanUsageFiltered}
                     onClick={() => {
@@ -425,7 +425,7 @@ const AprRegion: NextPage = () => {
                     </Select>
                   </FormControl>
 
-                </Grid>
+                </Grid> */}
 
               </Grid>
 
