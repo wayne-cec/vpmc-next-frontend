@@ -1,3 +1,4 @@
+import { IResult, IResultStatistics } from "./aprRegion"
 
 export interface IMarketCompareResult {
   transactiontime: string
@@ -32,6 +33,12 @@ export interface IMarketCompare {
   parkingSpaceType?: number
 }
 
+export interface IGraphData {
+  [key: string]: {
+    [key: string]: IResult[] | IResultStatistics
+  }
+}
+
 export const marketCompare = async (params: IMarketCompare) => {
   let url = `http://140.122.82.98:9085/api/Analysis/marketCompare?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
   if (params.transactionTimeStart && params.transactionTimeEnd) {
@@ -57,4 +64,31 @@ export const marketCompare = async (params: IMarketCompare) => {
   const statusCode = response.status
   const responseContent = await response.json() as IMarketCompareResult[]
   return { statusCode, responseContent }
+}
+
+export const marketCompareStatistic = async (params: IMarketCompare) => {
+  let url = `http://140.122.82.98:9085/api/Analysis/marketCompareStatistic?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
+  if (params.transactionTimeStart && params.transactionTimeEnd) {
+    url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
+  }
+  if (params.buildingAreaStart !== undefined && params.buildingAreaEnd) {
+    url += `&buildingAreaStart=${params.buildingAreaStart}&buildingAreaEnd=${params.buildingAreaEnd}`
+  }
+  if (params.landAreaStart !== undefined && params.landAreaEnd) {
+    url += `&landAreaStart=${params.landAreaStart}&landAreaEnd=${params.landAreaEnd}`
+  }
+  if (params.ageStart !== undefined && params.ageEnd) {
+    url += `&ageStart=${params.ageStart}&ageEnd=${params.ageEnd}`
+  }
+  if (params.parkingSpaceType) {
+    url += `&parkingSpaceType=${params.parkingSpaceType}`
+  }
+
+  const response = await fetch(url, {
+    method: 'GET',
+    redirect: 'follow'
+  })
+  const statusCode = response.status
+  const responseContent2 = await response.json() as IGraphData
+  return { statusCode, responseContent2 }
 }

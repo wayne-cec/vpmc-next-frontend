@@ -80,7 +80,13 @@
                 @apply text-red-500;
             }
         }
+        .aprRecordGroup{
+            @apply w-full h-1/2 overflow-y-auto bg-transparent;
+        }
         .graphGroup{
+            @apply w-full h-1/2 overflow-y-auto bg-transparent;
+        }
+        .chartsGroup{
             @apply w-full h-1/2 overflow-y-auto bg-transparent;
         }
     }

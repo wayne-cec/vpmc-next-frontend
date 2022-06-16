@@ -21,6 +21,11 @@ import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
 import moment from 'moment'
 import api from '../../../api'
 import MarketCompareResultCard from '../../../components/MarketCompareResultCard'
+import { IGraphData } from '../../../api/prod'
+import TabsPanel from '../../../components/TabsPanel'
+import ReactEcharts from 'echarts-for-react'
+import { EChartsOption } from 'echarts'
+import { IResultStatistics } from '../../../api/prod'
 
 const square = 3.305785
 
@@ -67,6 +72,8 @@ const AprRegion: NextPage = () => {
   const [msgOpen, setmsgOpen] = useState<boolean>(false)
   const [errorTitle, seterrorTitle] = useState<string>('')
   const [errorContent, seterrorContent] = useState<string>('')
+
+  const [graphData, setgraphData] = useState<IGraphData | null>(null)
 
   const handleCoordinateSelect = async (longitude: number, latitude: number) => {
     setlongitude(longitude)
@@ -145,14 +152,25 @@ const AprRegion: NextPage = () => {
       }
       const { statusCode, responseContent } = await api.prod.marketCompare(params)
       if (statusCode === 200) {
-        console.log(responseContent)
+        // console.log(responseContent)
         setfilteredResults(responseContent)
+        const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params)
+        if (statusCode === 200) {
+          setgraphData(responseContent2)
+        } else {
+          setmsgOpen(true)
+          seterrorTitle('錯誤')
+          seterrorContent('伺服器錯誤，統計圖表資料請求失敗，請聯繫開發人員')
+        }
       } else {
         setfilteredResults(null)
+        setmsgOpen(true)
+        seterrorTitle('錯誤')
+        seterrorContent('伺服器錯誤，查詢失敗，請聯繫開發人員')
       }
     } else {
       setmsgOpen(true)
-      seterrorTitle('錯誤')
+      seterrorTitle('警告')
       seterrorContent('請輸入勘估點座標')
     }
   }
@@ -572,7 +590,7 @@ const AprRegion: NextPage = () => {
                       <span className={style.count}>{filteredResults.length}</span>
                       筆實價登陸紀錄
                     </p>
-                    <div className={style.graphGroup}>
+                    <div className={style.aprRecordGroup}>
                       {
                         filteredResults.map((result, index) => {
                           return <MarketCompareResultCard
@@ -582,6 +600,158 @@ const AprRegion: NextPage = () => {
                         })
                       }
                     </div>
+
+                    {
+                      graphData
+                        ? <div className={style.chartsGroup}>
+
+                          {/* {
+                          graphData
+                            ? <TabsPanel
+                              displayData={graphData}
+                            ></TabsPanel>
+                            : <></>
+                        } */}
+
+                          {
+                            Object.keys(graphData!).map((buildingType, index) => {
+                              const typeData = graphData![buildingType]
+                              const years = Object.keys(typeData)
+                              const meanPriceValues: number[] = []
+                              const meanUnitPriceValues: number[] = []
+                              const meanAgeValues: number[] = []
+                              const countValues: number[] = []
+
+                              years.forEach((year) => {
+                                const yearD = typeData[year] as IResultStatistics
+                                meanPriceValues.push(yearD.priceWithoutParking_MEAN)
+                                meanUnitPriceValues.push(yearD.unitPrice_MEAN)
+                                meanAgeValues.push(yearD.age_MEAN)
+                                countValues.push(yearD.count)
+                              })
+
+                              const meanPriceOption: EChartsOption = {
+                                xAxis: {
+                                  type: 'category',
+                                  data: years
+                                },
+                                yAxis: {
+                                  type: 'value',
+                                  name: "單位(百萬)",
+                                  axisLabel: {
+                                    formatter: (function (value: string) {
+                                      const newVlaue = Math.round(Number(value) / 1000000)
+                                      return newVlaue.toString()
+                                    }),
+                                    align: 'center'
+                                  }
+                                },
+                                series: [
+                                  {
+                                    data: meanPriceValues,
+                                    type: 'line',
+                                    smooth: true
+                                  }
+                                ],
+                                tooltip: {
+                                  trigger: 'axis',
+                                  formatter: function (param: any, value) {
+                                    // console.log(param[0].value)
+                                    const newVlaue = Math.round(Number(param[0].value) / 1000000)
+                                    if (Math.floor(newVlaue / 10) !== 0) {
+                                      return `${Math.floor(newVlaue / 10)}千${newVlaue % 10}百萬`
+                                    } else {
+                                      return `${newVlaue % 10}百萬`
+                                    }
+
+                                  }
+                                }
+                              }
+
+                              const meanUnitPriceOption: EChartsOption = {
+                                xAxis: {
+                                  type: 'category',
+                                  data: years
+                                },
+                                yAxis: {
+                                  type: 'value',
+                                  name: "單位(萬/坪)",
+                                  axisLabel: {
+                                    formatter: (function (value: string) {
+                                      const newVlaue = Math.round(Math.round(Number(value) * 3.305785 / 1000) / 10)
+                                      return newVlaue.toString()
+                                    }),
+                                    align: 'center'
+                                  }
+                                },
+                                series: [
+                                  {
+                                    data: meanUnitPriceValues,
+                                    type: 'line',
+                                    smooth: true
+                                  }
+                                ]
+                              }
+
+                              const meanAgeOption: EChartsOption = {
+                                xAxis: {
+                                  type: 'category',
+                                  data: years
+                                },
+                                yAxis: {
+                                  type: 'value',
+                                  name: "年"
+                                },
+                                series: [
+                                  {
+                                    data: meanAgeValues,
+                                    type: 'line',
+                                    smooth: true
+                                  }
+                                ]
+                              }
+
+                              const countOption: EChartsOption = {
+                                xAxis: {
+                                  type: 'category',
+                                  data: years
+                                },
+                                yAxis: {
+                                  type: 'value',
+                                  name: "交易數量(千)",
+                                  axisLabel: {
+                                    formatter: (function (value: string) {
+                                      return (Number(value) / 1000).toString()
+                                    }),
+                                    align: 'center'
+                                  }
+                                },
+                                series: [
+                                  {
+                                    data: countValues,
+                                    type: 'line',
+                                    smooth: true
+                                  }
+                                ]
+                              }
+
+                              return <div className={style.chartsContainer}>
+                                <p className={style.title}>平均成交價格</p>
+                                <ReactEcharts option={meanPriceOption} />
+                                <p className={style.title}>平均成交單價</p>
+                                <ReactEcharts option={meanUnitPriceOption} />
+                                <p className={style.title}>平均成交屋齡</p>
+                                <ReactEcharts option={meanAgeOption} />
+                                <p className={style.title}>平均成交數量</p>
+                                <ReactEcharts option={countOption} />
+                              </div>
+                            })
+                          }
+
+                        </div>
+                        : <></>
+                    }
+
                   </>
                   : <></>
               }
