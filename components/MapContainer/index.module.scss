@@ -6,3 +6,10 @@
 .esriMapRegion{
     @apply relative w-full h-full bg-transparent;
 }
+
+.esriMapMarketCompare{
+    @apply relative w-full h-full bg-transparent;
+    &.active{
+        @apply cursor-crosshair;
+    }
+}

@@ -29,3 +29,13 @@ export const getVillageGeographyByTown = async (county: string, town: string) =>
   const responseContent = await response.json() as any
   return { statusCode, responseContent }
 }
+
+export const getCountyTownNameByCoordinate = async (longitude: number, latitude: number) => {
+  const response = await fetch(`http://140.122.82.98:9085/api/Utility/getCountyTownNameByCoordinate?longitude=${longitude}&latitude=${latitude}`, {
+    method: 'GET',
+    redirect: 'follow'
+  })
+  const statusCode = response.status
+  const responseContent = await response.json() as { countyname: string, townname: string }
+  return { statusCode, responseContent }
+}
