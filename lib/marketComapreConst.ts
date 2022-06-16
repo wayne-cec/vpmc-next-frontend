@@ -14,8 +14,8 @@ export const assetTypeSet: { [key: number]: string } = {
 }
 
 export const transactionTimeSet: { [key: number]: string } = {
-  0: '1年內',
-  1: '2年內',
+  1: '1年內',
+  2: '2年內',
   3: '3年內',
   4: '4年內',
   5: '5年內',
@@ -29,31 +29,31 @@ export const transactionTimeSet: { [key: number]: string } = {
 export const buildingTransactionAreaSet: { [key: number]: string } = {
   0: '小於25坪',
   1: '25~50坪',
-  3: '50~80坪',
-  4: '大於80坪'
+  2: '50~80坪',
+  3: '大於80坪'
 }
 
 export const landTransactionAreaSet: { [key: number]: string } = {
   0: '小於50坪',
-  1: '25~50坪',
-  3: '50~80坪',
-  4: '大於80坪'
+  1: '50~200坪',
+  2: '大於200坪'
 }
 
 export const ageSet: { [key: number]: string } = {
   0: '小於5年',
   1: '5~10年',
-  3: '10~20年',
-  4: '20~30年',
-  5: '大於30年'
+  2: '10~20年',
+  3: '20~30年',
+  4: '大於30年'
 }
 
 export const parkSpaceSet: { [key: number]: string } = {
   0: '無車位',
   1: '塔式車位',
-  3: '坡道平面',
-  4: '升降平面',
-  5: '升降機械',
+  2: '坡道平面',
+  3: '升降平面',
+  4: '升降機械',
+  5: '坡道機械',
   6: '一樓平面',
   7: '其他'
 }

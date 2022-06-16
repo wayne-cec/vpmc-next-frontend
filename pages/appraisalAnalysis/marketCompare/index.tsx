@@ -15,7 +15,11 @@ import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../lib/marketComapreConst'
+import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
+import moment from 'moment'
 import api from '../../../api'
+
+const square = 3.305785
 
 const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
@@ -70,11 +74,75 @@ const AprRegion: NextPage = () => {
   }
 
   const handleFormSubmit = async () => {
-    console.log(isTransactionTimeFiltered)
-    console.log(isBuildingAreaFiltered)
-    console.log(isLandAreaFiltered)
-    console.log(isAgeFiltered)
-    console.log(isParkSpaceFiltered)
+    if (longitude !== null && latitude !== null && bufferRadius !== null && assetTypeCode !== null) {
+      const params: IMarketCompare = {
+        longitude: longitude,
+        latitude: latitude,
+        bufferRadius: bufferRadius,
+        buildingType: assetTypeCode
+      }
+      if (isTransactionTimeFiltered && transactionTime) {
+        const dateNow = new Date()
+        params.transactionTimeStart = moment(dateNow).format('YYYY/MM/DD')
+        params.transactionTimeEnd = moment(dateNow).add(-transactionTime, 'year').format('YYYY/MM/DD')
+      }
+      if (isBuildingAreaFiltered && buildingTransferArea) {
+        if (buildingTransferArea === 0) {
+          params.buildingAreaStart = 0
+          params.buildingAreaEnd = 25 * square
+        } else if (buildingTransferArea === 1) {
+          params.buildingAreaStart = 25 * square
+          params.buildingAreaEnd = 50 * square
+        } else if (buildingTransferArea === 2) {
+          params.buildingAreaStart = 50 * square
+          params.buildingAreaEnd = 80 * square
+        } else if (buildingTransferArea === 3) {
+          params.buildingAreaStart = 80 * square
+          params.buildingAreaEnd = 10000 * square
+        }
+      }
+      if (isLandAreaFiltered && landTransferArea) {
+        if (landTransferArea === 0) {
+          params.landAreaStart = 0
+          params.landAreaEnd = 50 * square
+        } else if (landTransferArea === 1) {
+          params.landAreaStart = 50 * square
+          params.landAreaEnd = 200 * square
+        } else if (landTransferArea === 2) {
+          params.landAreaStart = 200 * square
+          params.landAreaEnd = 100000 * square
+        }
+      }
+      if (isAgeFiltered && age) {
+        if (age === 0) {
+          params.ageStart = 0
+          params.ageEnd = 5
+        } else if (age === 1) {
+          params.ageStart = 5
+          params.ageEnd = 10
+        } else if (age === 2) {
+          params.ageStart = 10
+          params.ageEnd = 20
+        } else if (age === 3) {
+          params.ageStart = 20
+          params.ageEnd = 30
+        } else if (age === 4) {
+          params.ageStart = 30
+          params.ageEnd = 500
+        }
+      }
+      if (isParkSpaceFiltered && parkSpaceType) {
+        params.parkingSpaceType = parkSpaceType
+      }
+      const { statusCode, responseContent } = await api.prod.marketCompare(params)
+      if (statusCode === 200) {
+        console.log(responseContent)
+      } else {
+
+      }
+    } else {
+      alert('請輸入必填參數')
+    }
   }
 
   return (
@@ -153,7 +221,7 @@ const AprRegion: NextPage = () => {
                     checked={isTransactionTimeFiltered}
                     onClick={() => {
                       setisTransactionTimeFiltered(prev => !prev)
-                      settransactionTime(0)
+                      settransactionTime(1)
                     }}
                   />
                 </Grid>
