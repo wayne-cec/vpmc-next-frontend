@@ -5,7 +5,7 @@ import Head from 'next/head'
 import classNames from 'classnames'
 import Image from 'next/image'
 import CoordinateSelector from '../../../components/CoordinateSelector'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import {
   TextField, Select,
   MenuItem, InputLabel, FormControl,
@@ -36,6 +36,16 @@ const AprRegion: NextPage = () => {
   const [isParkSpaceFiltered, setisParkSpaceFiltered] = useState<boolean>(false)
   const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
 
+  const [isTransactionTimeFosced, setisTransactionTimeFosced] = useState<boolean>(false)
+  const [isBuildingAreaFosced, setisBuildingAreaFosced] = useState<boolean>(false)
+  const [isLandAreaFosced, setisLandAreaFosced] = useState<boolean>(false)
+  const [isAgeFosced, setisAgeFosced] = useState<boolean>(false)
+  const [isParkSpaceFosced, setisParkSpaceFosced] = useState<boolean>(false)
+  const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
+
+  const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
+  const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
+
   const [assetTypeCode, setassetTypeCode] = useState<number | null>(0)
   const [bufferRadius, setbufferRadius] = useState<number | null>(300)
   const [transactionTime, settransactionTime] = useState<number | null>(null)
@@ -57,6 +67,14 @@ const AprRegion: NextPage = () => {
       setlocatedCounty(null)
       setlocatedTown(null)
     }
+  }
+
+  const handleFormSubmit = async () => {
+    console.log(isTransactionTimeFiltered)
+    console.log(isBuildingAreaFiltered)
+    console.log(isLandAreaFiltered)
+    console.log(isAgeFiltered)
+    console.log(isParkSpaceFiltered)
   }
 
   return (
@@ -92,8 +110,6 @@ const AprRegion: NextPage = () => {
               [style.filterSection]: true,
               [style.divide]: true
             })}>
-
-              {/* <FormControl size='small' fullWidth> */}
 
               <Grid container spacing={2}>
 
@@ -143,7 +159,11 @@ const AprRegion: NextPage = () => {
                 </Grid>
                 <Grid item xs={10}>
                   <FormControl size='small' fullWidth>
-                    <InputLabel id="transaction-time">交易時間</InputLabel>
+                    {
+                      isTransactionTimeFiltered && !isTransactionTimeFosced
+                        ? <></>
+                        : <InputLabel id="transaction-time">交易時間</InputLabel>
+                    }
                     <Select
                       labelId="transaction-time"
                       label="交易時間"
@@ -151,9 +171,10 @@ const AprRegion: NextPage = () => {
                       size='small'
                       value={isTransactionTimeFiltered ? transactionTime : null}
                       disabled={!isTransactionTimeFiltered}
-                      autoFocus={isTransactionTimeFiltered}
+                      // autoFocus={isTransactionTimeFiltered}
                       onChange={(event) => {
                         settransactionTime(Number(event.target.value))
+                        setisTransactionTimeFosced(true)
                       }}
                       fullWidth
                     >
@@ -177,11 +198,16 @@ const AprRegion: NextPage = () => {
                       setisBuildingAreaFiltered(prev => !prev)
                       setbuildingTransferArea(0)
                     }}
+                    disabled={!isBuildingAreaCheckable}
                   />
                 </Grid>
                 <Grid item xs={10}>
                   <FormControl size='small' fullWidth>
-                    <InputLabel id="building-transfer-area">建坪面積</InputLabel>
+                    {
+                      isBuildingAreaFiltered && !isBuildingAreaFosced
+                        ? <></>
+                        : <InputLabel id="building-transfer-area">建坪面積</InputLabel>
+                    }
                     <Select
                       labelId="building-transfer-area"
                       label="建坪面積"
@@ -190,9 +216,10 @@ const AprRegion: NextPage = () => {
                       value={isBuildingAreaFiltered ? buildingTransferArea : null}
                       onChange={(event) => {
                         setbuildingTransferArea(Number(event.target.value))
+                        setisBuildingAreaFosced(true)
                       }}
                       disabled={!isBuildingAreaFiltered}
-                      autoFocus={isBuildingAreaFiltered}
+                      // autoFocus={isBuildingAreaFiltered}
                       fullWidth
                     >
                       {
@@ -216,11 +243,16 @@ const AprRegion: NextPage = () => {
                       setisLandAreaFiltered(prev => !prev)
                       setlandTransferArea(0)
                     }}
+                    disabled={!isLandAreaCheckable}
                   />
                 </Grid>
                 <Grid item xs={10}>
                   <FormControl size='small' fullWidth>
-                    <InputLabel id="land-transfer-area">地坪面積</InputLabel>
+                    {
+                      isLandAreaFiltered && !isLandAreaFosced
+                        ? <></>
+                        : <InputLabel id="land-transfer-area">地坪面積</InputLabel>
+                    }
                     <Select
                       labelId="land-transfer-area"
                       label="地坪面積"
@@ -230,8 +262,9 @@ const AprRegion: NextPage = () => {
                       value={isLandAreaFiltered ? landTransferArea : null}
                       onChange={(event) => {
                         setlandTransferArea(Number(event.target.value))
+                        setisLandAreaFosced(true)
                       }}
-                      autoFocus={isLandAreaFiltered}
+                      // autoFocus={isLandAreaFiltered}
                       disabled={!isLandAreaFiltered}
                     >
                       {
@@ -259,7 +292,11 @@ const AprRegion: NextPage = () => {
                 </Grid>
                 <Grid item xs={10}>
                   <FormControl size='small' fullWidth>
-                    <InputLabel id="age">屋齡</InputLabel>
+                    {
+                      isAgeFiltered && !isAgeFosced
+                        ? <></>
+                        : <InputLabel id="age">屋齡</InputLabel>
+                    }
                     <Select
                       labelId="age"
                       label="屋齡"
@@ -268,9 +305,10 @@ const AprRegion: NextPage = () => {
                       value={isAgeFiltered ? age : null}
                       onChange={(event) => {
                         setage(Number(event.target.value))
+                        setisAgeFosced(true)
                       }}
                       disabled={!isAgeFiltered}
-                      autoFocus={isAgeFiltered}
+                      // autoFocus={isAgeFiltered}
                       fullWidth
                     >
                       {
@@ -293,23 +331,43 @@ const AprRegion: NextPage = () => {
                     onClick={() => {
                       setisParkSpaceFiltered(prev => !prev)
                       setparkSpaceType(0)
+                      if (isLandAreaFiltered) {
+                        setisLandAreaFiltered(false)
+                        setisLandAreaCheckable(false)
+                      } else if (!isLandAreaCheckable) {
+                        setisLandAreaFiltered(true)
+                        setisLandAreaCheckable(true)
+                      }
+
+                      if (isBuildingAreaFiltered) {
+                        setisBuildingAreaFiltered(false)
+                        setisBuildingAreaCheckable(false)
+                      } else if (!isBuildingAreaCheckable) {
+                        setisBuildingAreaFiltered(true)
+                        setisBuildingAreaCheckable(true)
+                      }
                     }}
                   />
                 </Grid>
                 <Grid item xs={10}>
                   <FormControl size='small' fullWidth>
-                    <InputLabel id="park-space">車位類型</InputLabel>
+                    {
+                      isParkSpaceFiltered && !isParkSpaceFosced
+                        ? <></>
+                        : <InputLabel id="park-space">車位類型</InputLabel>
+                    }
                     <Select
                       labelId="park-space"
-                      label="屋齡"
+                      label="車位類型"
                       id="park-space-select"
                       size='small'
                       fullWidth
                       value={isParkSpaceFiltered ? parkSpaceType : null}
                       onChange={(event) => {
                         setparkSpaceType(Number(event.target.value))
+                        setisParkSpaceFosced(true)
                       }}
-                      autoFocus={isParkSpaceFiltered}
+                      // autoFocus={isParkSpaceFiltered}
                       disabled={!isParkSpaceFiltered}
                     >
                       {
@@ -337,7 +395,11 @@ const AprRegion: NextPage = () => {
                 </Grid>
                 <Grid item xs={10}>
                   <FormControl size='small' fullWidth>
-                    <InputLabel id="land-use">使用分區</InputLabel>
+                    {
+                      isUrbanUsageFiltered && !isUrbanUsageFosced
+                        ? <></>
+                        : <InputLabel id="land-use">使用分區</InputLabel>
+                    }
                     <Select
                       labelId="land-use"
                       label="使用分區"
@@ -347,8 +409,9 @@ const AprRegion: NextPage = () => {
                       value={isUrbanUsageFiltered ? urbanLandUse : null}
                       onChange={(event) => {
                         seturbanLandUse(Number(event.target.value))
+                        setisUrbanUsageFosced(true)
                       }}
-                      autoFocus={isUrbanUsageFiltered}
+                      // autoFocus={isUrbanUsageFiltered}
                       disabled={!isUrbanUsageFiltered}
                     >
                       {
@@ -366,15 +429,10 @@ const AprRegion: NextPage = () => {
 
               </Grid>
 
-              {/* </FormControl> */}
-
-
-
-
-
             </div>
 
             <div className={style.searchBtn}
+              onClick={handleFormSubmit}
             >
               <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
               <p>查詢</p>
