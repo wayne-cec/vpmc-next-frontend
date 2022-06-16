@@ -1,5 +1,5 @@
 .marketCompareResultCard{
-    @apply py-6 border-t border-gray-400 flex flex-row; // justify-evenly flex flex-row
+    @apply py-4 px-2 border-t border-border flex flex-row; // justify-evenly flex flex-row
     .chip{
         @apply p-2 rounded-md text-sm;
         color: #4e71a5;

@@ -81,13 +81,20 @@
             }
         }
         .aprRecordGroup{
-            @apply w-full h-1/2 overflow-y-auto bg-transparent;
+            @apply border-t-4 border-main-primary 
+            w-full h-1/2 overflow-y-auto bg-transparent
+            shadow-md;
         }
         .graphGroup{
             @apply w-full h-1/2 overflow-y-auto bg-transparent;
         }
         .chartsGroup{
-            @apply w-full h-1/2 overflow-y-auto bg-transparent;
+            @apply mt-4 border-t-4 border-main-primary 
+            w-full h-1/2 overflow-y-auto bg-transparent
+            shadow-md p-2;
+            .title{
+                @apply text-xl;
+            }
         }
     }
     .content{

@@ -540,9 +540,14 @@ const AprRegion: NextPage = () => {
 
             <div className={style.controlSet}>
               <div className={style.settingBtn}
+                onClick={() => {
+                  setmsgOpen(true)
+                  seterrorTitle('訊息')
+                  seterrorContent('自定義參數功能尚未開發')
+                }}
               >
                 <Image src={'/aprRegion/setting.png'} width='30px' height='30px' />
-                <p>自訂義參數</p>
+                <p>自定義參數</p>
               </div>
 
               <div className={style.searchBtn}
@@ -604,15 +609,6 @@ const AprRegion: NextPage = () => {
                     {
                       graphData
                         ? <div className={style.chartsGroup}>
-
-                          {/* {
-                          graphData
-                            ? <TabsPanel
-                              displayData={graphData}
-                            ></TabsPanel>
-                            : <></>
-                        } */}
-
                           {
                             Object.keys(graphData!).map((buildingType, index) => {
                               const typeData = graphData![buildingType]
