@@ -8,7 +8,9 @@ import TextSymbol from '@arcgis/core/symbols/TextSymbol'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
 import Circle from '@arcgis/core/geometry/Circle'
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol'
+import Point from '@arcgis/core/geometry/Point'
 import { IMarketCompareResult } from '../../api/prod'
+import Collection from '@arcgis/core/core/Collection'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 
 const mapOptions = {
@@ -65,13 +67,39 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   useEffect(() => {
     const pLayer = new GraphicsLayer()
     const bLayer = new GraphicsLayer()
+    const aLayer = new GraphicsLayer()
     setpointLayer(pLayer)
     setbufferLayer(bLayer)
+    setaprLayer(aLayer)
   }, [])
 
   useEffect(() => {
+    if (map && aprLayer) {
+      aprLayer.graphics = new Collection()
+      map.remove(aprLayer)
+    }
     if (props.filteredResults) {
-
+      const aprResultGraphics = new Collection<Graphic>()
+      props.filteredResults.forEach((aprResult) => {
+        const pointGraphic = new Graphic({
+          geometry: new Point({
+            longitude: aprResult.longitude,
+            latitude: aprResult.latitude
+          }),
+          symbol: new PictureMarkerSymbol({
+            url: '/aprRegion/home.png',
+            width: '30px',
+            height: '30px'
+          })
+        })
+        aprResultGraphics.add(pointGraphic)
+        // console.log(pointGraphic)
+      })
+      if (map && aprLayer) {
+        aprLayer.graphics = aprResultGraphics
+        console.log(aprLayer)
+        map.add(aprLayer)
+      }
     }
   }, [props.filteredResults])
 
@@ -83,30 +111,24 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
 
   // https://img.icons8.com/color/48/undefined/marker--v1.png
   useEffect(() => {
-    if (props.active && mapView && pointLayer) {
+    if (props.active && mapView && pointLayer && aprLayer) {
       const remove = mapView.on("click", (event) => {
         props.onCoordinateSelect(event.mapPoint.longitude, event.mapPoint.latitude)
         setlongitude(event.mapPoint.longitude)
         setlatitude(event.mapPoint.latitude)
         updateBufferCircle(event.mapPoint.longitude, event.mapPoint.latitude)
+        const collection = new Collection<Graphic>()
         const pointGraphic = new Graphic({
           geometry: event.mapPoint,
           symbol: new PictureMarkerSymbol({
-            url: 'https://img.icons8.com/color/48/undefined/marker--v1.png',
+            url: '/aprRegion/mappin.png',
             width: '30px',
             height: '30px'
           })
-          // symbol: new TextSymbol({
-          //   color: "#ff0800",
-          //   text: "\ue61d", // esri-icon-map-pin
-          //   font: {
-          //     // autocasts as new Font()
-          //     size: 24,
-          //     family: "CalciteWebCoreIcons" // Esri Icon Font
-          //   }
-          // })
         })
-        pointLayer.graphics = [pointGraphic] as any
+        aprLayer.graphics = new Collection()
+        collection.add(pointGraphic)
+        pointLayer.graphics = collection
         map?.add(pointLayer)
         remove.remove()
       })

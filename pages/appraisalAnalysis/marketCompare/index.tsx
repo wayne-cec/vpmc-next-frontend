@@ -560,7 +560,7 @@ const AprRegion: NextPage = () => {
         </div>
 
         {
-          filteredResults === null
+          filteredResults === null || filteredResults.length === 0
             ? <></>
             :
             <div className={style.resultPanel}>
