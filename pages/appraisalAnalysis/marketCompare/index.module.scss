@@ -70,7 +70,7 @@
     }
     .resultPanel{
         @apply flex flex-col h-[80%] absolute z-10 bg-white m-2 p-4 rounded-md
-        shadow-md w-[520px] right-0 max-h-[800px] overflow-y-auto;
+        shadow-md w-[600px] right-0 max-h-[800px] overflow-y-auto;
         @media(max-width: 1100px){
             @apply hidden;
         }
