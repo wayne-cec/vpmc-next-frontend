@@ -5,11 +5,13 @@ import Head from 'next/head'
 import classNames from 'classnames'
 import Image from 'next/image'
 import CoordinateSelector from '../../../components/CoordinateSelector'
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import {
   TextField, Select,
   MenuItem, InputLabel, FormControl,
-  Checkbox, makeStyles, Grid
+  Checkbox, makeStyles, Grid, Dialog,
+  DialogActions, DialogContent, DialogContentText,
+  DialogTitle, Button
 } from '@mui/material'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
@@ -61,6 +63,10 @@ const AprRegion: NextPage = () => {
   // const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
 
   const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
+
+  const [msgOpen, setmsgOpen] = useState<boolean>(false)
+  const [errorTitle, seterrorTitle] = useState<string>('')
+  const [errorContent, seterrorContent] = useState<string>('')
 
   const handleCoordinateSelect = async (longitude: number, latitude: number) => {
     setlongitude(longitude)
@@ -145,9 +151,19 @@ const AprRegion: NextPage = () => {
         setfilteredResults(null)
       }
     } else {
-      alert('請輸入必填參數')
+      setmsgOpen(true)
+      seterrorTitle('錯誤')
+      seterrorContent('請輸入勘估點座標')
     }
   }
+
+  useEffect(() => {
+    if (filteredResults?.length === 0) {
+      setmsgOpen(true)
+      seterrorTitle('訊息')
+      seterrorContent('查無資料')
+    }
+  }, [filteredResults])
 
   return (
     <>
@@ -159,7 +175,6 @@ const AprRegion: NextPage = () => {
       <div className={style.main}>
 
         <div className={style.panel}>
-
           <div className={style.filterGroup}>
 
             <div className={classNames({
@@ -505,8 +520,6 @@ const AprRegion: NextPage = () => {
 
             </div>
 
-
-
             <div className={style.controlSet}>
               <div className={style.settingBtn}
               >
@@ -523,11 +536,10 @@ const AprRegion: NextPage = () => {
             </div>
 
           </div>
-
           {
             filteredResults && filteredResults.length !== 0
               ?
-              <>
+              <div className={style.resultGroup}>
                 <p className={style.resultStatus}>共有
                   <span className={style.count}>{filteredResults.length}</span>
                   筆實價登陸紀錄
@@ -542,20 +554,79 @@ const AprRegion: NextPage = () => {
                     })
                   }
                 </div>
-              </>
+              </div>
               : <></>
           }
-
         </div>
+
+        {
+          filteredResults === null
+            ? <></>
+            :
+            <div className={style.resultPanel}>
+              {
+                filteredResults && filteredResults.length !== 0
+                  ?
+                  <>
+                    <p className={style.resultStatus}>共有
+                      <span className={style.count}>{filteredResults.length}</span>
+                      筆實價登陸紀錄
+                    </p>
+                    <div className={style.graphGroup}>
+                      {
+                        filteredResults.map((result, index) => {
+                          return <MarketCompareResultCard
+                            key={index}
+                            {...result}
+                          />
+                        })
+                      }
+                    </div>
+                  </>
+                  : <></>
+              }
+            </div>
+        }
 
         <div className={style.content}>
           <div className={style.mapContainer}>
             <MarketMapContainer
               active={isSelectorActive}
+              bufferRadius={bufferRadius!}
+              filteredResults={filteredResults!}
               onCoordinateSelect={handleCoordinateSelect}
             />
           </div>
         </div>
+
+        <Dialog
+          open={msgOpen}
+          onClose={() => {
+            setmsgOpen(false)
+            seterrorTitle('')
+            seterrorContent('')
+          }}
+          aria-labelledby="responsive-dialog-title"
+        >
+          <DialogTitle id="responsive-dialog-title">
+            {errorTitle}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {errorContent}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+
+            <Button onClick={() => {
+              setmsgOpen(false)
+              seterrorTitle('')
+              seterrorContent('')
+            }} autoFocus>
+              確認
+            </Button>
+          </DialogActions>
+        </Dialog>
 
       </div>
     </>
