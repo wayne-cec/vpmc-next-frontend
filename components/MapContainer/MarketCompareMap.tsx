@@ -77,35 +77,6 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     setpointLayer(pLayer)
     setbufferLayer(bLayer)
     setaprLayer(aLayer)
-
-    // const basemapGallery = new BasemapGallery({
-    //   view: mapView
-    // })
-    // const basemapGalleryExpand = new Expand({
-    //   expandIconClass: "esri-icon-layer-list",
-    //   view: mapView,
-    //   content: basemapGallery
-    // })
-    // setbasemapGallery(bGallery)
-    // setbasemapGalleryExpand(basemapGalleryExpand)
-
-
-    // const addWidgets = async () => {
-    //   const mapv = (await asyncMapView)
-    //   const basemapGallery = new BasemapGallery({
-    //     view: mapv
-    //   })
-
-    //   const basemapGalleryExpand = new Expand({
-    //     expandIconClass: "esri-icon-layer-list",
-    //     view: mapv,
-    //     content: basemapGallery
-    //   })
-
-    //   console.log(mapv)
-    //   mapv.ui.add(basemapGalleryExpand, 'top-right')
-    // }
-    // addWidgets()
   }, [])
 
   useEffect(() => {

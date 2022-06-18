@@ -287,6 +287,7 @@ const AprRegion: NextPage = () => {
                     checked={spatialQueryType === 'polygon'}
                     onChange={() => {
                       setspatialQueryType('polygon')
+                      setisCoordinateSelectorActive(false)
                     }}
                     value="a"
                     name="radio-buttons"
