@@ -21,6 +21,9 @@
                 .filterRow{
                     @apply flex flex-row;
                 }
+                .polygonSketchContainer{
+                    @apply pl-0;
+                }
             }
             .controlSet{
                 @apply flex flex-row w-full;

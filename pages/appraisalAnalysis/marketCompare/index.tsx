@@ -11,7 +11,7 @@ import {
   MenuItem, InputLabel, FormControl,
   Checkbox, makeStyles, Grid, Dialog,
   DialogActions, DialogContent, DialogContentText,
-  DialogTitle, Button
+  DialogTitle, Button, Radio
 } from '@mui/material'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
@@ -26,8 +26,13 @@ import TabsPanel from '../../../components/TabsPanel'
 import ReactEcharts from 'echarts-for-react'
 import { EChartsOption } from 'echarts'
 import { IResultStatistics } from '../../../api/prod'
+import PolygonSketch from '../../../components/PolygonSketch'
+import handler from '../../api/hello'
+import { PolygonSketchMode } from '../../../components/PolygonSketch'
 
 const square = 3.305785
+
+export type SpatialQueryType = 'buffer' | 'polygon'
 
 const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
@@ -74,6 +79,8 @@ const AprRegion: NextPage = () => {
   const [errorContent, seterrorContent] = useState<string>('')
 
   const [graphData, setgraphData] = useState<IGraphData | null>(null)
+  const [spatialQueryType, setspatialQueryType] = useState<SpatialQueryType>('buffer')
+  const [sketchMode, setsketchMode] = useState<PolygonSketchMode>('inactive')
 
   const handleCoordinateSelect = async (longitude: number, latitude: number) => {
     setlongitude(longitude)
@@ -87,6 +94,14 @@ const AprRegion: NextPage = () => {
       setlocatedCounty(null)
       setlocatedTown(null)
     }
+  }
+
+  const handleDraw = () => {
+    setsketchMode('draw')
+  }
+
+  const handleClear = () => {
+    setsketchMode('inactive')
   }
 
   const handleFormSubmit = async () => {
@@ -218,7 +233,7 @@ const AprRegion: NextPage = () => {
 
               <Grid container spacing={2}>
 
-                <Grid item xs={8}>
+                <Grid item xs={12}>
                   <FormControl size='small' fullWidth>
                     <InputLabel id="asset-type">資產類型*</InputLabel>
                     <Select
@@ -242,6 +257,19 @@ const AprRegion: NextPage = () => {
                     </Select>
                   </FormControl>
                 </Grid>
+
+                {/* 搜索範圍 */}
+                <Grid item xs={2}>
+                  <Radio
+                    checked={spatialQueryType === 'buffer'}
+                    onChange={() => {
+                      setspatialQueryType('buffer')
+                    }}
+                    value="a"
+                    name="radio-buttons"
+                    inputProps={{ 'aria-label': 'A' }}
+                  />
+                </Grid>
                 <Grid item xs={4}>
                   <TextField
                     type='number'
@@ -249,9 +277,32 @@ const AprRegion: NextPage = () => {
                     size='small'
                     InputProps={{ inputProps: { min: 0 } }}
                     value={bufferRadius}
-                    // value={''}
                     onChange={(event) => { setbufferRadius(Number(event.target.value)) }}
+                    disabled={spatialQueryType !== 'buffer'}
+                    fullWidth
                   ></TextField>
+                </Grid>
+                <Grid item xs={2}>
+                  <Radio
+                    checked={spatialQueryType === 'polygon'}
+                    onChange={() => {
+                      setspatialQueryType('polygon')
+                    }}
+                    value="a"
+                    name="radio-buttons"
+                    inputProps={{ 'aria-label': 'A' }}
+                  />
+                </Grid>
+                <Grid item xs={4}
+                  className={style.polygonSketchContainer}
+                >
+                  <PolygonSketch
+                    active={spatialQueryType === 'polygon'}
+                    mode={sketchMode}
+                    onModeChange={setsketchMode}
+                    onDraw={handleDraw}
+                    onClear={handleClear}
+                  />
                 </Grid>
 
                 {/* 交易時間 */}
