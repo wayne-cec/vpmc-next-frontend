@@ -1,7 +1,7 @@
 import { ICountyData, ITownData } from "./aprRegion"
 
 export const listCountiesByRegion = async () => {
-  const response = await fetch("http://140.122.82.98:9085/api/Utility/listCountiesByRegion", {
+  const response = await fetch(process.env.API_DOMAIN_PROD + "/api/Utility/listCountiesByRegion", {
     method: 'GET',
     redirect: 'follow'
   })
@@ -11,7 +11,7 @@ export const listCountiesByRegion = async () => {
 }
 
 export const listTownsByCounty = async (county: string) => {
-  const response = await fetch(`http://140.122.82.98:9085/api/Utility/listTownsByCounty?county=${county}`, {
+  const response = await fetch(process.env.API_DOMAIN_PROD + `/api/Utility/listTownsByCounty?county=${county}`, {
     method: 'GET',
     redirect: 'follow'
   })
@@ -21,7 +21,7 @@ export const listTownsByCounty = async (county: string) => {
 }
 
 export const getVillageGeographyByTown = async (county: string, town: string) => {
-  const response = await fetch(`http://140.122.82.98:9085/api/Utility/getVillageGeographyByTown?county=${county}&town=${town}`, {
+  const response = await fetch(process.env.API_DOMAIN_PROD + `/api/Utility/getVillageGeographyByTown?county=${county}&town=${town}`, {
     method: 'GET',
     redirect: 'follow'
   })
@@ -31,7 +31,7 @@ export const getVillageGeographyByTown = async (county: string, town: string) =>
 }
 
 export const getCountyTownNameByCoordinate = async (longitude: number, latitude: number) => {
-  const response = await fetch(`http://140.122.82.98:9085/api/Utility/getCountyTownNameByCoordinate?longitude=${longitude}&latitude=${latitude}`, {
+  const response = await fetch(process.env.API_DOMAIN_PROD + `/api/Utility/getCountyTownNameByCoordinate?longitude=${longitude}&latitude=${latitude}`, {
     method: 'GET',
     redirect: 'follow'
   })

@@ -11,6 +11,9 @@ import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol'
 import Point from '@arcgis/core/geometry/Point'
 import { IMarketCompareResult } from '../../api/prod'
 import Collection from '@arcgis/core/core/Collection'
+import Expand from '@arcgis/core/widgets/Expand'
+import BasemapGallery from '@arcgis/core/widgets/BasemapGallery'
+import DefaultUI from "@arcgis/core/views/ui/DefaultUI"
 import '@arcgis/core/assets/esri/themes/light/main.css'
 
 const mapOptions = {
@@ -18,7 +21,7 @@ const mapOptions = {
   mapViewOption: {
     center: [121.4640139307843, 25.013838580240503],
     zoom: 13,
-    ui: undefined,
+    ui: new DefaultUI(),
     constraints: { minZoom: 12, maxZoom: 20 }
   }
 }
@@ -39,6 +42,9 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   const [longitude, setlongitude] = useState<number | undefined>(undefined)
   const [latitude, setlatitude] = useState<number | undefined>(undefined)
   const { asyncMap, asyncMapView, map, mapView } = useMap(mapRef, mapOptions)
+
+  // const [basemapGallery, setbasemapGallery] = useState<BasemapGallery | undefined>(undefined)
+  // const [basemapGalleryExpand, setbasemapGalleryExpand] = useState<Expand | undefined>(undefined)
 
   const updateBufferCircle = (ilongitude: number, ilatitude: number) => {
     if (map && bufferLayer) {
@@ -71,6 +77,35 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     setpointLayer(pLayer)
     setbufferLayer(bLayer)
     setaprLayer(aLayer)
+
+    // const basemapGallery = new BasemapGallery({
+    //   view: mapView
+    // })
+    // const basemapGalleryExpand = new Expand({
+    //   expandIconClass: "esri-icon-layer-list",
+    //   view: mapView,
+    //   content: basemapGallery
+    // })
+    // setbasemapGallery(bGallery)
+    // setbasemapGalleryExpand(basemapGalleryExpand)
+
+
+    // const addWidgets = async () => {
+    //   const mapv = (await asyncMapView)
+    //   const basemapGallery = new BasemapGallery({
+    //     view: mapv
+    //   })
+
+    //   const basemapGalleryExpand = new Expand({
+    //     expandIconClass: "esri-icon-layer-list",
+    //     view: mapv,
+    //     content: basemapGallery
+    //   })
+
+    //   console.log(mapv)
+    //   mapv.ui.add(basemapGalleryExpand, 'top-right')
+    // }
+    // addWidgets()
   }, [])
 
   useEffect(() => {

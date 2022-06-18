@@ -40,7 +40,7 @@ export interface IGraphData {
 }
 
 export const marketCompare = async (params: IMarketCompare) => {
-  let url = `http://140.122.82.98:9085/api/Analysis/marketCompare?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
   if (params.transactionTimeStart && params.transactionTimeEnd) {
     url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
   }
@@ -67,7 +67,7 @@ export const marketCompare = async (params: IMarketCompare) => {
 }
 
 export const marketCompareStatistic = async (params: IMarketCompare) => {
-  let url = `http://140.122.82.98:9085/api/Analysis/marketCompareStatistic?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
   if (params.transactionTimeStart && params.transactionTimeEnd) {
     url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
   }

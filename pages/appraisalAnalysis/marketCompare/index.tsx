@@ -591,10 +591,17 @@ const AprRegion: NextPage = () => {
                 filteredResults && filteredResults.length !== 0
                   ?
                   <>
-                    <p className={style.resultStatus}>共有
-                      <span className={style.count}>{filteredResults.length}</span>
-                      筆實價登陸紀錄
-                    </p>
+                    <div className={style.resultHeader}>
+                      <span className={style.resultStatus}>共有
+                        <span className={style.count}>{filteredResults.length}</span>
+                        筆實價登陸紀錄
+                      </span>
+                      <span className={style.closeBtn}
+                        onClick={() => {
+                          setfilteredResults(null)
+                        }}
+                      >✖</span>
+                    </div>
                     <div className={style.aprRecordGroup}>
                       {
                         filteredResults.map((result, index) => {

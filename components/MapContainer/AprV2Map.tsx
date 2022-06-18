@@ -87,7 +87,7 @@ const AprV2Map = (props: IEsriMap) => {
     const promises: any[] = []
     for (let [key, value] of Object.entries(towns)) {
       promises.push(
-        fetch(`http://140.122.82.98:9085/api/Commitee/listTownAvg?county=新北市&town=${key}&startDate=2021-01-01&endDate=2022-01-01`, {
+        fetch(process.env.API_DOMAIN_PROD + `/api/Commitee/listTownAvg?county=新北市&town=${key}&startDate=2021-01-01&endDate=2022-01-01`, {
           method: 'GET',
           redirect: 'follow'
         })
@@ -185,7 +185,7 @@ const AprV2Map = (props: IEsriMap) => {
   const fetchCommiteeByExtent = async (map: Map, extent: Extent, WGS84: SpatialReference) => {
     const convertedExtent = projection.project(extent, WGS84) as Extent
     const response = await fetch(
-      `http://140.122.82.98:9085/api/Commitee/listCommiteeByExtent?xmin=${convertedExtent.xmin}&ymin=${convertedExtent.ymin}&xmax=${convertedExtent.xmax}&ymax=${convertedExtent.ymax}`,
+      process.env.API_DOMAIN_PROD + `/api/Commitee/listCommiteeByExtent?xmin=${convertedExtent.xmin}&ymin=${convertedExtent.ymin}&xmax=${convertedExtent.xmax}&ymax=${convertedExtent.ymax}`,
       {
         method: 'GET',
         redirect: 'follow'
@@ -196,7 +196,7 @@ const AprV2Map = (props: IEsriMap) => {
     const promises: any[] = []
     for (let i = 0; i < commiteeData.length; i++) {
       promises.push(
-        fetch(`http://140.122.82.98:9085/api/Commitee/getSimpleInfo?commiteeId=${commiteeData[i].id}&bufferRadius=35`, {
+        fetch(process.env.API_DOMAIN_PROD + `/api/Commitee/getSimpleInfo?commiteeId=${commiteeData[i].id}&bufferRadius=35`, {
           method: 'GET',
           redirect: 'follow'
         })

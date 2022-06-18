@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react'
 import Map from "@arcgis/core/Map"
 import MapView from "@arcgis/core/views/MapView"
+import Expand from '@arcgis/core/widgets/Expand'
+import BasemapGallery from '@arcgis/core/widgets/BasemapGallery'
+// import { renderToStaticMarkup } from 'react-dom/server'
+// import { createElementFromHTML } from '../lib/calculateAge'
+// import TestWidget, { Car } from '../widgets/TestWidget'
+// import { renderToString } from 'react-dom/server'
 
 export type UseMapParams = {
   mapOption?: __esri.MapProperties
@@ -64,6 +70,25 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         ...mapViewOption,
         container: elemRef.current
       })
+
+      // const staticElement = renderToStaticMarkup(TestWidget({}))
+      // const testWidget = TestWidget({})
+      // createElementFromHTML(renderToString(testWidget))
+      // const a = document.createElement('button')
+      // a.innerHTML = 'asdasd'
+      // const a = createElementFromHTML(renderToString(testWidget))
+      // mapView.ui.add(a, 'top-right')
+
+      const basemapGallery = new BasemapGallery({
+        view: mapView
+      })
+      const basemapGalleryExpand = new Expand({
+        expandIconClass: "esri-icon-basemap",
+        view: mapView,
+        content: basemapGallery
+      })
+
+      mapView.ui.add(basemapGalleryExpand, 'bottom-left')
       mapViewRef.current = mapView
       mapViewStack.current.setObject(mapView)
     }

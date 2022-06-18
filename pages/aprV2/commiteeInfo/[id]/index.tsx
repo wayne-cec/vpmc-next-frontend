@@ -21,7 +21,7 @@ interface Params extends ParsedUrlQuery {
 export const getServerSideProps: GetServerSideProps<IProps, Params> = async ({
   params,
 }) => {
-  const api = `http://140.122.82.98:9085/api/Commitee/getAprInfo?commiteeId=${params?.id}`
+  const api = process.env.API_DOMAIN_PROD + `/api/Commitee/getAprInfo?commiteeId=${params?.id}`
   const res = await fetch(api, { method: "GET" })
   const json: ICommiteeAprDetail[] = await res.json()
 
