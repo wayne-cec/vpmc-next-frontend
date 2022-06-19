@@ -9,6 +9,7 @@ export interface ICoordinateSelector {
   locatedCounty: string | null
   locatedTown: string | null
   active: boolean
+  enabled: boolean
   onClick: () => void
 }
 
@@ -17,12 +18,17 @@ const CoordinateSelector = (props: ICoordinateSelector) => {
   return (
     <div className={classNames({
       [style.coordinateSelector]: true,
-      [style.active]: props.active
+      [style.active]: props.active,
+      [style.enabled]: props.enabled
     })}
-      onClick={props.onClick}
+      onClick={() => {
+        if (props.enabled) {
+          props.onClick()
+        }
+      }}
     >
       <div className={style.titleContainer}>
-        <Image src={'/aprRegion/gps.png'} width='25px' height='25px' />
+        <Image src={props.enabled ? '/aprRegion/gps.png' : '/aprRegion/gps-disabled.png'} width='25px' height='25px' />
         <p>
           {
             props.longitude === null || props.latitude === null

@@ -71,6 +71,7 @@ const AprRegion: NextPage = () => {
   const [age, setage] = useState<number | null>(null)
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
   // const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
+  const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
 
   const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
 
@@ -82,11 +83,11 @@ const AprRegion: NextPage = () => {
   const [spatialQueryType, setspatialQueryType] = useState<SpatialQueryType>('buffer')
   const [sketchMode, setsketchMode] = useState<PolygonSketchMode>('inactive')
 
-  const handleCoordinateSelect = async (longitude: number, latitude: number) => {
+  const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
     setlongitude(longitude)
     setlatitude(latitude)
     setisCoordinateSelectorActive(false)
-    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude, latitude)
+    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude!, latitude!)
     if (statusCode === 200) {
       setlocatedCounty(responseContent.countyname)
       setlocatedTown(responseContent.townname)
@@ -94,10 +95,12 @@ const AprRegion: NextPage = () => {
       setlocatedCounty(null)
       setlocatedTown(null)
     }
+
   }
 
   const handleDraw = () => {
     setsketchMode('draw')
+
   }
 
   const handleClear = () => {
@@ -105,13 +108,24 @@ const AprRegion: NextPage = () => {
   }
 
   const handleFormSubmit = async () => {
-    if (longitude !== null && latitude !== null && bufferRadius !== null && assetTypeCode !== null) {
+    if (assetTypeCode !== null) {
+      // alert(spatialQueryType)
       const params: IMarketCompare = {
-        longitude: longitude,
-        latitude: latitude,
-        bufferRadius: bufferRadius,
         buildingType: assetTypeCode
       }
+      if (longitude !== null && latitude !== null && bufferRadius !== null && spatialQueryType === 'buffer') {
+        params.longitude = longitude
+        params.latitude = latitude
+        params.bufferRadius = bufferRadius
+      } else if (polygonGoejson !== null && spatialQueryType === 'polygon') {
+        params.geojson = polygonGoejson
+      } else {
+        setmsgOpen(true)
+        seterrorTitle('警告')
+        seterrorContent('至少選擇一種空間查詢方法')
+        return
+      }
+
       if (isTransactionTimeFiltered && transactionTime) {
         const dateNow = new Date()
         params.transactionTimeStart = moment(dateNow).add(-transactionTime, 'year').format('YYYY/MM/DD')
@@ -186,7 +200,7 @@ const AprRegion: NextPage = () => {
     } else {
       setmsgOpen(true)
       seterrorTitle('警告')
-      seterrorContent('請輸入勘估點座標')
+      seterrorContent('請輸入資產類別')
     }
   }
 
@@ -220,6 +234,7 @@ const AprRegion: NextPage = () => {
                 locatedCounty={locatedCounty}
                 locatedTown={locatedTown}
                 active={isSelectorActive}
+                enabled={spatialQueryType === 'buffer'}
                 onClick={() => {
                   setisCoordinateSelectorActive(prev => !prev)
                 }}
@@ -270,7 +285,7 @@ const AprRegion: NextPage = () => {
                     inputProps={{ 'aria-label': 'A' }}
                   />
                 </Grid>
-                <Grid item xs={4}>
+                <Grid item xs={5}>
                   <TextField
                     type='number'
                     label="勘估標的距離(m)"
@@ -294,7 +309,7 @@ const AprRegion: NextPage = () => {
                     inputProps={{ 'aria-label': 'A' }}
                   />
                 </Grid>
-                <Grid item xs={4}
+                <Grid item xs={3}
                   className={style.polygonSketchContainer}
                 >
                   <PolygonSketch
@@ -819,7 +834,11 @@ const AprRegion: NextPage = () => {
               active={isSelectorActive}
               bufferRadius={bufferRadius!}
               filteredResults={filteredResults!}
+              spatialQueryType={spatialQueryType}
+              sketchMode={sketchMode}
               onCoordinateSelect={handleCoordinateSelect}
+              onSketchModeChange={setsketchMode}
+              onGeojsonChange={setpolygonGoejson}
             />
           </div>
         </div>
@@ -847,7 +866,7 @@ const AprRegion: NextPage = () => {
               setmsgOpen(false)
               seterrorTitle('')
               seterrorContent('')
-            }} autoFocus>
+            }}>
               確認
             </Button>
           </DialogActions>

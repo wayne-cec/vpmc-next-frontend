@@ -1,8 +1,16 @@
 .polygonSketch{
-    @apply bg-transparent w-full h-full
+    @apply bg-transparent w-full h-[40px]
     rounded border border-border flex items-center
-    justify-evenly;
+    justify-evenly relative;
+    .legend{
+        @apply text-red-600 text-xs m-0 px-1
+        absolute -top-3 left-2 bg-white font-normal;
+        color: rgba(0, 0, 0, 0.38);
+    }
     &.active{
+        .legend{
+            color: rgba(0, 0, 0, 0.6);
+        }
         &:hover{
             @apply border-black;
         }
