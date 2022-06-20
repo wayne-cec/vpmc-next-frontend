@@ -12,6 +12,7 @@ import Router from 'next/router'
 import api from '../../api'
 import { setUserToken } from '../../store/slice/user'
 import { useDispatch } from 'react-redux'
+import { WithNothingLayout } from '../../layout/BaseLayout'
 
 const Login: NextPage = () => {
   const dispatch = useDispatch()
@@ -132,4 +133,4 @@ const Login: NextPage = () => {
   )
 }
 
-export default Login
+export default WithNothingLayout(Login)

@@ -12,6 +12,7 @@ import doubleRightHover from '../../../public/aprV2/doubleRight-hover.png'
 import doubleLeftHover from '../../../public/aprV2/doubleLeft-hover.png'
 import { ICommitee } from '../../../components/MapContainer/AprV2Map'
 import { ICommiteeAprDetail } from '../../../store/slice/commitee'
+import { WithNavFooterProtected } from '../../../layout/BaseLayout'
 
 const MapContainer = dynamic(
   () => import('../../../components/MapContainer/AprV2Map'),
@@ -95,4 +96,4 @@ const AprV2: NextPage = () => {
   )
 }
 
-export default AprV2
+export default WithNavFooterProtected(AprV2)

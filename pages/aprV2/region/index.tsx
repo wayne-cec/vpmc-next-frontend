@@ -11,6 +11,7 @@ import TabsPanel from '../../../components/TabsPanel'
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { ICountyData, ITownData, IAprRegionGraphDisplayData } from '../../../api/prod'
+import { WithNavFooterProtected } from '../../../layout/BaseLayout'
 
 const RegionMapContainer = dynamic(
   () => import('../../../components/MapContainer/AprRegionMap'),
@@ -203,4 +204,4 @@ const AprRegion: NextPage = () => {
   )
 }
 
-export default AprRegion
+export default WithNavFooterProtected(AprRegion)

@@ -6,6 +6,7 @@ import classNames from 'classnames'
 import 'animate.css'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../store/slice/user'
+import { WithNavFooter } from '../layout/BaseLayout'
 
 const Home: NextPage = () => {
   const userInfo = useSelector(selectUser)
@@ -20,7 +21,7 @@ const Home: NextPage = () => {
       <main className={classNames({
         [style.main]: true,
         'animate__animated': true,
-        'animate__backInUp': true,
+        'animate__backInDown': true,
       })}>
         <PageHeader
           title={'家，自由輕鬆找到'}
@@ -31,4 +32,4 @@ const Home: NextPage = () => {
   )
 }
 
-export default Home
+export default WithNavFooter(Home)

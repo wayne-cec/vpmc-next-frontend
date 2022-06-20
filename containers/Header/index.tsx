@@ -9,65 +9,63 @@ import HeaderDrawer from './HeaderDrawer'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectUser, setUserProfile, setUserToken } from '../../store/slice/user'
 import api from '../../api'
+import { AuthContext } from '../../layout/BaseLayout'
+import { useAuth } from '../../layout/BaseLayout'
 
 export const appraisalAnalysis = [
-  { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet' },
-  { name: '市場比較法', route: '/appraisalAnalysis/marketCompare' },
-  { name: '土開分析法', route: '/appraisalAnalysis/landSurvey' }
+  { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true },
+  { name: '市場比較法', route: '/appraisalAnalysis/marketCompare', protected: true },
+  { name: '土開分析法', route: '/appraisalAnalysis/landSurvey', protected: true }
 ]
 
 export const onlineSupport = [
-  { name: '網站使用手冊', route: '/onlineSupport/manual' },
-  { name: '估價相關法令', route: '/onlineSupport/law' },
-  { name: '技術公報/範本', route: '/onlineSupport/report' }
+  { name: '網站使用手冊', route: '/onlineSupport/manual', protected: false },
+  { name: '估價相關法令', route: '/onlineSupport/law', protected: false },
+  { name: '技術公報/範本', route: '/onlineSupport/report', protected: true }
 ]
 
 export const statistic = [
-  { name: '使照建照', route: '/statistic/license' },
-  { name: '臺灣總經概覽', route: '/statistic/economic' }
+  { name: '使照建照', route: '/statistic/license', protected: true },
+  { name: '臺灣總經概覽', route: '/statistic/economic', protected: true }
 ]
 
 export const aprV2Link = [
-  { name: '社區個別', route: '/aprV2/commitee' },
-  { name: '地區總體', route: '/aprV2/region' }
+  { name: '社區個別', route: '/aprV2/commitee', protected: true },
+  { name: '地區總體', route: '/aprV2/region', protected: true }
 ]
+
+const renderContent = (index: number, link: {
+  name: string
+  route: string
+  protected: boolean
+}) => {
+  return (
+    <NavButton
+      key={index}
+      onClick={() => { Router.push(link.route) }}
+    >{link.name}</NavButton>
+  )
+}
 
 const Header = () => {
   const dispatch = useDispatch()
   const userInfo = useSelector(selectUser)
+  const { isAuthenticated } = useAuth()
   const [menuDrawerOpen, setmenuDrawerOpen] = useState<boolean>(false)
   const [appAnalysis, setappAnalysis] = useState<boolean>(false)
   const [onlineSup, setonlineSup] = useState<boolean>(false)
   const [staticsOpen, setstaticsOpen] = useState<boolean>(false)
   const [aprV2, setaprV2] = useState<boolean>(false)
-  const [isAuthenticated, setisAuthenticated] = useState<boolean>(false)
 
   const handleLogout = () => {
     dispatch(
       setUserToken('')
     )
+    Router.push('/')
   }
 
-  useEffect(() => {
-    const validateToken = async () => {
-      if (userInfo.token === '') {
-        setisAuthenticated(false)
-        return
-      }
-      const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
-      if (statusCode === 200) {
-        dispatch(
-          setUserProfile(responseContent)
-        )
-        setisAuthenticated(true)
-      } else {
-        setisAuthenticated(false)
-      }
-    }
-    validateToken()
-  }, [userInfo.token])
-
   return (
+
     <div className={style.headerContainer}>
       <header className={style.header}>
         <div className={style.contentGroup}>
@@ -101,7 +99,6 @@ const Header = () => {
               ? <><span>您好! {userInfo.userProfile?.username}</span>
                 <NavButton
                   onClick={handleLogout}
-                  // outlined={true}
                   style={{
                     paddingTop: '1px',
                     paddingBottom: '1px'
@@ -110,7 +107,6 @@ const Header = () => {
 
               : <NavButton
                 onClick={() => { Router.push('/login') }}
-                // outlined={true}
                 style={{
                   paddingTop: '1px',
                   paddingBottom: '1px'
@@ -137,10 +133,11 @@ const Header = () => {
       >
         {
           appraisalAnalysis.map((link, index) => {
-            return <NavButton
-              key={index}
-              onClick={() => { Router.push(link.route) }}
-            >{link.name}</NavButton>
+            return link.protected
+              ? isAuthenticated
+                ? renderContent(index, link)
+                : null
+              : renderContent(index, link)
           })
         }
       </HeaderDrawer>
@@ -152,10 +149,11 @@ const Header = () => {
       >
         {
           onlineSupport.map((link, index) => {
-            return <NavButton
-              key={index}
-              onClick={() => { Router.push(link.route) }}
-            >{link.name}</NavButton>
+            return link.protected
+              ? isAuthenticated
+                ? renderContent(index, link)
+                : null
+              : renderContent(index, link)
           })
         }
       </HeaderDrawer>
@@ -167,10 +165,11 @@ const Header = () => {
       >
         {
           statistic.map((link, index) => {
-            return <NavButton
-              key={index}
-              onClick={() => { Router.push(link.route) }}
-            >{link.name}</NavButton>
+            return link.protected
+              ? isAuthenticated
+                ? renderContent(index, link)
+                : null
+              : renderContent(index, link)
           })
         }
       </HeaderDrawer>
@@ -182,10 +181,11 @@ const Header = () => {
       >
         {
           aprV2Link.map((link, index) => {
-            return <NavButton
-              key={index}
-              onClick={() => { Router.push(link.route) }}
-            >{link.name}</NavButton>
+            return link.protected
+              ? isAuthenticated
+                ? renderContent(index, link)
+                : null
+              : renderContent(index, link)
           })
         }
       </HeaderDrawer>

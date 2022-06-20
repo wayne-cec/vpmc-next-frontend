@@ -29,6 +29,7 @@ import {
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../lib/marketComapreConst'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
+import { WithNavFooterProtected } from '../../../layout/BaseLayout'
 // import { createTheme } from '@mui/material'
 
 // const theme = createTheme({
@@ -898,4 +899,4 @@ const AprRegion: NextPage = () => {
   )
 }
 
-export default AprRegion
+export default WithNavFooterProtected(AprRegion)

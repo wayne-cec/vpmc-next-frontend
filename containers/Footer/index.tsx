@@ -1,10 +1,25 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import style from './index.module.scss'
 import Router from 'next/router'
-// import { newBuildingLink, preOwnedLink, rentLink } from '../Header'
 import { appraisalAnalysis, onlineSupport, statistic, aprV2Link } from '../Header'
+import { useAuth } from '../../layout/BaseLayout'
+
+const renderContent = (index: number, link: {
+  name: string
+  route: string
+  protected: boolean
+}) => {
+  return (
+    <p key={index}
+      className={style.content}
+      onClick={() => { Router.push(link.route) }}
+    >{link.name}</p>
+  )
+}
 
 const Footer = () => {
+  const { isAuthenticated } = useAuth()
+
   return (
     <footer className={style.footer}>
 
@@ -13,11 +28,11 @@ const Footer = () => {
           <p className={style.title}>估價分析</p>
           {
             appraisalAnalysis.map((link, index) => {
-              return <p
-                key={index}
-                className={style.content}
-                onClick={() => { Router.push(link.route) }}
-              >{link.name}</p>
+              return link.protected
+                ? isAuthenticated
+                  ? renderContent(index, link)
+                  : null
+                : renderContent(index, link)
             })
           }
         </div>
@@ -25,11 +40,11 @@ const Footer = () => {
           <p className={style.title}>線上支援</p>
           {
             onlineSupport.map((link, index) => {
-              return <p
-                key={index}
-                className={style.content}
-                onClick={() => { Router.push(link.route) }}
-              >{link.name}</p>
+              return link.protected
+                ? isAuthenticated
+                  ? renderContent(index, link)
+                  : null
+                : renderContent(index, link)
             })
           }
         </div>
@@ -37,11 +52,11 @@ const Footer = () => {
           <p className={style.title}>統計及行情</p>
           {
             statistic.map((link, index) => {
-              return <p
-                key={index}
-                className={style.content}
-                onClick={() => { Router.push(link.route) }}
-              >{link.name}</p>
+              return link.protected
+                ? isAuthenticated
+                  ? renderContent(index, link)
+                  : null
+                : renderContent(index, link)
             })
           }
         </div>
@@ -49,24 +64,14 @@ const Footer = () => {
           <p className={style.title}>實價登陸2.0</p>
           {
             aprV2Link.map((link, index) => {
-              return <p
-                key={index}
-                className={style.content}
-                onClick={() => { Router.push(link.route) }}
-              >{link.name}</p>
+              return link.protected
+                ? isAuthenticated
+                  ? renderContent(index, link)
+                  : null
+                : renderContent(index, link)
             })
           }
         </div>
-        {/* <div className={style.tree}>
-          <p className={style.title}>店面</p>
-          <p className={style.title}>辦公</p>
-          <p className={style.title}>廠房土地</p>
-        </div>
-
-        <div className={style.tree}>
-          <p className={style.title}>新聞</p>
-          <p className={style.title}>實價登陸2.0</p>
-        </div> */}
       </div>
 
       <div className={style.copyRightContainer}>
