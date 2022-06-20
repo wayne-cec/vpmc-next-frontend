@@ -9,15 +9,32 @@ import classNames from 'classnames'
 import { useState } from 'react'
 import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import Router from 'next/router'
+import api from '../../api'
+import { setUserToken } from '../../store/slice/user'
+import { useDispatch } from 'react-redux'
 
 const Login: NextPage = () => {
+  // const dispatch = useAppDispatch()
+  const dispatch = useDispatch()
+  // const userInfo = useSelector(selectUser)
+  const [email, setemail] = useState<string>('')
+  const [password, setpassword] = useState<string>('')
   const [slideOut, setslideOut] = useState<boolean>(false)
 
   const handleLogin = async () => {
-    setslideOut(true)
-    setTimeout(() => {
-      Router.push('/')
-    }, 1000)
+    const { statusCode, responseContent } = await api.prod.authenticate(email, password)
+    if (statusCode === 200) {
+      console.log(responseContent)
+      dispatch(
+        setUserToken(responseContent.token)
+      )
+      setslideOut(true)
+      setTimeout(() => {
+        Router.push('/')
+      }, 1000)
+    } else {
+
+    }
   }
 
   return (
@@ -52,7 +69,7 @@ const Login: NextPage = () => {
               <VpnKeyIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              Sign in
+              使用者登入
             </Typography>
             <Box component="form" noValidate sx={{ mt: 1 }}>
               <TextField
@@ -60,9 +77,13 @@ const Login: NextPage = () => {
                 required
                 fullWidth
                 id="email"
-                label="Email Address"
+                label="電子郵件"
                 name="email"
                 autoComplete="email"
+                value={email}
+                onChange={(event) => {
+                  setemail(event.target.value)
+                }}
                 autoFocus
               />
               <TextField
@@ -70,15 +91,19 @@ const Login: NextPage = () => {
                 required
                 fullWidth
                 name="password"
-                label="Password"
+                label="密碼"
                 type="password"
                 id="password"
+                value={password}
+                onChange={(event) => {
+                  setpassword(event.target.value)
+                }}
                 autoComplete="current-password"
               />
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label="Remember me"
-              />
+              /> */}
               <Button
                 variant='contained'
                 className='loginBtn'
@@ -86,9 +111,9 @@ const Login: NextPage = () => {
                 onClick={handleLogin}
                 fullWidth
               >
-                Sign In
+                登入
               </Button>
-              <Grid container>
+              {/* <Grid container>
                 <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
@@ -99,7 +124,7 @@ const Login: NextPage = () => {
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
-              </Grid>
+              </Grid> */}
             </Box>
           </Box>
         </Container>

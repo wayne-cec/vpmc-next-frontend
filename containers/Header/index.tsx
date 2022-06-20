@@ -67,7 +67,7 @@ const Header = () => {
         <div className={style.contact}>
           <NavButton
             onClick={() => { Router.push('/login') }}
-            outlined={true}
+            // outlined={true}
             style={{
               paddingTop: '1px',
               paddingBottom: '1px'

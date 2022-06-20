@@ -2,11 +2,14 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import style from '../styles/Home.module.scss'
 import PageHeader from '../containers/PageHeader'
-// import { applyBaseLayout } from '../layout'
 import classNames from 'classnames'
 import 'animate.css'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../store/slice/user'
 
 const Home: NextPage = () => {
+  const userInfo = useSelector(selectUser)
+
   return (
     <>
       <Head>
@@ -15,14 +18,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/yuantai.ico" />
       </Head>
       <main className={classNames({
-        [style.main]: true
-        // ,
-        // 'animate__backInLeft': true
+        [style.main]: true,
+        'animate__animated': true,
+        'animate__backInUp': true,
       })}>
         <PageHeader
-          title={'家，自由輕鬆找到'}
+          // title={'家，自由輕鬆找到'}
+          title={userInfo.token}
         />
-        <p>123123</p>
       </main>
     </>
   )
