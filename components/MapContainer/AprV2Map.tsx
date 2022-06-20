@@ -14,14 +14,13 @@ import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import * as watchUtils from '@arcgis/core/core/watchUtils'
 import * as projection from "@arcgis/core/geometry/projection"
 import { parseCommitee } from '../../lib/parseCommitee'
-import { useDispatch } from 'react-redux'
-import { initCommiteeInExtent } from '../../store/slice/commitee'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 
 export const square = 3.305785
 
 export interface IEsriMap {
   basemap: string
+  onExtentChange: (value: ICommitee[]) => void
 }
 
 const towns: { [key: string]: number[] } = {
@@ -81,8 +80,6 @@ export interface ISimpleCommiteeData {
 }
 
 const AprV2Map = (props: IEsriMap) => {
-  const dispatch = useDispatch()
-
   const fetchTownData = async (map: Map) => {
     const promises: any[] = []
     for (let [key, value] of Object.entries(towns)) {
@@ -281,9 +278,7 @@ const AprV2Map = (props: IEsriMap) => {
       if (layer) {
         // @ts-ignore
         layer.graphics = infoGraphics
-        dispatch(
-          initCommiteeInExtent(commiteeData)
-        )
+        props.onExtentChange(commiteeData)
       }
     })
   }
@@ -326,9 +321,7 @@ const AprV2Map = (props: IEsriMap) => {
           map.findLayerById('townBgLayer').visible = true
           map.findLayerById('townInfoLayer').visible = true
           map.findLayerById('commiteeInfoLayer').visible = false
-          dispatch(
-            initCommiteeInExtent([])
-          )
+          props.onExtentChange([])
         }
       } else {
         map.findLayerById('townBgLayer').visible = false

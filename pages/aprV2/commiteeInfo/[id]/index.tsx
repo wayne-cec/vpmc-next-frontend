@@ -10,8 +10,20 @@ import CommiteeHeader from '../../../../components/CommiteeHeader'
 import CommiteePhoto from '../../../../components/CommiteePhoto'
 import { ICommiteeAprDetail } from '../../../../store/slice/commitee'
 
+export interface ITempCommiteeInfo {
+  id: string
+  date: string
+  organization: string
+  licenseYear: string
+  licenseCode: string
+  coordinate: string
+  address: string
+  license: string
+}
+
 interface IProps {
   commiteeDetail: ICommiteeAprDetail[]
+  commiteeInfo: ITempCommiteeInfo
 }
 
 interface Params extends ParsedUrlQuery {
@@ -21,19 +33,22 @@ interface Params extends ParsedUrlQuery {
 export const getServerSideProps: GetServerSideProps<IProps, Params> = async ({
   params,
 }) => {
-  const api = process.env.API_DOMAIN_PROD + `/api/Commitee/getAprInfo?commiteeId=${params?.id}`
-  const res = await fetch(api, { method: "GET" })
+  let api = process.env.API_DOMAIN_PROD + `/api/Commitee/getAprInfo?commiteeId=${params?.id}`
+  let res = await fetch(api, { method: "GET" })
   const json: ICommiteeAprDetail[] = await res.json()
 
-  console.log(json)
+  api = process.env.API_DOMAIN_PROD + `/api/Commitee/getCommiteeInfoById?commiteeId=${params?.id}`
+  res = await fetch(api, { method: "GET" })
+  const commiteeInfo = await res.json() as ITempCommiteeInfo
   return {
     props: {
-      commiteeDetail: json
+      commiteeDetail: json,
+      commiteeInfo: commiteeInfo
     }
   }
 }
 
-const CommiteeDetail: NextPage<IProps> = ({ commiteeDetail }) => {
+const CommiteeDetail: NextPage<IProps> = ({ commiteeDetail, commiteeInfo }) => {
   const router = useRouter()
   const { id } = router.query
 
@@ -50,6 +65,7 @@ const CommiteeDetail: NextPage<IProps> = ({ commiteeDetail }) => {
         <CommiteePhoto />
         <CommiteeHeader
           commiteeDetail={commiteeDetail}
+          commiteeInfo={commiteeInfo}
         />
       </main>
     </>

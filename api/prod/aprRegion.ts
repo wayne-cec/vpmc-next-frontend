@@ -1,5 +1,11 @@
 import axios from 'axios'
 
+export interface IAprRegionGraphDisplayData {
+  [key: string]: {
+    [key: string]: IResult[] | IResultStatistics
+  }
+}
+
 export interface IResult {
   buildingType: number
   priceWithoutParking: number

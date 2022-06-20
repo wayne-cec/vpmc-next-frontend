@@ -14,9 +14,7 @@ import { setUserToken } from '../../store/slice/user'
 import { useDispatch } from 'react-redux'
 
 const Login: NextPage = () => {
-  // const dispatch = useAppDispatch()
   const dispatch = useDispatch()
-  // const userInfo = useSelector(selectUser)
   const [email, setemail] = useState<string>('')
   const [password, setpassword] = useState<string>('')
   const [slideOut, setslideOut] = useState<boolean>(false)

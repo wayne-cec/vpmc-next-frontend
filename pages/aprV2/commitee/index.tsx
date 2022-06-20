@@ -10,8 +10,8 @@ import doubleRight from '../../../public/aprV2/doubleRight.png'
 import doubleLeft from '../../../public/aprV2/doubleLeft.png'
 import doubleRightHover from '../../../public/aprV2/doubleRight-hover.png'
 import doubleLeftHover from '../../../public/aprV2/doubleLeft-hover.png'
-import { useSelector } from 'react-redux'
-import { selectCommitee } from '../../../store/slice/commitee'
+import { ICommitee } from '../../../components/MapContainer/AprV2Map'
+import { ICommiteeAprDetail } from '../../../store/slice/commitee'
 
 const MapContainer = dynamic(
   () => import('../../../components/MapContainer/AprV2Map'),
@@ -19,9 +19,12 @@ const MapContainer = dynamic(
 )
 
 const AprV2: NextPage = () => {
-  const commiteeInfo = useSelector(selectCommitee)
   const [first, setfirst] = useState<boolean>(false)
   const [drawerBtn, setdrawerBtn] = useState<string>(doubleRight.src)
+  const [commiteeInExtent, setcommiteeInExtent] = useState<ICommitee[]>([])
+  const [currentCommitee, setcurrentCommitee] = useState<ICommitee | undefined>(undefined)
+  const [currentCommiteeAprDetail, setcurrentCommiteeAprDetail] = useState<ICommiteeAprDetail | undefined>(undefined)
+
   return (
     <>
       <Head>
@@ -36,11 +39,12 @@ const AprV2: NextPage = () => {
           onClose={() => { setfirst(false) }}
         >
           {
-            commiteeInfo.commiteeInExtent.length !== 0
+            commiteeInExtent.length !== 0
               ?
-              commiteeInfo.commiteeInExtent.map((commitee, index) => {
+              commiteeInExtent.map((commitee, index) => {
                 return <CommiteeCard key={index}
                   {...commitee}
+                  onClick={setcurrentCommitee}
                 />
               }) :
               <p>範圍內無社區，請放大地圖</p>
@@ -50,7 +54,9 @@ const AprV2: NextPage = () => {
         <div className={style.content}>
 
           <div className={style.mapContainer}>
-            <MapContainer basemap='gray' />
+            <MapContainer basemap='gray'
+              onExtentChange={setcommiteeInExtent}
+            />
           </div>
 
           <div className={style.footer}>

@@ -5,8 +5,6 @@ import Router from 'next/router'
 import { getAge } from '../../lib/calculateAge'
 import { ICommitee } from '../MapContainer/AprV2Map'
 import { parseCommitee } from '../../lib/parseCommitee'
-import { useDispatch } from 'react-redux'
-import { initCurrentCommitee } from '../../store/slice/commitee'
 
 export enum buildingType {
   apartmentComplex = 0, // 住宅大樓(11層含以上有電梯)
@@ -38,37 +36,18 @@ export const buildingTypeDecode: { [key: number]: string } = {
   11: '農舍',
 }
 
-// export interface ICommiteeCard {
-//   id: string
-//   unitPrice: number
-//   commiteeName: string
-//   buildingType: string
-//   address: string
-//   completionDate: string
-//   aprCount: string
-// }
+export interface ICommiteeCard extends ICommitee {
+  onClick: (value: ICommitee) => void
+}
 
-const CommiteeCard = (props: ICommitee) => {
-  const dispatch = useDispatch()
-  const [uniPrice, setuniPrice] = useState<number | undefined>(undefined)
+const CommiteeCard = (props: ICommiteeCard) => {
 
   const handleCommiteeCardClick = () => {
-    dispatch(
-      initCurrentCommitee(props)
-    )
+    props.onClick(props)
     Router.push(`/aprV2/commiteeInfo/${props.id}`)
   }
 
   useEffect(() => {
-    // if (props.value?.avg_unit_price) {
-    //   // console.log(props.value.avg_unit_price)
-    //   try {
-    //     // const unitP = Math.round(Number(props.value.avg_unit_price) * square / 1000) / 10
-    //     // setuniPrice(unitP)
-    //   } catch {
-    //     setuniPrice(undefined)
-    //   }
-    // }
   }, [])
 
 
