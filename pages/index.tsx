@@ -23,8 +23,8 @@ const Home: NextPage = () => {
         'animate__backInUp': true,
       })}>
         <PageHeader
-          // title={'家，自由輕鬆找到'}
-          title={userInfo.token}
+          title={'家，自由輕鬆找到'}
+        // title={userInfo.token}
         />
       </main>
     </>

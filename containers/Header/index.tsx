@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import style from './index.module.scss'
 import Image from 'next/image'
 import NavButton from '../../components/NavButton'
@@ -6,6 +6,9 @@ import MenuDrawer from './MenuDrawer'
 import Router from 'next/router'
 // import classNames from 'classnames'
 import HeaderDrawer from './HeaderDrawer'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectUser, setUserProfile, setUserToken } from '../../store/slice/user'
+import api from '../../api'
 
 export const appraisalAnalysis = [
   { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet' },
@@ -30,11 +33,39 @@ export const aprV2Link = [
 ]
 
 const Header = () => {
+  const dispatch = useDispatch()
+  const userInfo = useSelector(selectUser)
   const [menuDrawerOpen, setmenuDrawerOpen] = useState<boolean>(false)
   const [appAnalysis, setappAnalysis] = useState<boolean>(false)
   const [onlineSup, setonlineSup] = useState<boolean>(false)
   const [staticsOpen, setstaticsOpen] = useState<boolean>(false)
   const [aprV2, setaprV2] = useState<boolean>(false)
+  const [isAuthenticated, setisAuthenticated] = useState<boolean>(false)
+
+  const handleLogout = () => {
+    dispatch(
+      setUserToken('')
+    )
+  }
+
+  useEffect(() => {
+    const validateToken = async () => {
+      if (userInfo.token === '') {
+        setisAuthenticated(false)
+        return
+      }
+      const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
+      if (statusCode === 200) {
+        dispatch(
+          setUserProfile(responseContent)
+        )
+        setisAuthenticated(true)
+      } else {
+        setisAuthenticated(false)
+      }
+    }
+    validateToken()
+  }, [userInfo.token])
 
   return (
     <div className={style.headerContainer}>
@@ -65,14 +96,28 @@ const Header = () => {
           >實價登陸2.0</NavButton>
         </div>
         <div className={style.contact}>
-          <NavButton
-            onClick={() => { Router.push('/login') }}
-            // outlined={true}
-            style={{
-              paddingTop: '1px',
-              paddingBottom: '1px'
-            }}
-          >登入</NavButton>
+          {
+            isAuthenticated
+              ? <><span>您好! {userInfo.userProfile?.username}</span>
+                <NavButton
+                  onClick={handleLogout}
+                  // outlined={true}
+                  style={{
+                    paddingTop: '1px',
+                    paddingBottom: '1px'
+                  }}
+                >登出</NavButton></>
+
+              : <NavButton
+                onClick={() => { Router.push('/login') }}
+                // outlined={true}
+                style={{
+                  paddingTop: '1px',
+                  paddingBottom: '1px'
+                }}
+              >登入</NavButton>
+          }
+
         </div>
 
         <div className={style.burger}>
