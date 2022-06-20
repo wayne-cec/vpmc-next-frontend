@@ -10,7 +10,7 @@ const Unauthorized: NextPage = () => {
         <div
           className={style.bgContainer}
         >
-          <span>401</span>
+          <span>未經授權</span>
         </div>
       </main>
     </>
