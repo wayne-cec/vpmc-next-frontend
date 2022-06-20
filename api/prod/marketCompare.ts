@@ -18,10 +18,11 @@ export interface IMarketCompareResult {
 }
 
 export interface IMarketCompare {
-  longitude: number
-  latitude: number
-  bufferRadius: number
   buildingType: number
+  longitude?: number
+  latitude?: number
+  bufferRadius?: number
+  geojson?: string
   transactionTimeStart?: string
   transactionTimeEnd?: string
   buildingAreaStart?: number
@@ -40,7 +41,13 @@ export interface IGraphData {
 }
 
 export const marketCompare = async (params: IMarketCompare) => {
-  let url = `http://140.122.82.98:9085/api/Analysis/marketCompare?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?buildingType=${params.buildingType}`
+  if (params.longitude && params.latitude && params.bufferRadius) {
+    url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
+  }
+  if (params.geojson) {
+    url += `&geojson=${params.geojson}`
+  }
   if (params.transactionTimeStart && params.transactionTimeEnd) {
     url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
   }
@@ -67,7 +74,13 @@ export const marketCompare = async (params: IMarketCompare) => {
 }
 
 export const marketCompareStatistic = async (params: IMarketCompare) => {
-  let url = `http://140.122.82.98:9085/api/Analysis/marketCompareStatistic?longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}&buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
+  if (params.longitude && params.latitude && params.bufferRadius) {
+    url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
+  }
+  if (params.geojson) {
+    url += `&geojson=${params.geojson}`
+  }
   if (params.transactionTimeStart && params.transactionTimeEnd) {
     url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
   }

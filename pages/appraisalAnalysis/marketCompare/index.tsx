@@ -1,33 +1,56 @@
 import type { NextPage } from 'next'
-import style from './index.module.scss'
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import classNames from 'classnames'
-import Image from 'next/image'
+import MarketCompareResultCard from '../../../components/MarketCompareResultCard'
 import CoordinateSelector from '../../../components/CoordinateSelector'
-import { useState, useRef, useEffect } from 'react'
+import PolygonSketch from '../../../components/PolygonSketch'
+import TabsPanel from '../../../components/TabsPanel'
+import ReactEcharts from 'echarts-for-react'
+import style from './index.module.scss'
+import handler from '../../api/hello'
+import classNames from 'classnames'
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import api from '../../../api'
+import Head from 'next/head'
+import moment from 'moment'
+import { EChartsOption } from 'echarts'
+import { IResultStatistics } from '../../../api/prod'
+import { PolygonSketchMode } from '../../../components/PolygonSketch'
+import { IGraphData } from '../../../api/prod'
+import { useState, useEffect } from 'react'
 import {
-  TextField, Select,
-  MenuItem, InputLabel, FormControl,
-  Checkbox, makeStyles, Grid, Dialog,
-  DialogActions, DialogContent, DialogContentText,
-  DialogTitle, Button
+  TextField, Select, MenuItem,
+  InputLabel, FormControl, Checkbox,
+  Grid, Dialog, DialogActions,
+  DialogContent, DialogContentText,
+  DialogTitle, Button, Radio
 } from '@mui/material'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../lib/marketComapreConst'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
-import moment from 'moment'
-import api from '../../../api'
-import MarketCompareResultCard from '../../../components/MarketCompareResultCard'
-import { IGraphData } from '../../../api/prod'
-import TabsPanel from '../../../components/TabsPanel'
-import ReactEcharts from 'echarts-for-react'
-import { EChartsOption } from 'echarts'
-import { IResultStatistics } from '../../../api/prod'
+// import { createTheme } from '@mui/material'
+
+// const theme = createTheme({
+//   components: {
+//     MuiTypography: {
+//       variants: [
+//         {
+//           props: {
+//             variant: 'bb'
+//           },
+//           style: {
+//             fontSize: 12
+//           }
+//         }
+//       ]
+//     }
+//   }
+// })
 
 const square = 3.305785
+
+export type SpatialQueryType = 'buffer' | 'polygon'
 
 const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
@@ -66,6 +89,7 @@ const AprRegion: NextPage = () => {
   const [age, setage] = useState<number | null>(null)
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
   // const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
+  const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
 
   const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
 
@@ -74,12 +98,14 @@ const AprRegion: NextPage = () => {
   const [errorContent, seterrorContent] = useState<string>('')
 
   const [graphData, setgraphData] = useState<IGraphData | null>(null)
+  const [spatialQueryType, setspatialQueryType] = useState<SpatialQueryType>('buffer')
+  const [sketchMode, setsketchMode] = useState<PolygonSketchMode>('inactive')
 
-  const handleCoordinateSelect = async (longitude: number, latitude: number) => {
+  const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
     setlongitude(longitude)
     setlatitude(latitude)
     setisCoordinateSelectorActive(false)
-    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude, latitude)
+    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude!, latitude!)
     if (statusCode === 200) {
       setlocatedCounty(responseContent.countyname)
       setlocatedTown(responseContent.townname)
@@ -87,16 +113,37 @@ const AprRegion: NextPage = () => {
       setlocatedCounty(null)
       setlocatedTown(null)
     }
+
+  }
+
+  const handleDraw = () => {
+    setsketchMode('draw')
+
+  }
+
+  const handleClear = () => {
+    setsketchMode('inactive')
   }
 
   const handleFormSubmit = async () => {
-    if (longitude !== null && latitude !== null && bufferRadius !== null && assetTypeCode !== null) {
+    if (assetTypeCode !== null) {
+      // alert(spatialQueryType)
       const params: IMarketCompare = {
-        longitude: longitude,
-        latitude: latitude,
-        bufferRadius: bufferRadius,
         buildingType: assetTypeCode
       }
+      if (longitude !== null && latitude !== null && bufferRadius !== null && spatialQueryType === 'buffer') {
+        params.longitude = longitude
+        params.latitude = latitude
+        params.bufferRadius = bufferRadius
+      } else if (polygonGoejson !== null && spatialQueryType === 'polygon') {
+        params.geojson = polygonGoejson
+      } else {
+        setmsgOpen(true)
+        seterrorTitle('警告')
+        seterrorContent('至少選擇一種空間查詢方法')
+        return
+      }
+
       if (isTransactionTimeFiltered && transactionTime) {
         const dateNow = new Date()
         params.transactionTimeStart = moment(dateNow).add(-transactionTime, 'year').format('YYYY/MM/DD')
@@ -171,7 +218,7 @@ const AprRegion: NextPage = () => {
     } else {
       setmsgOpen(true)
       seterrorTitle('警告')
-      seterrorContent('請輸入勘估點座標')
+      seterrorContent('請輸入資產類別')
     }
   }
 
@@ -192,7 +239,11 @@ const AprRegion: NextPage = () => {
       </Head>
       <div className={style.main}>
 
-        <div className={style.panel}>
+        <div className={classNames({
+          [style.panel]: true,
+          'animate__animated': true,
+          'animate__backInLeft': true
+        })}>
           <div className={style.filterGroup}>
 
             <div className={classNames({
@@ -205,6 +256,7 @@ const AprRegion: NextPage = () => {
                 locatedCounty={locatedCounty}
                 locatedTown={locatedTown}
                 active={isSelectorActive}
+                enabled={spatialQueryType === 'buffer'}
                 onClick={() => {
                   setisCoordinateSelectorActive(prev => !prev)
                 }}
@@ -218,7 +270,7 @@ const AprRegion: NextPage = () => {
 
               <Grid container spacing={2}>
 
-                <Grid item xs={8}>
+                <Grid item xs={12}>
                   <FormControl size='small' fullWidth>
                     <InputLabel id="asset-type">資產類型*</InputLabel>
                     <Select
@@ -226,7 +278,6 @@ const AprRegion: NextPage = () => {
                       label="資產類型"
                       id="asset-type-select"
                       value={assetTypeCode}
-                      // value={''}
                       onChange={(event) => { setassetTypeCode(Number(event.target.value)) }}
                       size='small'
                       fullWidth
@@ -242,16 +293,53 @@ const AprRegion: NextPage = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={4}>
+
+                {/* 搜索範圍 */}
+                <Grid item xs={2}>
+                  <Radio
+                    checked={spatialQueryType === 'buffer'}
+                    onChange={() => {
+                      setspatialQueryType('buffer')
+                    }}
+                    value="a"
+                    name="radio-buttons"
+                    inputProps={{ 'aria-label': 'A' }}
+                  />
+                </Grid>
+                <Grid item xs={5}>
                   <TextField
                     type='number'
                     label="勘估標的距離(m)"
                     size='small'
                     InputProps={{ inputProps: { min: 0 } }}
                     value={bufferRadius}
-                    // value={''}
                     onChange={(event) => { setbufferRadius(Number(event.target.value)) }}
+                    disabled={spatialQueryType !== 'buffer'}
+                    fullWidth
                   ></TextField>
+                </Grid>
+                <Grid item xs={2}>
+                  <Radio
+                    checked={spatialQueryType === 'polygon'}
+                    onChange={() => {
+                      setspatialQueryType('polygon')
+                      setisCoordinateSelectorActive(false)
+                    }}
+                    value="a"
+                    name="radio-buttons"
+                    inputProps={{ 'aria-label': 'A' }}
+                  />
+                </Grid>
+                <Grid item xs={3}
+                  className={style.polygonSketchContainer}
+                >
+                  <PolygonSketch
+                    active={spatialQueryType === 'polygon'}
+                    mode={sketchMode}
+                    onModeChange={setsketchMode}
+                    onDraw={handleDraw}
+                    onClear={handleClear}
+                  />
                 </Grid>
 
                 {/* 交易時間 */}
@@ -591,10 +679,17 @@ const AprRegion: NextPage = () => {
                 filteredResults && filteredResults.length !== 0
                   ?
                   <>
-                    <p className={style.resultStatus}>共有
-                      <span className={style.count}>{filteredResults.length}</span>
-                      筆實價登陸紀錄
-                    </p>
+                    <div className={style.resultHeader}>
+                      <span className={style.resultStatus}>共有
+                        <span className={style.count}>{filteredResults.length}</span>
+                        筆實價登陸紀錄
+                      </span>
+                      <span className={style.closeBtn}
+                        onClick={() => {
+                          setfilteredResults(null)
+                        }}
+                      >✖</span>
+                    </div>
                     <div className={style.aprRecordGroup}>
                       {
                         filteredResults.map((result, index) => {
@@ -760,7 +855,11 @@ const AprRegion: NextPage = () => {
               active={isSelectorActive}
               bufferRadius={bufferRadius!}
               filteredResults={filteredResults!}
+              spatialQueryType={spatialQueryType}
+              sketchMode={sketchMode}
               onCoordinateSelect={handleCoordinateSelect}
+              onSketchModeChange={setsketchMode}
+              onGeojsonChange={setpolygonGoejson}
             />
           </div>
         </div>
@@ -788,7 +887,7 @@ const AprRegion: NextPage = () => {
               setmsgOpen(false)
               seterrorTitle('')
               seterrorContent('')
-            }} autoFocus>
+            }}>
               確認
             </Button>
           </DialogActions>

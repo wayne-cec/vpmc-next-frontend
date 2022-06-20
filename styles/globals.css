@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.loginBtn{
+  background-color: #1976d2 !important;
+}
+
 html,
 body {
   padding: 0;
@@ -66,4 +70,13 @@ background-image: linear-gradient(315deg, #f8f9d2 0%, #e8dbfc 74%); */
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
+}
+
+.esri-expand__content{
+  max-height: 300px !important;
+  overflow-y: auto !important;
+  z-index: 100 !important;
+}
+.esri-basemap-gallery{
+  max-height: 300px !important;
 }

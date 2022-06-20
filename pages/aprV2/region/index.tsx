@@ -6,17 +6,11 @@ import Head from 'next/head'
 import CountySelector from '../../../components/CountySelector'
 import TownSelector from '../../../components/TownSelector'
 import Image from 'next/image'
-import { useDispatch, useSelector } from 'react-redux'
-import {
-  initAprRegionCounty,
-  selectAprRegion, initAprRegionTown,
-  initAprRegionDisplayData,
-  initCountyData,
-  initTownData
-} from '../../../store/slice/aprRegion'
 import api from '../../../api'
 import TabsPanel from '../../../components/TabsPanel'
 import { useEffect, useState } from 'react'
+import classNames from 'classnames'
+import { ICountyData, ITownData, IAprRegionGraphDisplayData } from '../../../api/prod'
 
 const RegionMapContainer = dynamic(
   () => import('../../../components/MapContainer/AprRegionMap'),
@@ -91,14 +85,17 @@ const townData: { [key: string]: { name: string, marked: boolean }[] } = {
 }
 
 const AprRegion: NextPage = () => {
-  const dispatch = useDispatch()
-  const aprRegionInfo = useSelector(selectAprRegion)
   const [townGeojson, settownGeojson] = useState<any | null>(null)
+  const [county, setcounty] = useState<string | null>(null)
+  const [town, settown] = useState<string | null>(null)
+  const [displayData, setdisplayData] = useState<IAprRegionGraphDisplayData | null>(null)
+  const [countyData, setcountyData] = useState<ICountyData | null>(null)
+  const [townData, settownData] = useState<ITownData | null>(null)
 
   const handleFetchTownGeography = async () => {
     const { statusCode, responseContent } = await api.prod.getVillageGeographyByTown(
-      aprRegionInfo.county!,
-      aprRegionInfo.town!
+      county!,
+      town!
     )
     if (statusCode === 200) {
       settownGeojson(responseContent)
@@ -106,11 +103,9 @@ const AprRegion: NextPage = () => {
   }
 
   const handleSearch = async () => {
-    const { statusCode, responseContent } = await api.prod.getTownInfo(aprRegionInfo.county!, aprRegionInfo.town!)
+    const { statusCode, responseContent } = await api.prod.getTownInfo(county!, town!)
     if (statusCode === 200) {
-      dispatch(
-        initAprRegionDisplayData(responseContent)
-      )
+      setdisplayData(responseContent)
       await handleFetchTownGeography()
     }
   }
@@ -118,9 +113,7 @@ const AprRegion: NextPage = () => {
   const reFetchTownData = async (county: string) => {
     const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
     if (statusCode === 200) {
-      dispatch(
-        initTownData(responseContent2)
-      )
+      settownData(responseContent2)
     }
   }
 
@@ -128,14 +121,12 @@ const AprRegion: NextPage = () => {
     const fetchDefaultCountyData = async () => {
       const { statusCode, responseContent } = await api.prod.listCountiesByRegion()
       if (statusCode === 200) {
-        dispatch(
-          initCountyData(responseContent)
-        )
+        setcountyData(responseContent)
+        setcounty(responseContent['北部'][0].name)
         const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(responseContent['北部'][0].name)
         if (statusCode === 200) {
-          dispatch(
-            initTownData(responseContent2)
-          )
+          settownData(responseContent2)
+          settown(responseContent2['鄉鎮市區'][0].name)
         }
       }
     }
@@ -151,28 +142,28 @@ const AprRegion: NextPage = () => {
       </Head>
       <div className={style.main}>
 
-        <div className={style.panel}>
+        <div className={classNames({
+          [style.panel]: true,
+          'animate__animated': true,
+          'animate__backInLeft': true
+        })}>
 
           <div className={style.filterGroup}>
 
             <CountySelector
-              countyData={aprRegionInfo.countyData!}
-              selectedCounty={aprRegionInfo.county}
+              countyData={countyData!}
+              selectedCounty={county}
               onCountyChange={(county) => {
-                dispatch(
-                  initAprRegionCounty(county)
-                )
+                setcounty(county)
                 reFetchTownData(county)
               }}
             />
 
             <TownSelector
-              townData={aprRegionInfo.townData!}
-              selectedTown={aprRegionInfo.town}
+              townData={townData!}
+              selectedTown={town}
               onTownChange={(town) => {
-                dispatch(
-                  initAprRegionTown(town)
-                )
+                settown(town)
               }}
             />
 
@@ -188,9 +179,9 @@ const AprRegion: NextPage = () => {
 
           <div className={style.graphGroup}>
             {
-              aprRegionInfo.displayData
+              displayData
                 ? <TabsPanel
-                  displayData={aprRegionInfo.displayData}
+                  displayData={displayData}
                 ></TabsPanel>
                 : <></>
             }

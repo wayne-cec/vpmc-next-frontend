@@ -14,14 +14,13 @@ import SpatialReference from "@arcgis/core/geometry/SpatialReference"
 import * as watchUtils from '@arcgis/core/core/watchUtils'
 import * as projection from "@arcgis/core/geometry/projection"
 import { parseCommitee } from '../../lib/parseCommitee'
-import { useDispatch } from 'react-redux'
-import { initCommiteeInExtent } from '../../store/slice/commitee'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 
 export const square = 3.305785
 
 export interface IEsriMap {
   basemap: string
+  onExtentChange: (value: ICommitee[]) => void
 }
 
 const towns: { [key: string]: number[] } = {
@@ -81,13 +80,11 @@ export interface ISimpleCommiteeData {
 }
 
 const AprV2Map = (props: IEsriMap) => {
-  const dispatch = useDispatch()
-
   const fetchTownData = async (map: Map) => {
     const promises: any[] = []
     for (let [key, value] of Object.entries(towns)) {
       promises.push(
-        fetch(`http://140.122.82.98:9085/api/Commitee/listTownAvg?county=新北市&town=${key}&startDate=2021-01-01&endDate=2022-01-01`, {
+        fetch(process.env.API_DOMAIN_PROD + `/api/Commitee/listTownAvg?county=新北市&town=${key}&startDate=2021-01-01&endDate=2022-01-01`, {
           method: 'GET',
           redirect: 'follow'
         })
@@ -185,7 +182,7 @@ const AprV2Map = (props: IEsriMap) => {
   const fetchCommiteeByExtent = async (map: Map, extent: Extent, WGS84: SpatialReference) => {
     const convertedExtent = projection.project(extent, WGS84) as Extent
     const response = await fetch(
-      `http://140.122.82.98:9085/api/Commitee/listCommiteeByExtent?xmin=${convertedExtent.xmin}&ymin=${convertedExtent.ymin}&xmax=${convertedExtent.xmax}&ymax=${convertedExtent.ymax}`,
+      process.env.API_DOMAIN_PROD + `/api/Commitee/listCommiteeByExtent?xmin=${convertedExtent.xmin}&ymin=${convertedExtent.ymin}&xmax=${convertedExtent.xmax}&ymax=${convertedExtent.ymax}`,
       {
         method: 'GET',
         redirect: 'follow'
@@ -196,7 +193,7 @@ const AprV2Map = (props: IEsriMap) => {
     const promises: any[] = []
     for (let i = 0; i < commiteeData.length; i++) {
       promises.push(
-        fetch(`http://140.122.82.98:9085/api/Commitee/getSimpleInfo?commiteeId=${commiteeData[i].id}&bufferRadius=35`, {
+        fetch(process.env.API_DOMAIN_PROD + `/api/Commitee/getSimpleInfo?commiteeId=${commiteeData[i].id}&bufferRadius=35`, {
           method: 'GET',
           redirect: 'follow'
         })
@@ -281,9 +278,7 @@ const AprV2Map = (props: IEsriMap) => {
       if (layer) {
         // @ts-ignore
         layer.graphics = infoGraphics
-        dispatch(
-          initCommiteeInExtent(commiteeData)
-        )
+        props.onExtentChange(commiteeData)
       }
     })
   }
@@ -326,9 +321,7 @@ const AprV2Map = (props: IEsriMap) => {
           map.findLayerById('townBgLayer').visible = true
           map.findLayerById('townInfoLayer').visible = true
           map.findLayerById('commiteeInfoLayer').visible = false
-          dispatch(
-            initCommiteeInExtent([])
-          )
+          props.onExtentChange([])
         }
       } else {
         map.findLayerById('townBgLayer').visible = false

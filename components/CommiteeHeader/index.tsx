@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import style from './index.module.scss'
-import { useSelector } from 'react-redux'
-import { selectCommitee } from '../../store/slice/commitee'
 import { parseCommitee } from '../../lib/parseCommitee'
 import { ICommiteeAprDetail } from '../../store/slice/commitee'
+import { ITempCommiteeInfo } from '../../pages/aprV2/commiteeInfo/[id]'
 
 export interface ICommiteeHeader {
   commiteeDetail: ICommiteeAprDetail[]
+  commiteeInfo: ITempCommiteeInfo
 }
 
 const CommiteeHeader = (props: ICommiteeHeader) => {
-  const commiteeInfo = useSelector(selectCommitee)
-
   return (
     <div className={style.commiteeHeader}>
       <p className={style.commiteeTitle}>
         {
-          parseCommitee(commiteeInfo.currentCommitee?.organization!)
+          parseCommitee(props.commiteeInfo.organization)
         }
       </p>
 

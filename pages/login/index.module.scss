@@ -1,0 +1,9 @@
+.login{
+    @apply w-screen h-screen bg-main-primary
+    flex items-center justify-center overflow-hidden;
+    .loginForm{
+        @apply w-[400px] h-fit min-h-[500px] bg-white shadow-2xl 
+        rounded-xl;
+        
+    }
+}

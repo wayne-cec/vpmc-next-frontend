@@ -17,3 +17,15 @@ export function createGeoJSONURL (geojson: any) {
     })
   )
 }
+
+export const createElementFromHTML = (htmlString: string) => {
+  var div = document.createElement('div')
+  div.innerHTML = htmlString.trim()
+  // div.dangerouslySetInnerHTML = {}
+  // dangerouslySetInnerHTML={{__html: `
+  //   <button onClick="alert('hello')" >Detalii</button>
+  // `}
+
+  // Change this to div.childNodes to support multiple top-level nodes.
+  return div
+}

@@ -1,0 +1,40 @@
+.polygonSketch{
+    @apply bg-transparent w-full h-[40px]
+    rounded border border-border flex items-center
+    justify-evenly relative;
+    .legend{
+        @apply text-red-600 text-xs m-0 px-1
+        absolute -top-3 left-2 bg-white font-normal;
+        color: rgba(0, 0, 0, 0.38);
+    }
+    &.active{
+        .legend{
+            color: rgba(0, 0, 0, 0.6);
+        }
+        &:hover{
+            @apply border-black;
+        }
+    }
+    .btnContainer{
+        @apply h-fit w-fit px-2 py-1 rounded
+        bg-transparent flex items-center;
+        &.active{
+            @apply cursor-pointer;
+            &:hover{
+                background-color: rgba(0, 97, 155, 0.05);
+            }
+        }
+        &.focus{
+            background-color: rgba(0, 97, 155, 0.05);
+        }
+    }
+    @mixin textNoneSelectable {
+        -webkit-touch-callout: none; 
+        -webkit-user-select: none;
+        -khtml-user-select: none; 
+        -moz-user-select: none; 
+        -ms-user-select: none; 
+        user-select: none; 
+    }
+    @include textNoneSelectable()
+}

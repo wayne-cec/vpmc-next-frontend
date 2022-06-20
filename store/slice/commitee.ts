@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { ICommitee } from '../../components/MapContainer/AprV2Map'
+import { persistConfig } from '../config'
+import { persistReducer } from 'redux-persist'
 
 export interface ICommiteeAprDetail {
   transactionTime: string
@@ -15,7 +17,7 @@ export interface ICommiteeAprDetail {
   price: number
 }
 
-interface IInitialState {
+interface ICommiteeState {
   commiteeInExtent: ICommitee[]
   currentCommitee: ICommitee | undefined
   currentCommiteeAprDetail: ICommiteeAprDetail | undefined
@@ -25,7 +27,7 @@ const init = {
   commiteeInExtent: [],
   currentCommitee: undefined,
   currentCommiteeAprDetail: undefined
-} as IInitialState
+} as ICommiteeState
 
 interface IInitCommiteeAction {
   payload: ICommitee[]
@@ -46,25 +48,28 @@ export const commiteeSlice = createSlice({
   name: 'commitee',
   initialState: init,
   reducers: {
-    initCommiteeInExtent: (state: IInitialState, action: IInitCommiteeAction) => {
+    initCommiteeInExtent: (state: ICommiteeState, action: IInitCommiteeAction) => {
       state.commiteeInExtent = action.payload
     },
-    initCurrentCommitee: (state: IInitialState, action: IInitCurrentCommiteeAction) => {
+    initCurrentCommitee: (state: ICommiteeState, action: IInitCurrentCommiteeAction) => {
       state.currentCommitee = action.payload
     }
     ,
-    initCurrentCommiteeAprDetail: (state: IInitialState, action: IInitCurrentCommiteeAprDetailAction) => {
+    initCurrentCommiteeAprDetail: (state: ICommiteeState, action: IInitCurrentCommiteeAprDetailAction) => {
       state.currentCommiteeAprDetail = action.payload
     }
   }
 })
 
 export const selectCommitee = (state: any) => {
-  return state.commitee as IInitialState
+  return state.commitee as ICommiteeState
 }
 export const {
   initCommiteeInExtent,
   initCurrentCommitee,
   initCurrentCommiteeAprDetail
 } = commiteeSlice.actions
-export default commiteeSlice.reducer
+
+const commiteeReducer = persistReducer<ICommiteeState>(persistConfig, commiteeSlice.reducer)
+
+export default commiteeReducer

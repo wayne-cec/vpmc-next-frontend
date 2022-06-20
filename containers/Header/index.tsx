@@ -66,9 +66,13 @@ const Header = () => {
         </div>
         <div className={style.contact}>
           <NavButton
-            onClick={() => { Router.push('/introduction/contact') }}
-            outlined={true}
-          >聯絡我們</NavButton>
+            onClick={() => { Router.push('/login') }}
+            // outlined={true}
+            style={{
+              paddingTop: '1px',
+              paddingBottom: '1px'
+            }}
+          >登入</NavButton>
         </div>
 
         <div className={style.burger}>

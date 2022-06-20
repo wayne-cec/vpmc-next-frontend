@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { ICountyData, IResult, IResultStatistics, ITownData } from '../../api/prod/aprRegion'
+import { persistConfig } from '../config'
+import { persistReducer } from 'redux-persist'
 
-interface IInitialState {
+interface IAprRegionState {
   county: string | null
   town: string | null
   displayData: {
@@ -19,7 +21,7 @@ const init = {
   displayData: null,
   countyData: null,
   townData: null
-} as IInitialState
+} as IAprRegionState
 
 interface IArpRegionAction {
   payload: string
@@ -49,20 +51,20 @@ export const aprRegionSlice = createSlice({
   name: 'aprRegion',
   initialState: init,
   reducers: {
-    initAprRegionCounty: (state: IInitialState, action: IArpRegionAction) => {
+    initAprRegionCounty: (state: IAprRegionState, action: IArpRegionAction) => {
       state.county = action.payload
     },
-    initAprRegionTown: (state: IInitialState, action: IArpRegionAction) => {
+    initAprRegionTown: (state: IAprRegionState, action: IArpRegionAction) => {
       state.town = action.payload
     },
-    initAprRegionDisplayData: (state: IInitialState, action: IArpRegionDisplayAction) => {
+    initAprRegionDisplayData: (state: IAprRegionState, action: IArpRegionDisplayAction) => {
       state.displayData = action.payload
     },
-    initCountyData: (state: IInitialState, action: IInitCountyDataAction) => {
+    initCountyData: (state: IAprRegionState, action: IInitCountyDataAction) => {
       state.countyData = action.payload
       state.county = action.payload['北部'][0].name
     },
-    initTownData: (state: IInitialState, action: IInitTownDataAction) => {
+    initTownData: (state: IAprRegionState, action: IInitTownDataAction) => {
       state.townData = action.payload
       state.town = action.payload['鄉鎮市區'][0].name
     }
@@ -70,7 +72,7 @@ export const aprRegionSlice = createSlice({
 })
 
 export const selectAprRegion = (state: any) => {
-  return state.aprRegion as IInitialState
+  return state.aprRegion as IAprRegionState
 }
 
 export const {
@@ -81,4 +83,7 @@ export const {
   initTownData
 } = aprRegionSlice.actions
 
-export default aprRegionSlice.reducer
+
+const aprRegionReducer = persistReducer<IAprRegionState>(persistConfig, aprRegionSlice.reducer)
+
+export default aprRegionReducer

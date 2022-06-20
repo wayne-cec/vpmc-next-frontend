@@ -1,0 +1,7 @@
+.testWidget{
+    @apply border border-main-primary p-4 text-main-primary bg-white;
+    transition: 0.2s;
+    &:hover{
+        @apply bg-main-primary text-white;
+    }
+}

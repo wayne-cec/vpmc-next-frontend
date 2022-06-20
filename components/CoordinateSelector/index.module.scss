@@ -1,6 +1,15 @@
 .coordinateSelector{
-    @apply w-full h-[40px] rounded-md border 
-    border-border cursor-pointer flex items-center justify-between px-2;
+    @apply w-full h-[40px] rounded border 
+    border-border flex items-center justify-between px-2 text-border;
+    &.active{
+        @apply border-main-primary;
+    }
+    &.enabled{
+        @apply cursor-pointer text-black;
+        &:hover{
+            @apply border-black;
+        }
+    }
     .titleContainer{
         @apply flex items-center;
         p{
@@ -21,9 +30,6 @@
         color: #999;
         font-size: 12px;
         margin-left: auto;
-    }
-    &.active{
-        @apply border-main-primary;
     }
     @mixin textNoneSelectable {
         -webkit-touch-callout: none; 
