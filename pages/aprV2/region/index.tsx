@@ -17,6 +17,7 @@ import {
 import api from '../../../api'
 import TabsPanel from '../../../components/TabsPanel'
 import { useEffect, useState } from 'react'
+import classNames from 'classnames'
 
 const RegionMapContainer = dynamic(
   () => import('../../../components/MapContainer/AprRegionMap'),
@@ -151,7 +152,11 @@ const AprRegion: NextPage = () => {
       </Head>
       <div className={style.main}>
 
-        <div className={style.panel}>
+        <div className={classNames({
+          [style.panel]: true,
+          'animate__animated': true,
+          'animate__backInLeft': true
+        })}>
 
           <div className={style.filterGroup}>
 

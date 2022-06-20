@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.loginBtn{
+  background-color: #1976d2 !important;
+}
+
 html,
 body {
   padding: 0;

@@ -1,16 +1,27 @@
 import type { NextPage } from 'next'
-import style from './index.module.scss'
-import dynamic from 'next/dynamic'
-import Head from 'next/head'
-import classNames from 'classnames'
-import Image from 'next/image'
+import MarketCompareResultCard from '../../../components/MarketCompareResultCard'
 import CoordinateSelector from '../../../components/CoordinateSelector'
-import { useState, useRef, useEffect } from 'react'
+import PolygonSketch from '../../../components/PolygonSketch'
+import TabsPanel from '../../../components/TabsPanel'
+import ReactEcharts from 'echarts-for-react'
+import style from './index.module.scss'
+import handler from '../../api/hello'
+import classNames from 'classnames'
+import dynamic from 'next/dynamic'
+import Image from 'next/image'
+import api from '../../../api'
+import Head from 'next/head'
+import moment from 'moment'
+import { EChartsOption } from 'echarts'
+import { IResultStatistics } from '../../../api/prod'
+import { PolygonSketchMode } from '../../../components/PolygonSketch'
+import { IGraphData } from '../../../api/prod'
+import { useState, useEffect } from 'react'
 import {
-  TextField, Select,
-  MenuItem, InputLabel, FormControl,
-  Checkbox, makeStyles, Grid, Dialog,
-  DialogActions, DialogContent, DialogContentText,
+  TextField, Select, MenuItem,
+  InputLabel, FormControl, Checkbox,
+  Grid, Dialog, DialogActions,
+  DialogContent, DialogContentText,
   DialogTitle, Button, Radio
 } from '@mui/material'
 import {
@@ -18,17 +29,24 @@ import {
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../lib/marketComapreConst'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
-import moment from 'moment'
-import api from '../../../api'
-import MarketCompareResultCard from '../../../components/MarketCompareResultCard'
-import { IGraphData } from '../../../api/prod'
-import TabsPanel from '../../../components/TabsPanel'
-import ReactEcharts from 'echarts-for-react'
-import { EChartsOption } from 'echarts'
-import { IResultStatistics } from '../../../api/prod'
-import PolygonSketch from '../../../components/PolygonSketch'
-import handler from '../../api/hello'
-import { PolygonSketchMode } from '../../../components/PolygonSketch'
+// import { createTheme } from '@mui/material'
+
+// const theme = createTheme({
+//   components: {
+//     MuiTypography: {
+//       variants: [
+//         {
+//           props: {
+//             variant: 'bb'
+//           },
+//           style: {
+//             fontSize: 12
+//           }
+//         }
+//       ]
+//     }
+//   }
+// })
 
 const square = 3.305785
 
@@ -221,7 +239,11 @@ const AprRegion: NextPage = () => {
       </Head>
       <div className={style.main}>
 
-        <div className={style.panel}>
+        <div className={classNames({
+          [style.panel]: true,
+          'animate__animated': true,
+          'animate__backInLeft': true
+        })}>
           <div className={style.filterGroup}>
 
             <div className={classNames({
@@ -256,7 +278,6 @@ const AprRegion: NextPage = () => {
                       label="資產類型"
                       id="asset-type-select"
                       value={assetTypeCode}
-                      // value={''}
                       onChange={(event) => { setassetTypeCode(Number(event.target.value)) }}
                       size='small'
                       fullWidth
