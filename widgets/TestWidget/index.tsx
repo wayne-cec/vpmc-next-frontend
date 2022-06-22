@@ -35,20 +35,24 @@ export class Car extends React.Component {
   }
 }
 
+
 @decorators.subclass('esri.widgets.Car2')
 export class Car2 extends Widget {
+
+  // constructor(params?: any) {
+  //   super(params);
+  //   this._onNameUpdate = this._onNameUpdate.bind(this);
+  // }
+
   render () {
     return (
-      // <button className={style.testWidget}
-      //   onClick={() => {
-      //     alert('aaaaaa')
-      //   }}
-      // >
-      //   My Button 2
-      // </button>
-      <div>
-        asdasdads
-      </div>
+      <button className={style.testWidget}
+        onClick={() => {
+          alert('aaaaaa')
+        }}
+      >
+        My Button 2
+      </button>
     )
   }
 }

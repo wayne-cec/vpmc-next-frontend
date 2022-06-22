@@ -3,10 +3,7 @@ import Map from "@arcgis/core/Map"
 import MapView from "@arcgis/core/views/MapView"
 import Expand from '@arcgis/core/widgets/Expand'
 import BasemapGallery from '@arcgis/core/widgets/BasemapGallery'
-// import { renderToStaticMarkup } from 'react-dom/server'
-// import { createElementFromHTML } from '../lib/calculateAge'
-// import TestWidget, { Car } from '../widgets/TestWidget'
-// import { renderToString } from 'react-dom/server'
+import Measurement from '../widgets/Measurement'
 
 export type UseMapParams = {
   mapOption?: __esri.MapProperties
@@ -88,7 +85,16 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         content: basemapGallery
       })
 
-      mapView.ui.add(basemapGalleryExpand, 'bottom-left')
+      const measurement = new Measurement({})
+      // const measurementExpand = new Expand({
+      //   expandIconClass: "esri-icon-basemap",
+      //   view: mapView,
+      //   content: measurement
+      // })
+
+      mapView.ui.add(basemapGallery, 'bottom-left')
+      mapView.ui.add(measurement, 'top-right')
+
       mapViewRef.current = mapView
       mapViewStack.current.setObject(mapView)
     }
