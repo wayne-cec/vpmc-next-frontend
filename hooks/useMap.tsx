@@ -85,15 +85,19 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         content: basemapGallery
       })
 
-      const measurement = new Measurement({})
+      const measurement = new Measurement({
+        map: mapStack.current.obj,
+        mapView: mapView
+      })
       // const measurementExpand = new Expand({
       //   expandIconClass: "esri-icon-basemap",
       //   view: mapView,
       //   content: measurement
       // })
-
       mapView.ui.add(basemapGallery, 'bottom-left')
       mapView.ui.add(measurement, 'top-right')
+
+
 
       mapViewRef.current = mapView
       mapViewStack.current.setObject(mapView)

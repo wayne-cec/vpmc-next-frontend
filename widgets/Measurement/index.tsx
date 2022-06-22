@@ -8,7 +8,8 @@ import MapView from '@arcgis/core/views/MapView'
 import { subclass } from '@arcgis/core/core/accessorSupport/decorators'
 
 interface IMeasurementParam extends __esri.WidgetProperties {
-
+  map: Map
+  mapView: MapView
 }
 
 
