@@ -9,6 +9,7 @@ import style from './index.module.scss'
 import CommiteeHeader from '../../../../components/CommiteeHeader'
 import CommiteePhoto from '../../../../components/CommiteePhoto'
 import { ICommiteeAprDetail } from '../../../../store/slice/commitee'
+import { WithNavFooterProtected } from '../../../../layout/BaseLayout'
 
 export interface ITempCommiteeInfo {
   id: string
@@ -72,4 +73,4 @@ const CommiteeDetail: NextPage<IProps> = ({ commiteeDetail, commiteeInfo }) => {
   )
 }
 
-export default CommiteeDetail
+export default WithNavFooterProtected(CommiteeDetail)

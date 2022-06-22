@@ -4,7 +4,7 @@
     @media(max-width: 1100px){
         @apply flex flex-col;
     }
-    .panel{ 
+    .queryPanel{ 
         @apply flex flex-col h-fit absolute z-10 bg-white m-2 p-4 rounded-md
         shadow-md w-[430px];
         @media(max-width: 1100px){
@@ -55,27 +55,28 @@
                 }
             }
         }
-        .resultGroup{
-            @apply hidden;
-            @media(max-width: 1100px){
-                @apply block;
-            }
-            .resultStatus{
-                @apply text-right text-lg;
-                .count{
-                    @apply text-red-500;
-                }
-            }
-            .graphGroup{
-                @apply w-full h-[280px] overflow-y-auto bg-transparent;
-            }
-        }
     }
     .resultPanel{
         @apply flex flex-col h-[80%] absolute z-10 bg-white m-2 p-4 rounded-md
         shadow-md w-[600px] right-0 max-h-[800px] overflow-y-auto;
         @media(max-width: 1100px){
             @apply hidden;
+        }
+        
+        .resultGroup{
+            @apply hidden;
+            @media(max-width: 1100px){
+                @apply block;
+            }
+            // .resultStatus{
+            //     @apply text-right text-lg;
+            //     .count{
+            //         @apply text-red-500;
+            //     }
+            // }
+            // .graphGroup{
+            //     @apply w-full h-[280px] overflow-y-auto bg-transparent;
+            // }
         }
         .resultHeader{
             @apply flex items-center justify-between;
@@ -105,6 +106,7 @@
                 @apply text-xl;
             }
         }
+        
     }
     .content{
         @apply w-full h-full bg-transparent absolute z-0;

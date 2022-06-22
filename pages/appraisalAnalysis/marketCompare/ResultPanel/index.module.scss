@@ -1,0 +1,47 @@
+@import '../../../../styles/Animate.module.scss';
+
+.resultPanel{
+    @apply hidden flex-col h-[80%] absolute z-10 bg-white m-2 p-4 rounded-md
+    shadow-md w-[600px] right-0 max-h-[800px] overflow-y-auto;
+    @media(max-width: 1100px){
+        @apply hidden;
+    }
+    &.slideIn{
+        @apply flex;
+        @include animate-css(bounceInRight); // fadeInRight
+    }
+    &.slideOut{
+        @apply flex;
+        @include animate-css(bounceOutRight); // fadeOutRight
+    }
+    
+    .resultHeader{
+        @apply flex items-center justify-between;
+        .resultStatus{
+            @apply text-2xl;
+            .count{
+                @apply text-red-500;
+            }
+        }
+        .closeBtn{
+            @apply text-2xl cursor-pointer;
+        }
+    }
+    .aprRecordGroup{
+        @apply border-t-4 border-main-primary 
+        w-full h-1/2 overflow-y-auto bg-transparent
+        shadow-md;
+    }
+    .graphGroup{
+        @apply w-full h-1/2 overflow-y-auto bg-transparent;
+    }
+    .chartsGroup{
+        @apply mt-4 border-t-4 border-main-primary 
+        w-full h-1/2 overflow-y-auto bg-transparent
+        shadow-md p-2;
+        .title{
+            @apply text-xl;
+        }
+    }
+    
+}
