@@ -1,9 +1,20 @@
+@import '../../../../styles/Animate.module.scss';
+
 .resultPanel{
-    @apply flex flex-col h-[80%] absolute z-10 bg-white m-2 p-4 rounded-md
+    @apply hidden flex-col h-[80%] absolute z-10 bg-white m-2 p-4 rounded-md
     shadow-md w-[600px] right-0 max-h-[800px] overflow-y-auto;
     @media(max-width: 1100px){
         @apply hidden;
     }
+    &.slideIn{
+        @apply flex;
+        @include animate-css(bounceInRight); // fadeInRight
+    }
+    &.slideOut{
+        @apply flex;
+        @include animate-css(bounceOutRight); // fadeOutRight
+    }
+    
     .resultHeader{
         @apply flex items-center justify-between;
         .resultStatus{
@@ -32,4 +43,5 @@
             @apply text-xl;
         }
     }
+    
 }

@@ -30,24 +30,8 @@ import {
 } from '../../../lib/marketComapreConst'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
 import { WithNavFooterProtected } from '../../../layout/BaseLayout'
-// import { createTheme } from '@mui/material'
-
-// const theme = createTheme({
-//   components: {
-//     MuiTypography: {
-//       variants: [
-//         {
-//           props: {
-//             variant: 'bb'
-//           },
-//           style: {
-//             fontSize: 12
-//           }
-//         }
-//       ]
-//     }
-//   }
-// })
+import QueryPanel from './QueryPanel'
+import ResultPanel from './ResultPanel'
 
 const square = 3.305785
 
@@ -117,14 +101,6 @@ const MarketCompare: NextPage = () => {
 
   }
 
-  const handleDraw = () => {
-    setsketchMode('draw')
-
-  }
-
-  const handleClear = () => {
-    setsketchMode('inactive')
-  }
 
   const handleFormSubmit = async () => {
     if (assetTypeCode !== null) {
@@ -240,616 +216,89 @@ const MarketCompare: NextPage = () => {
       </Head>
       <div className={style.main}>
 
-        <div className={classNames({
-          [style.queryPanel]: true,
-          'animate__animated': true,
-          'animate__backInLeft': true
-        })}>
-          <div className={style.filterGroup}>
+        <QueryPanel
+          longitude={longitude!}
+          latitude={latitude!}
+          locatedCounty={locatedCounty!}
+          locatedTown={locatedTown!}
+          isSelectorActive={isSelectorActive}
+          isTransactionTimeFiltered={isTransactionTimeFiltered}
+          isBuildingAreaFiltered={isBuildingAreaFiltered}
+          isLandAreaFiltered={isLandAreaFiltered}
+          isAgeFiltered={isAgeFiltered}
+          isParkSpaceFiltered={isParkSpaceFiltered}
+          isTransactionTimeFosced={isTransactionTimeFosced}
+          isBuildingAreaFosced={isBuildingAreaFosced}
+          isLandAreaFosced={isLandAreaFosced}
+          isAgeFosced={isAgeFosced}
+          isParkSpaceFosced={isParkSpaceFosced}
+          isBuildingAreaCheckable={isBuildingAreaCheckable}
+          isLandAreaCheckable={isLandAreaCheckable}
+          assetTypeCode={assetTypeCode}
+          bufferRadius={bufferRadius}
+          transactionTime={transactionTime!}
+          buildingTransferArea={buildingTransferArea!}
+          landTransferArea={landTransferArea!}
+          age={age!}
+          parkSpaceType={parkSpaceType!}
+          polygonGoejson={polygonGoejson!}
+          filteredResults={filteredResults!}
+          spatialQueryType={spatialQueryType}
+          sketchMode={sketchMode}
+          onCoordinatorSelectorClick={(value) => { setisCoordinateSelectorActive(value) }}
+          onSpatialQueryTypeChange={setspatialQueryType}
+          onBufferRadiusChange={(value) => { setbufferRadius(value) }}
+          onSketchModeChange={(value) => { setsketchMode(value) }}
+          onDraw={() => { setsketchMode('draw') }}
+          onClear={() => { setsketchMode('inactive') }}
+          onAssetTypeChange={(value) => { setassetTypeCode(value) }}
+          onTransactionTimeFilteredChange={() => {
+            setisTransactionTimeFiltered(prev => !prev)
+            settransactionTime(1)
+          }}
+          onTransactionTimeSelect={(value) => {
+            settransactionTime(value)
+            setisTransactionTimeFosced(true)
+          }}
+          onBuildingAreaFilteredChange={() => {
+            setisBuildingAreaFiltered(prev => !prev)
+            setbuildingTransferArea(0)
+          }}
+          onBuildingAreaSelect={(value) => {
+            setbuildingTransferArea(value)
+            setisBuildingAreaFosced(true)
+          }}
+          onLandAreaFilteredChange={() => {
+            setisLandAreaFiltered(prev => !prev)
+            setlandTransferArea(0)
+          }}
+          onLandAreaSelect={(value) => {
+            setlandTransferArea(value)
+            setisLandAreaFosced(true)
+          }}
+          onAgeFilteredChange={() => {
+            setisAgeFiltered(prev => !prev)
+            setage(0)
+          }}
+          onAgeSelect={(value) => {
+            setage(value)
+            setisAgeFosced(true)
+          }}
+          onCustomizeParamBtnClick={() => {
+            setmsgOpen(true)
+            seterrorTitle('訊息')
+            seterrorContent('自定義參數功能尚未開發')
+          }}
+          handleFormSubmit={handleFormSubmit}
+        />
 
-            <div className={classNames({
-              [style.filterSection]: true,
-              [style.divide]: true
-            })}>
-              <CoordinateSelector
-                longitude={longitude}
-                latitude={latitude}
-                locatedCounty={locatedCounty}
-                locatedTown={locatedTown}
-                active={isSelectorActive}
-                enabled={spatialQueryType === 'buffer'}
-                onClick={() => {
-                  setisCoordinateSelectorActive(prev => !prev)
-                }}
-              />
-              <Grid container spacing={2}>
-                {/* 搜索範圍 */}
-                <Grid item xs={2}>
-                  <Radio
-                    checked={spatialQueryType === 'buffer'}
-                    onChange={() => {
-                      setspatialQueryType('buffer')
-                    }}
-                    value="a"
-                    name="radio-buttons"
-                    inputProps={{ 'aria-label': 'A' }}
-                  />
-                </Grid>
-                <Grid item xs={5}>
-                  <TextField
-                    type='number'
-                    label="勘估標的距離(m)"
-                    size='small'
-                    InputProps={{ inputProps: { min: 0 } }}
-                    value={bufferRadius}
-                    onChange={(event) => { setbufferRadius(Number(event.target.value)) }}
-                    disabled={spatialQueryType !== 'buffer'}
-                    fullWidth
-                  ></TextField>
-                </Grid>
-                <Grid item xs={2}>
-                  <Radio
-                    checked={spatialQueryType === 'polygon'}
-                    onChange={() => {
-                      setspatialQueryType('polygon')
-                      setisCoordinateSelectorActive(false)
-                    }}
-                    value="a"
-                    name="radio-buttons"
-                    inputProps={{ 'aria-label': 'A' }}
-                  />
-                </Grid>
-                <Grid item xs={3}
-                  className={style.polygonSketchContainer}
-                >
-                  <PolygonSketch
-                    active={spatialQueryType === 'polygon'}
-                    mode={sketchMode}
-                    onModeChange={setsketchMode}
-                    onDraw={handleDraw}
-                    onClear={handleClear}
-                  />
-                </Grid>
-              </Grid>
-            </div>
-
-            <div className={classNames({
-              [style.filterSection]: true,
-              [style.divide]: true
-            })}>
-
-              <Grid container spacing={2}>
-
-                <Grid item xs={12}>
-                  <FormControl size='small' fullWidth>
-                    <InputLabel id="asset-type">資產類型*</InputLabel>
-                    <Select
-                      labelId="asset-type"
-                      label="資產類型"
-                      id="asset-type-select"
-                      value={assetTypeCode}
-                      onChange={(event) => { setassetTypeCode(Number(event.target.value)) }}
-                      size='small'
-                      fullWidth
-                    >
-                      {
-                        Object.keys(assetTypeSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{assetTypeSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                {/* 交易時間 */}
-                <Grid item xs={2}>
-                  <Checkbox
-                    checked={isTransactionTimeFiltered}
-                    onClick={() => {
-                      setisTransactionTimeFiltered(prev => !prev)
-                      settransactionTime(1)
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={10}>
-                  <FormControl size='small' fullWidth>
-                    {
-                      isTransactionTimeFiltered && !isTransactionTimeFosced
-                        ? <></>
-                        : <InputLabel id="transaction-time">交易時間</InputLabel>
-                    }
-                    <Select
-                      labelId="transaction-time"
-                      label="交易時間"
-                      id="transaction-time-select"
-                      size='small'
-                      value={isTransactionTimeFiltered ? transactionTime : ''}
-                      disabled={!isTransactionTimeFiltered}
-                      // autoFocus={isTransactionTimeFiltered}
-                      onChange={(event) => {
-                        settransactionTime(Number(event.target.value))
-                        setisTransactionTimeFosced(true)
-                      }}
-                      fullWidth
-                    >
-                      {
-                        Object.keys(transactionTimeSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{transactionTimeSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                {/* 建坪面積 */}
-                <Grid item xs={2}>
-                  <Checkbox
-                    checked={isBuildingAreaFiltered}
-                    onClick={() => {
-                      setisBuildingAreaFiltered(prev => !prev)
-                      setbuildingTransferArea(0)
-                    }}
-                    disabled={!isBuildingAreaCheckable}
-                  />
-                </Grid>
-                <Grid item xs={10}>
-                  <FormControl size='small' fullWidth>
-                    {
-                      isBuildingAreaFiltered && !isBuildingAreaFosced
-                        ? <></>
-                        : <InputLabel id="building-transfer-area">建坪面積</InputLabel>
-                    }
-                    <Select
-                      labelId="building-transfer-area"
-                      label="建坪面積"
-                      id="building-transfer-area-select"
-                      size='small'
-                      value={isBuildingAreaFiltered ? buildingTransferArea : ''}
-                      onChange={(event) => {
-                        setbuildingTransferArea(Number(event.target.value))
-                        setisBuildingAreaFosced(true)
-                      }}
-                      disabled={!isBuildingAreaFiltered}
-                      // autoFocus={isBuildingAreaFiltered}
-                      fullWidth
-                    >
-                      {
-                        Object.keys(buildingTransactionAreaSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{buildingTransactionAreaSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-
-                </Grid>
-
-                {/* 地坪面積 */}
-                <Grid item xs={2}>
-                  <Checkbox
-                    checked={isLandAreaFiltered}
-                    onClick={() => {
-                      setisLandAreaFiltered(prev => !prev)
-                      setlandTransferArea(0)
-                    }}
-                    disabled={!isLandAreaCheckable}
-                  />
-                </Grid>
-                <Grid item xs={10}>
-                  <FormControl size='small' fullWidth>
-                    {
-                      isLandAreaFiltered && !isLandAreaFosced
-                        ? <></>
-                        : <InputLabel id="land-transfer-area">地坪面積</InputLabel>
-                    }
-                    <Select
-                      labelId="land-transfer-area"
-                      label="地坪面積"
-                      id="land-transfer-area-select"
-                      size='small'
-                      fullWidth
-                      value={isLandAreaFiltered ? landTransferArea : ''}
-                      onChange={(event) => {
-                        setlandTransferArea(Number(event.target.value))
-                        setisLandAreaFosced(true)
-                      }}
-                      // autoFocus={isLandAreaFiltered}
-                      disabled={!isLandAreaFiltered}
-                    >
-                      {
-                        Object.keys(landTransactionAreaSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{landTransactionAreaSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-
-                </Grid>
-
-                {/* 屋齡 */}
-                <Grid item xs={2}>
-                  <Checkbox
-                    checked={isAgeFiltered}
-                    onClick={() => {
-                      setisAgeFiltered(prev => !prev)
-                      setage(0)
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={10}>
-                  <FormControl size='small' fullWidth>
-                    {
-                      isAgeFiltered && !isAgeFosced
-                        ? <></>
-                        : <InputLabel id="age">屋齡</InputLabel>
-                    }
-                    <Select
-                      labelId="age"
-                      label="屋齡"
-                      id="age-select"
-                      size='small'
-                      value={isAgeFiltered ? age : ''}
-                      onChange={(event) => {
-                        setage(Number(event.target.value))
-                        setisAgeFosced(true)
-                      }}
-                      disabled={!isAgeFiltered}
-                      // autoFocus={isAgeFiltered}
-                      fullWidth
-                    >
-                      {
-                        Object.keys(ageSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{ageSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-
-                </Grid>
-
-                {/* 車位類型 */}
-                <Grid item xs={2}>
-                  <Checkbox
-                    checked={isParkSpaceFiltered}
-                    onClick={() => {
-                      setisParkSpaceFiltered(prev => !prev)
-                      setparkSpaceType(0)
-                      if (isLandAreaFiltered) {
-                        setisLandAreaFiltered(false)
-                        setisLandAreaCheckable(false)
-                      } else if (!isLandAreaCheckable) {
-                        setisLandAreaFiltered(true)
-                        setisLandAreaCheckable(true)
-                      }
-
-                      if (isBuildingAreaFiltered) {
-                        setisBuildingAreaFiltered(false)
-                        setisBuildingAreaCheckable(false)
-                      } else if (!isBuildingAreaCheckable) {
-                        setisBuildingAreaFiltered(true)
-                        setisBuildingAreaCheckable(true)
-                      }
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={10}>
-                  <FormControl size='small' fullWidth>
-                    {
-                      isParkSpaceFiltered && !isParkSpaceFosced
-                        ? <></>
-                        : <InputLabel id="park-space">車位類型</InputLabel>
-                    }
-                    <Select
-                      labelId="park-space"
-                      label="車位類型"
-                      id="park-space-select"
-                      size='small'
-                      fullWidth
-                      value={isParkSpaceFiltered ? parkSpaceType : ''}
-                      onChange={(event) => {
-                        setparkSpaceType(Number(event.target.value))
-                        setisParkSpaceFosced(true)
-                      }}
-                      // autoFocus={isParkSpaceFiltered}
-                      disabled={!isParkSpaceFiltered}
-                    >
-                      {
-                        Object.keys(parkSpaceSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{parkSpaceSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-
-                </Grid>
-
-                {/* 使用分區 */}
-                {/* <Grid item xs={2}>
-                  <Checkbox
-                    checked={isUrbanUsageFiltered}
-                    onClick={() => {
-                      setisUrbanUsageFiltered(prev => !prev)
-                      seturbanLandUse(0)
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={10}>
-                  <FormControl size='small' fullWidth>
-                    {
-                      isUrbanUsageFiltered && !isUrbanUsageFosced
-                        ? <></>
-                        : <InputLabel id="land-use">使用分區</InputLabel>
-                    }
-                    <Select
-                      labelId="land-use"
-                      label="使用分區"
-                      id="land-use-select"
-                      size='small'
-                      fullWidth
-                      value={isUrbanUsageFiltered ? urbanLandUse : null}
-                      onChange={(event) => {
-                        seturbanLandUse(Number(event.target.value))
-                        setisUrbanUsageFosced(true)
-                      }}
-                      // autoFocus={isUrbanUsageFiltered}
-                      disabled={!isUrbanUsageFiltered}
-                    >
-                      {
-                        Object.keys(urbanUsageSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{urbanUsageSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-
-                </Grid> */}
-
-              </Grid>
-
-            </div>
-
-            <div className={style.controlSet}>
-              <div className={style.settingBtn}
-                onClick={() => {
-                  setmsgOpen(true)
-                  seterrorTitle('訊息')
-                  seterrorContent('自定義參數功能尚未開發')
-                }}
-              >
-                <Image src={'/aprRegion/setting.png'} width='30px' height='30px' />
-                <p>自定義參數</p>
-              </div>
-
-              <div className={style.searchBtn}
-                onClick={handleFormSubmit}
-              >
-                <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
-                <p>查詢</p>
-              </div>
-            </div>
-
-          </div>
-          {
-            filteredResults && filteredResults.length !== 0
-              ?
-              <div className={style.resultGroup}>
-                <p className={style.resultStatus}>共有
-                  <span className={style.count}>{filteredResults.length}</span>
-                  筆實價登陸紀錄
-                </p>
-                <div className={style.graphGroup}>
-                  {
-                    filteredResults.map((result, index) => {
-                      return <MarketCompareResultCard
-                        key={index}
-                        {...result}
-                      />
-                    })
-                  }
-                </div>
-              </div>
-              : <></>
-          }
-        </div>
-
-        {
-          filteredResults === null || filteredResults.length === 0
-            ? <></>
-            :
-            <div className={style.resultPanel}>
-              {
-                filteredResults && filteredResults.length !== 0
-                  ?
-                  <>
-                    <div className={style.resultHeader}>
-                      <span className={style.resultStatus}>共有
-                        <span className={style.count}>{filteredResults.length}</span>
-                        筆實價登陸紀錄
-                      </span>
-                      <span className={style.closeBtn}
-                        onClick={() => {
-                          setfilteredResults(null)
-                        }}
-                      >✖</span>
-                    </div>
-                    <div className={style.aprRecordGroup}>
-                      {
-                        filteredResults.map((result, index) => {
-                          return <MarketCompareResultCard
-                            key={index}
-                            {...result}
-                          />
-                        })
-                      }
-                    </div>
-
-                    {
-                      graphData
-                        ? <div className={style.chartsGroup}>
-                          {
-                            Object.keys(graphData!).map((buildingType, index) => {
-                              const typeData = graphData![buildingType]
-                              const years = Object.keys(typeData)
-                              const meanPriceValues: number[] = []
-                              const meanUnitPriceValues: number[] = []
-                              const meanAgeValues: number[] = []
-                              const countValues: number[] = []
-
-                              years.forEach((year) => {
-                                const yearD = typeData[year] as IResultStatistics
-                                meanPriceValues.push(yearD.priceWithoutParking_MEAN)
-                                meanUnitPriceValues.push(yearD.unitPrice_MEAN)
-                                meanAgeValues.push(yearD.age_MEAN)
-                                countValues.push(yearD.count)
-                              })
-
-                              const meanPriceOption: EChartsOption = {
-                                xAxis: {
-                                  type: 'category',
-                                  data: years
-                                },
-                                yAxis: {
-                                  type: 'value',
-                                  name: "單位(百萬)",
-                                  axisLabel: {
-                                    formatter: (function (value: string) {
-                                      const newVlaue = Math.round(Number(value) / 1000000)
-                                      return newVlaue.toString()
-                                    }),
-                                    align: 'center'
-                                  }
-                                },
-                                series: [
-                                  {
-                                    data: meanPriceValues,
-                                    type: 'line',
-                                    smooth: true
-                                  }
-                                ],
-                                tooltip: {
-                                  trigger: 'axis',
-                                  formatter: function (param: any, value) {
-                                    // console.log(param[0].value)
-                                    const newVlaue = Math.round(Number(param[0].value) / 1000000)
-                                    if (Math.floor(newVlaue / 10) !== 0) {
-                                      return `${Math.floor(newVlaue / 10)}千${newVlaue % 10}百萬`
-                                    } else {
-                                      return `${newVlaue % 10}百萬`
-                                    }
-
-                                  }
-                                }
-                              }
-
-                              const meanUnitPriceOption: EChartsOption = {
-                                xAxis: {
-                                  type: 'category',
-                                  data: years
-                                },
-                                yAxis: {
-                                  type: 'value',
-                                  name: "單位(萬/坪)",
-                                  axisLabel: {
-                                    formatter: (function (value: string) {
-                                      const newVlaue = Math.round(Math.round(Number(value) * 3.305785 / 1000) / 10)
-                                      return newVlaue.toString()
-                                    }),
-                                    align: 'center'
-                                  }
-                                },
-                                series: [
-                                  {
-                                    data: meanUnitPriceValues,
-                                    type: 'line',
-                                    smooth: true
-                                  }
-                                ]
-                              }
-
-                              const meanAgeOption: EChartsOption = {
-                                xAxis: {
-                                  type: 'category',
-                                  data: years
-                                },
-                                yAxis: {
-                                  type: 'value',
-                                  name: "年"
-                                },
-                                series: [
-                                  {
-                                    data: meanAgeValues,
-                                    type: 'line',
-                                    smooth: true
-                                  }
-                                ]
-                              }
-
-                              const countOption: EChartsOption = {
-                                xAxis: {
-                                  type: 'category',
-                                  data: years
-                                },
-                                yAxis: {
-                                  type: 'value',
-                                  name: "交易數量(千)",
-                                  axisLabel: {
-                                    formatter: (function (value: string) {
-                                      return (Number(value) / 1000).toString()
-                                    }),
-                                    align: 'center'
-                                  }
-                                },
-                                series: [
-                                  {
-                                    data: countValues,
-                                    type: 'line',
-                                    smooth: true
-                                  }
-                                ]
-                              }
-
-                              return <div className={style.chartsContainer} key={index}>
-                                <p className={style.title}>平均成交價格</p>
-                                <ReactEcharts option={meanPriceOption} />
-                                <p className={style.title}>平均成交單價</p>
-                                <ReactEcharts option={meanUnitPriceOption} />
-                                <p className={style.title}>平均成交屋齡</p>
-                                <ReactEcharts option={meanAgeOption} />
-                                <p className={style.title}>平均成交數量</p>
-                                <ReactEcharts option={countOption} />
-                              </div>
-                            })
-                          }
-
-                        </div>
-                        : <></>
-                    }
-
-                  </>
-                  : <></>
-              }
-            </div>
-        }
+        <ResultPanel // setfilteredResults(null)
+          filteredResults={filteredResults!}
+          graphData={graphData!}
+          onClose={() => {
+            setfilteredResults(null)
+          }}
+        />
 
         <div className={style.content}>
           <div className={style.mapContainer}>

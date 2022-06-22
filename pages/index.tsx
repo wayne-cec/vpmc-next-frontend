@@ -20,8 +20,9 @@ const Home: NextPage = () => {
       </Head>
       <main className={classNames({
         [style.main]: true,
-        'animate__animated': true,
-        'animate__backInDown': true,
+        'animate__animated': true
+        // ,
+        // 'animate__backInDown': true,
       })}>
         <PageHeader
           title={'家，自由輕鬆找到'}

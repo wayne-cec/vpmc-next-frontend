@@ -1,35 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import style from './index.module.scss'
 import Image from 'next/image'
-import Router from 'next/router'
 import classNames from 'classnames'
 import {
   TextField, Select, MenuItem,
   InputLabel, FormControl, Checkbox,
-  Grid, Dialog, DialogActions,
-  DialogContent, DialogContentText,
-  DialogTitle, Button, Radio
+  Grid, Radio
 } from '@mui/material'
 import MarketCompareResultCard from '../../../../components/MarketCompareResultCard'
 import CoordinateSelector from '../../../../components/CoordinateSelector'
 import PolygonSketch from '../../../../components/PolygonSketch'
-import TabsPanel from '../../../../components/TabsPanel'
-import ReactEcharts from 'echarts-for-react'
-import handler from '../../../api/hello'
-import dynamic from 'next/dynamic'
-import api from '../../../../api'
-import Head from 'next/head'
-import moment from 'moment'
-import { EChartsOption } from 'echarts'
-import { IResultStatistics } from '../../../../api/prod'
 import { PolygonSketchMode } from '../../../../components/PolygonSketch'
-import { IGraphData } from '../../../../api/prod'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
-  landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
+  landTransactionAreaSet, ageSet
 } from '../../../../lib/marketComapreConst'
-import { IMarketCompare, IMarketCompareResult } from '../../../../api/prod'
-import { WithNavFooterProtected } from '../../../../layout/BaseLayout'
+import { IMarketCompareResult } from '../../../../api/prod'
 import { SpatialQueryType } from '..'
 
 export interface IQueryPanel {
@@ -84,9 +70,8 @@ const QueryPanel = (props: IQueryPanel) => {
 
   return (
     <div className={classNames({
-      [style.panel]: true,
-      'animate__animated': true,
-      'animate__backInLeft': true
+      [style.queryPanel]: true,
+      [style.show]: true
     })}>
       <div className={style.filterGroup}>
 

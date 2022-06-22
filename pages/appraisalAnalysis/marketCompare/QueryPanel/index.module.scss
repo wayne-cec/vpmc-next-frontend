@@ -1,8 +1,12 @@
+@import '../../../../styles/Animate.module.scss';
 .queryPanel{ 
     @apply flex flex-col h-fit absolute z-10 bg-white m-2 p-4 rounded-md
     shadow-md w-[430px];
     @media(max-width: 1100px){
         @apply static m-0 w-auto;
+    }
+    &.show{
+        @include animate-css(bounceInLeft);
     }
     .filterGroup{
         @apply flex justify-center flex-col items-center;
