@@ -2,12 +2,27 @@ import { createSlice } from '@reduxjs/toolkit'
 import { persistReducer } from 'redux-persist'
 import { persistConfig } from '../config'
 
+export interface IRole {
+  id: number
+  roleName: string
+}
+
+export interface IUserProfile {
+  _userId: string
+  username: string
+  email: string
+  alias: string | null
+  roles: IRole[]
+}
+
 export interface IUserInfo {
   token: string
+  userProfile: IUserProfile | null
 }
 
 const init = {
-  token: ''
+  token: '',
+  userProfile: null
 } as IUserInfo
 
 export const userSlice = createSlice({
@@ -16,6 +31,9 @@ export const userSlice = createSlice({
   reducers: {
     setUserToken: (state: IUserInfo, action: { type: string, payload: string }) => {
       state.token = action.payload
+    },
+    setUserProfile: (state: IUserInfo, action: { type: string, payload: IUserProfile }) => {
+      state.userProfile = action.payload
     }
   }
 })
@@ -25,7 +43,8 @@ export const selectUser = (state: any) => {
 }
 
 export const {
-  setUserToken
+  setUserToken,
+  setUserProfile
 } = userSlice.actions
 
 const userReducer = persistReducer<IUserInfo>(persistConfig, userSlice.reducer)

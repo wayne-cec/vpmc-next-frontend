@@ -1,6 +1,6 @@
 .coordinateSelector{
     @apply w-full h-[40px] rounded border 
-    border-border flex items-center justify-between px-2 text-border;
+    border-border flex items-center justify-between px-2 text-border mb-4;
     &.active{
         @apply border-main-primary;
     }

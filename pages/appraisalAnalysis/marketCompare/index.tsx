@@ -29,6 +29,7 @@ import {
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../lib/marketComapreConst'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
+import { WithNavFooterProtected } from '../../../layout/BaseLayout'
 // import { createTheme } from '@mui/material'
 
 // const theme = createTheme({
@@ -57,7 +58,7 @@ const MarketMapContainer = dynamic(
   { ssr: false }
 )
 
-const AprRegion: NextPage = () => {
+const MarketCompare: NextPage = () => {
   const [longitude, setlongitude] = useState<number | null>(null)
   const [latitude, setlatitude] = useState<number | null>(null)
   const [locatedCounty, setlocatedCounty] = useState<string | null>(null)
@@ -81,8 +82,8 @@ const AprRegion: NextPage = () => {
   const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
   const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
 
-  const [assetTypeCode, setassetTypeCode] = useState<number | null>(0)
-  const [bufferRadius, setbufferRadius] = useState<number | null>(300)
+  const [assetTypeCode, setassetTypeCode] = useState<number>(0)
+  const [bufferRadius, setbufferRadius] = useState<number>(300)
   const [transactionTime, settransactionTime] = useState<number | null>(null)
   const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
@@ -240,7 +241,7 @@ const AprRegion: NextPage = () => {
       <div className={style.main}>
 
         <div className={classNames({
-          [style.panel]: true,
+          [style.queryPanel]: true,
           'animate__animated': true,
           'animate__backInLeft': true
         })}>
@@ -261,39 +262,7 @@ const AprRegion: NextPage = () => {
                   setisCoordinateSelectorActive(prev => !prev)
                 }}
               />
-            </div>
-
-            <div className={classNames({
-              [style.filterSection]: true,
-              [style.divide]: true
-            })}>
-
               <Grid container spacing={2}>
-
-                <Grid item xs={12}>
-                  <FormControl size='small' fullWidth>
-                    <InputLabel id="asset-type">資產類型*</InputLabel>
-                    <Select
-                      labelId="asset-type"
-                      label="資產類型"
-                      id="asset-type-select"
-                      value={assetTypeCode}
-                      onChange={(event) => { setassetTypeCode(Number(event.target.value)) }}
-                      size='small'
-                      fullWidth
-                    >
-                      {
-                        Object.keys(assetTypeSet).map((assetCode, index) => {
-                          return <MenuItem
-                            key={index}
-                            value={assetCode}
-                          >{assetTypeSet[Number(assetCode)]}</MenuItem>
-                        })
-                      }
-                    </Select>
-                  </FormControl>
-                </Grid>
-
                 {/* 搜索範圍 */}
                 <Grid item xs={2}>
                   <Radio
@@ -340,6 +309,39 @@ const AprRegion: NextPage = () => {
                     onDraw={handleDraw}
                     onClear={handleClear}
                   />
+                </Grid>
+              </Grid>
+            </div>
+
+            <div className={classNames({
+              [style.filterSection]: true,
+              [style.divide]: true
+            })}>
+
+              <Grid container spacing={2}>
+
+                <Grid item xs={12}>
+                  <FormControl size='small' fullWidth>
+                    <InputLabel id="asset-type">資產類型*</InputLabel>
+                    <Select
+                      labelId="asset-type"
+                      label="資產類型"
+                      id="asset-type-select"
+                      value={assetTypeCode}
+                      onChange={(event) => { setassetTypeCode(Number(event.target.value)) }}
+                      size='small'
+                      fullWidth
+                    >
+                      {
+                        Object.keys(assetTypeSet).map((assetCode, index) => {
+                          return <MenuItem
+                            key={index}
+                            value={assetCode}
+                          >{assetTypeSet[Number(assetCode)]}</MenuItem>
+                        })
+                      }
+                    </Select>
+                  </FormControl>
                 </Grid>
 
                 {/* 交易時間 */}
@@ -898,4 +900,4 @@ const AprRegion: NextPage = () => {
   )
 }
 
-export default AprRegion
+export default WithNavFooterProtected(MarketCompare)
