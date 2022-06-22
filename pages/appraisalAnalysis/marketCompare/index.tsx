@@ -82,8 +82,8 @@ const MarketCompare: NextPage = () => {
   const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
   const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
 
-  const [assetTypeCode, setassetTypeCode] = useState<number | null>(0)
-  const [bufferRadius, setbufferRadius] = useState<number | null>(300)
+  const [assetTypeCode, setassetTypeCode] = useState<number>(0)
+  const [bufferRadius, setbufferRadius] = useState<number>(300)
   const [transactionTime, settransactionTime] = useState<number | null>(null)
   const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
@@ -241,7 +241,7 @@ const MarketCompare: NextPage = () => {
       <div className={style.main}>
 
         <div className={classNames({
-          [style.panel]: true,
+          [style.queryPanel]: true,
           'animate__animated': true,
           'animate__backInLeft': true
         })}>
