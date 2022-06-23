@@ -1,33 +1,17 @@
 import type { NextPage } from 'next'
-import MarketCompareResultCard from '../../../components/MarketCompareResultCard'
-import CoordinateSelector from '../../../components/CoordinateSelector'
-import PolygonSketch from '../../../components/PolygonSketch'
-import TabsPanel from '../../../components/TabsPanel'
-import ReactEcharts from 'echarts-for-react'
 import style from './index.module.scss'
-import handler from '../../api/hello'
-import classNames from 'classnames'
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import api from '../../../api'
 import Head from 'next/head'
 import moment from 'moment'
-import { EChartsOption } from 'echarts'
-import { IResultStatistics } from '../../../api/prod'
 import { PolygonSketchMode } from '../../../components/PolygonSketch'
 import { IGraphData } from '../../../api/prod'
 import { useState, useEffect } from 'react'
 import {
-  TextField, Select, MenuItem,
-  InputLabel, FormControl, Checkbox,
-  Grid, Dialog, DialogActions,
+  Dialog, DialogActions,
   DialogContent, DialogContentText,
-  DialogTitle, Button, Radio
+  DialogTitle, Button
 } from '@mui/material'
-import {
-  assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
-  landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
-} from '../../../lib/marketComapreConst'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
 import { WithNavFooterProtected } from '../../../layout/BaseLayout'
 import QueryPanel from './QueryPanel'
@@ -100,7 +84,6 @@ const MarketCompare: NextPage = () => {
     }
 
   }
-
 
   const handleFormSubmit = async () => {
     if (assetTypeCode !== null) {
