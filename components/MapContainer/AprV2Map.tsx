@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import style from './index.module.scss'
 import Map from '@arcgis/core/Map'
 import Graphic from '@arcgis/core/Graphic'
@@ -15,6 +15,8 @@ import * as watchUtils from '@arcgis/core/core/watchUtils'
 import * as projection from "@arcgis/core/geometry/projection"
 import { parseCommitee } from '../../lib/parseCommitee'
 import '@arcgis/core/assets/esri/themes/light/main.css'
+import useMap from '../../hooks/useMap'
+import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
 
 export const square = 3.305785
 
@@ -79,7 +81,20 @@ export interface ISimpleCommiteeData {
   calculatedUnitPrice: number | undefined
 }
 
+const mapOptions = {
+  mapOption: { basemap: 'gray' },
+  mapViewOption: {
+    center: [121.4640139307843, 25.013838580240503],
+    zoom: 13,
+    ui: new DefaultUI(),
+    constraints: { minZoom: 12, maxZoom: 20 }
+  }
+}
+
 const AprV2Map = (props: IEsriMap) => {
+  const mapRef = useRef<HTMLDivElement>(null)
+  const { asyncMap, asyncMapView } = useMap(mapRef, mapOptions)
+
   const fetchTownData = async (map: Map) => {
     const promises: any[] = []
     for (let [key, value] of Object.entries(towns)) {
@@ -292,49 +307,33 @@ const AprV2Map = (props: IEsriMap) => {
     map.add(infoLayer)
   }
 
-  useEffect(() => {
-
-    const WGS84 = new SpatialReference({
-      wkid: 4326
-    })
-    const map = new Map({
-      basemap: props.basemap
-    })
-    const mapView = new MapView({
-      map: map,
-      center: [121.4640139307843, 25.013838580240503],
-      zoom: 13,
-      container: 'mapBox',
-      ui: undefined,
-      constraints: {
-        minZoom: 12,
-        maxZoom: 20
-      }
-    })
-
-    fetchTownData(map)
-    loadCommiteeLayer(map)
-    watchUtils.whenTrue(mapView, 'stationary', async () => {
-      console.log(mapView.zoom)
-      if (mapView.zoom <= 16) {
-        if (map.findLayerById('townBgLayer') && map.findLayerById('townInfoLayer')) {
-          map.findLayerById('townBgLayer').visible = true
-          map.findLayerById('townInfoLayer').visible = true
-          map.findLayerById('commiteeInfoLayer').visible = false
+  const addWatchUtilToMapView = async () => {
+    fetchTownData((await asyncMap))
+    loadCommiteeLayer((await asyncMap))
+    watchUtils.whenTrue((await asyncMapView), 'stationary', async () => {
+      if ((await asyncMapView).zoom <= 16) {
+        if ((await asyncMap).findLayerById('townBgLayer') && (await asyncMap).findLayerById('townInfoLayer')) {
+          (await asyncMap).findLayerById('townBgLayer').visible = true;
+          (await asyncMap).findLayerById('townInfoLayer').visible = true;
+          (await asyncMap).findLayerById('commiteeInfoLayer').visible = false;
           props.onExtentChange([])
         }
       } else {
-        map.findLayerById('townBgLayer').visible = false
-        map.findLayerById('townInfoLayer').visible = false
-        map.findLayerById('commiteeInfoLayer').visible = true
-        fetchCommiteeByExtent(map, mapView.extent, WGS84)
+        (await asyncMap).findLayerById('townBgLayer').visible = false;
+        (await asyncMap).findLayerById('townInfoLayer').visible = false;
+        (await asyncMap).findLayerById('commiteeInfoLayer').visible = true;
+        fetchCommiteeByExtent((await asyncMap), (await asyncMapView).extent, new SpatialReference({ wkid: 4326 }))
       }
     })
+  }
+
+  useEffect(() => {
+    addWatchUtilToMapView()
   }, [])
 
   return (
     <>
-      <div className={style.esriMap} id='mapBox'>
+      <div className={style.esriMap} ref={mapRef}>
       </div>
     </>
   )
