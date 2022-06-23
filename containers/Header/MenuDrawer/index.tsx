@@ -5,6 +5,8 @@ import Router from 'next/router'
 // import { newBuildingLink, preOwnedLink, rentLink } from '../index'
 import { appraisalAnalysis, onlineSupport, statistic, aprV2Link } from '../index'
 import { useAuth } from '../../../layout/BaseLayout'
+import { useDispatch } from 'react-redux'
+import { setUserToken } from '../../../store/slice/user'
 
 export interface IMenuDrawer {
   open: boolean
@@ -30,12 +32,21 @@ const renderContent = (index: number, link: {
 }
 
 const MenuDrawer = (props: IMenuDrawer) => {
+  const dispatch = useDispatch()
   const { isAuthenticated } = useAuth()
+
+  const handleLogout = () => {
+    dispatch(
+      setUserToken('')
+    )
+    Router.push('/')
+  }
+
   return (
     <>
       <div className={classNames({
         [style.menuDrawer]: true,
-        [style.hide]: !props.open
+        [style.show]: props.open
       })}>
         <div className={style.header}>
           <p onClick={() => { props.onClose() }}>✕</p>
@@ -91,6 +102,25 @@ const MenuDrawer = (props: IMenuDrawer) => {
             }
           </div>
         </div>
+
+
+        {
+          isAuthenticated
+            ? <div className={style.loginBtn}
+              onClick={handleLogout}
+            >
+              登出
+            </div>
+            : <div className={style.loginBtn}
+              onClick={() => {
+                Router.push('/login')
+              }}
+            >
+              登入
+            </div>
+        }
+
+
       </div>
       <div className={classNames({
         [style.backgroundGray]: true,

@@ -1,8 +1,12 @@
+@import '../../../styles/Animate.module.scss';
+
 .menuDrawer{
-    @apply fixed max-w-[350px] h-screen bg-main-accent right-0 top-0 z-20 p-4 overflow-hidden bg-bg-darkGrey ; // bg-gradient-to-r from-main-accent to-main-primary
-    transition: max-width 0.3s;
-    &.hide{
-        @apply max-w-0 overflow-auto p-0;
+    @apply fixed max-w-[350px] h-screen right-0 
+    top-0 z-20 p-4 overflow-hidden bg-bg-darkGrey 
+    hidden;
+    &.show{
+        @apply block;
+        @include animate-css(fadeInRight, 0.3s);
     }
     .header{
         @apply w-[280px] h-[75px] border-b flex flex-row-reverse items-center text-white;
@@ -31,6 +35,10 @@
                 @include text;
             }
         }
+    }
+    .loginBtn{
+        @apply p-4 m-4 bg-main-primary shadow-md text-white
+        text-center rounded-md;
     }
 }
 .backgroundGray{

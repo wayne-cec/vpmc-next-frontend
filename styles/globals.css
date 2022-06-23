@@ -80,3 +80,9 @@ background-image: linear-gradient(315deg, #f8f9d2 0%, #e8dbfc 74%); */
 .esri-basemap-gallery{
   max-height: 300px !important;
 }
+.esri-ui-bottom-right{
+  flex-direction: column !important;
+}
+.esri-expand{
+margin-top: 5px
+}

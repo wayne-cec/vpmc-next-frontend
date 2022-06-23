@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import style from './index.module.scss'
 import Map from '@arcgis/core/Map'
 import MapView from '@arcgis/core/views/MapView'
@@ -8,8 +8,20 @@ import { createGeoJSONURL } from '../../lib/calculateAge'
 import SimpleRenderer from "@arcgis/core/renderers/SimpleRenderer"
 import SimpleFillSymbol from "@arcgis/core/symbols/SimpleFillSymbol"
 import '@arcgis/core/assets/esri/themes/light/main.css'
+import useMap from '../../hooks/useMap'
+import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
 
 export const square = 3.305785
+
+const mapOptions = {
+  mapOption: { basemap: 'gray' },
+  mapViewOption: {
+    center: [121.4640139307843, 25.013838580240503],
+    zoom: 13,
+    ui: new DefaultUI(),
+    constraints: { minZoom: 12, maxZoom: 20 }
+  }
+}
 
 export interface IEsriMap {
   townGeojson: any | null
@@ -17,34 +29,12 @@ export interface IEsriMap {
 }
 
 const AprRegionMap = (props: IEsriMap) => {
-  const [map, setmap] = useState<Map | null>(null)
-  const [view, setview] = useState<MapView | null>(null)
+  const mapRef = useRef<HTMLDivElement>(null)
+  const { asyncMap, asyncMapView } = useMap(mapRef, mapOptions)
 
-  useEffect(() => {
-    const WGS84 = new SpatialReference({
-      wkid: 4326
-    })
-    const map = new Map({
-      basemap: props.basemap
-    })
-    const mapView = new MapView({
-      map: map,
-      center: [121.4640139307843, 25.013838580240503],
-      zoom: 13,
-      container: 'mapBox-aprRegion',
-      ui: undefined,
-      constraints: {
-        minZoom: 12,
-        maxZoom: 20
-      }
-    })
-    setmap(map)
-    setview(mapView)
-  }, [])
-
-  useEffect(() => {
-    if (props.townGeojson && map && view) {
-      map.removeAll()
+  const renderTownGeojsonToMap = async () => {
+    if (props.townGeojson) {
+      (await asyncMap).removeAll();
       const geojsonlayer = new GeoJSONLayer({
         url: createGeoJSONURL(props.townGeojson),
         renderer: new SimpleRenderer({
@@ -53,18 +43,21 @@ const AprRegionMap = (props: IEsriMap) => {
             color: [255, 145, 28, 0.19]
           })
         })
-      })
-      map.add(geojsonlayer)
-      geojsonlayer.when(() => {
-        view.goTo(geojsonlayer.fullExtent)
+      });
+      (await asyncMap).add(geojsonlayer);
+      geojsonlayer.when(async () => {
+        (await asyncMapView).goTo(geojsonlayer.fullExtent)
       })
     }
-    // GeoJSONLayer
+  }
+
+  useEffect(() => {
+    renderTownGeojsonToMap()
   }, [props.townGeojson])
 
   return (
     <>
-      <div className={style.esriMapRegion} id='mapBox-aprRegion'>
+      <div className={style.esriMapRegion} ref={mapRef}>
       </div>
     </>
   )

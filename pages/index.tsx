@@ -25,7 +25,7 @@ const Home: NextPage = () => {
         // 'animate__backInDown': true,
       })}>
         <PageHeader
-          title={'家，自由輕鬆找到'}
+          title={'VPMC | 實價登錄資訊平台'}
         // title={userInfo.token}
         />
       </main>

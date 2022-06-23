@@ -3,10 +3,10 @@ import Map from "@arcgis/core/Map"
 import MapView from "@arcgis/core/views/MapView"
 import Expand from '@arcgis/core/widgets/Expand'
 import BasemapGallery from '@arcgis/core/widgets/BasemapGallery'
-// import { renderToStaticMarkup } from 'react-dom/server'
-// import { createElementFromHTML } from '../lib/calculateAge'
-// import TestWidget, { Car } from '../widgets/TestWidget'
-// import { renderToString } from 'react-dom/server'
+import Measurement from '../widgets/Measurement'
+import HelloWorld from '../widgets/TestWidget'
+import * as ReactDOM from 'react-dom'
+import MeasurementWidget from '@arcgis/core/widgets/Measurement'
 
 export type UseMapParams = {
   mapOption?: __esri.MapProperties
@@ -88,7 +88,25 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         content: basemapGallery
       })
 
-      mapView.ui.add(basemapGalleryExpand, 'bottom-left')
+      const measurementWidget = new MeasurementWidget()
+      const node = document.createElement("div")
+      const measurementExpand = new Expand({
+        expandIconClass: "esri-icon-measure",
+        view: mapView,
+        content: node
+      })
+
+      mapView.ui.add(measurementWidget, "bottom-left")
+      mapView.ui.add(basemapGalleryExpand, 'bottom-right')
+      mapView.ui.add(measurementExpand, "bottom-right")
+
+      ReactDOM.render(
+        <Measurement
+          mapView={mapView}
+          measurement={measurementWidget}
+        />, node
+      )
+
       mapViewRef.current = mapView
       mapViewStack.current.setObject(mapView)
     }
