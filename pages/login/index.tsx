@@ -6,7 +6,7 @@ import {
   Checkbox, Link
 } from '@mui/material'
 import classNames from 'classnames'
-import { useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import Router from 'next/router'
 import api from '../../api'
@@ -24,8 +24,9 @@ const Login: NextPage = () => {
   const [errorMsg, seterrorMsg] = useState<string>('')
 
   const handleLogin = async () => {
-
     setbounce(false)
+    console.log(email)
+    console.log(password)
     const { statusCode, responseContent } = await api.prod.authenticate(email, password)
     if (statusCode === 200) {
       console.log(responseContent)

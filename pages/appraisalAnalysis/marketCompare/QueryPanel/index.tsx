@@ -17,6 +17,8 @@ import {
 } from '../../../../lib/marketComapreConst'
 import { IMarketCompareResult } from '../../../../api/prod'
 import { SpatialQueryType } from '..'
+import SpatialQuery from './SpatialQuery'
+import Action from './Action'
 
 export interface IQueryPanel {
   longitude?: number
@@ -75,75 +77,22 @@ const QueryPanel = (props: IQueryPanel) => {
     })}>
       <div className={style.filterGroup}>
 
-        <div className={classNames({
-          [style.filterSection]: true,
-          [style.divide]: true
-        })}>
-          <CoordinateSelector
-            longitude={props.longitude!}
-            latitude={props.latitude!}
-            locatedCounty={props.locatedCounty!}
-            locatedTown={props.locatedTown!}
-            active={props.isSelectorActive!}
-            enabled={props.spatialQueryType === 'buffer'}
-            onClick={() => {
-              props.onCoordinatorSelectorClick(!props.isSelectorActive)
-            }}
-          />
-          <Grid container spacing={2}>
-            {/* 搜索範圍 */}
-            <Grid item xs={2}>
-              <Radio
-                checked={props.spatialQueryType === 'buffer'}
-                onChange={() => {
-                  props.onSpatialQueryTypeChange('buffer')
-                }}
-                value="a"
-                name="radio-buttons"
-                inputProps={{ 'aria-label': 'A' }}
-              />
-            </Grid>
-            <Grid item xs={5}>
-              <TextField
-                type='number'
-                label="勘估標的距離(m)"
-                size='small'
-                InputProps={{ inputProps: { min: 0 } }}
-                value={props.bufferRadius}
-                onChange={(event) => {
-                  props.onBufferRadiusChange(
-                    Number(event.target.value)
-                  )
-                }}
-                disabled={props.spatialQueryType !== 'buffer'}
-                fullWidth
-              ></TextField>
-            </Grid>
-            <Grid item xs={2}>
-              <Radio
-                checked={props.spatialQueryType === 'polygon'}
-                onChange={() => {
-                  props.onSpatialQueryTypeChange('polygon')
-                  props.onCoordinatorSelectorClick(false)
-                }}
-                value="a"
-                name="radio-buttons"
-                inputProps={{ 'aria-label': 'A' }}
-              />
-            </Grid>
-            <Grid item xs={3}
-              className={style.polygonSketchContainer}
-            >
-              <PolygonSketch
-                active={props.spatialQueryType === 'polygon'}
-                mode={props.sketchMode}
-                onModeChange={props.onSketchModeChange}
-                onDraw={props.onDraw}
-                onClear={props.onDraw}
-              />
-            </Grid>
-          </Grid>
-        </div>
+        <SpatialQuery
+          longitude={props.longitude}
+          latitude={props.latitude}
+          locatedCounty={props.locatedCounty}
+          locatedTown={props.locatedTown}
+          isSelectorActive={props.isSelectorActive}
+          bufferRadius={props.bufferRadius}
+          spatialQueryType={props.spatialQueryType}
+          sketchMode={props.sketchMode}
+          onCoordinatorSelectorClick={props.onCoordinatorSelectorClick}
+          onSpatialQueryTypeChange={props.onSpatialQueryTypeChange}
+          onBufferRadiusChange={props.onBufferRadiusChange}
+          onSketchModeChange={props.onSketchModeChange}
+          onDraw={props.onDraw}
+          onClear={props.onClear}
+        />
 
         <div className={classNames({
           [style.filterSection]: true,
@@ -446,23 +395,14 @@ const QueryPanel = (props: IQueryPanel) => {
 
         </div>
 
-        <div className={style.controlSet}>
-          <div className={style.settingBtn}
-            onClick={props.onCustomizeParamBtnClick}
-          >
-            <Image src={'/aprRegion/setting.png'} width='30px' height='30px' />
-            <p>自定義參數</p>
-          </div>
-
-          <div className={style.searchBtn}
-            onClick={props.handleFormSubmit}
-          >
-            <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
-            <p>查詢</p>
-          </div>
-        </div>
+        <Action
+          onCustomizeParamBtnClick={props.onCustomizeParamBtnClick}
+          handleFormSubmit={props.handleFormSubmit}
+        />
 
       </div>
+
+      {/* 用手機瀏覽時才會渲染 */}
       {
         props.filteredResults && props.filteredResults.length !== 0
           ?
