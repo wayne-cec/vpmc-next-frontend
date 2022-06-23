@@ -6,6 +6,7 @@ import BasemapGallery from '@arcgis/core/widgets/BasemapGallery'
 import Measurement from '../widgets/Measurement'
 import HelloWorld from '../widgets/TestWidget'
 import * as ReactDOM from 'react-dom'
+import MeasurementWidget from '@arcgis/core/widgets/Measurement'
 
 export type UseMapParams = {
   mapOption?: __esri.MapProperties
@@ -87,17 +88,24 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         content: basemapGallery
       })
 
+      const measurementWidget = new MeasurementWidget()
       const node = document.createElement("div")
       const measurementExpand = new Expand({
-        expandIconClass: "esri-icon-basemap",
+        expandIconClass: "esri-icon-measure",
         view: mapView,
         content: node
       })
 
-      mapView.ui.add(basemapGalleryExpand, 'bottom-left')
+      mapView.ui.add(measurementWidget, "bottom-right")
+      mapView.ui.add(basemapGalleryExpand, 'bottom-right')
+      mapView.ui.add(measurementExpand, "bottom-right")
 
-      mapView.ui.add(measurementExpand, "top-right")
-      ReactDOM.render(<Measurement />, node)
+      ReactDOM.render(
+        <Measurement
+          mapView={mapView}
+          measurement={measurementWidget}
+        />, node
+      )
 
       mapViewRef.current = mapView
       mapViewStack.current.setObject(mapView)
