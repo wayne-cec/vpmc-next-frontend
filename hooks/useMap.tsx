@@ -96,7 +96,7 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         content: node
       })
 
-      mapView.ui.add(measurementWidget, "bottom-right")
+      mapView.ui.add(measurementWidget, "bottom-left")
       mapView.ui.add(basemapGalleryExpand, 'bottom-right')
       mapView.ui.add(measurementExpand, "bottom-right")
 
