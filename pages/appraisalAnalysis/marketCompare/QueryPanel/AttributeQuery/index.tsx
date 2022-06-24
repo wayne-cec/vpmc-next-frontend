@@ -25,7 +25,7 @@ export interface IAttributeQuery {
   isParkSpaceFosced: boolean
   isBuildingAreaCheckable: boolean
   isLandAreaCheckable: boolean
-  transactionTime?: number
+  transactiontime?: number
   buildingTransferArea?: number
   landTransferArea?: number
   age?: number
@@ -95,7 +95,7 @@ const AttributeQuery = (props: IAttributeQuery) => {
               label="交易時間"
               id="transaction-time-select"
               size='small'
-              value={props.isTransactionTimeFiltered ? props.transactionTime : ''}
+              value={props.isTransactionTimeFiltered ? props.transactiontime : ''}
               disabled={!props.isTransactionTimeFiltered}
               // autoFocus={isTransactionTimeFiltered}
               onChange={(event) => {

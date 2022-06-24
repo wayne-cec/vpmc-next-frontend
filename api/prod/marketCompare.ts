@@ -1,6 +1,7 @@
 import { IResult, IResultStatistics } from "./aprRegion"
 
 export interface IMarketCompareResult {
+  id: string
   transactiontime: string
   completiontime: string
   transferFloor: number
