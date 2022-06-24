@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import style from './index.module.scss'
@@ -17,6 +17,7 @@ import {
 import moment from 'moment'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
+import { ZoomContext } from '../..'
 
 interface EnhancedTableProps {
   numSelected: number
@@ -89,12 +90,12 @@ export const ResultTable = (props: IResultTable) => {
   const [dense, setDense] = useState(false)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [rows, setrows] = useState<Data[]>([])
+  const { onZoomIdChange } = useContext(ZoomContext)
 
   useEffect(() => {
     const newRows: Data[] = []
     props.data.forEach((d) => {
       const row: Data = { ...d }
-      console.log(row)
       newRows.push(row)
     })
     setrows([...newRows])
@@ -137,9 +138,9 @@ export const ResultTable = (props: IResultTable) => {
     setSelected(newSelected)
   }
 
-  const handleRowClick = (event: React.MouseEvent<unknown>, name: string) => {
+  const handleRowClick = (event: React.MouseEvent<unknown>, id: string) => {
     if (event.type === 'click') {
-      handleSelect(name)
+      handleSelect(id)
     } else if (event.type === 'contextmenu') {
       console.log('Right click');
     }
@@ -180,8 +181,8 @@ export const ResultTable = (props: IResultTable) => {
                 stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                    const isItemSelected = isSelected(row.id)
+                    const labelId = `enhanced-table-checkbox-${index}`
 
                     return (
                       <TableRow
@@ -210,18 +211,15 @@ export const ResultTable = (props: IResultTable) => {
                         >
                           {moment(new Date(row.transactiontime)).format('YYYY-MM-DD')}
                         </TableCell>
-
                         <TableCell align="right">
                           {row.transferFloor}樓
                         </TableCell>
-
                         <TableCell align="right">
                           <span className={style.unitPrice}>
                             {Math.round((row.unitPrice * square) / 1000) / 10}
                           </span>
                           <span className={style.unit}>萬</span>
                         </TableCell>
-
                         <TableCell align="right">
                           {
                             row.parkingSpacePrice === 0
@@ -229,37 +227,40 @@ export const ResultTable = (props: IResultTable) => {
                               : `${Math.round(row.parkingSpacePrice / 10000)}萬`
                           }
                         </TableCell>
-
                         <TableCell align="right">
                           <p className={style.totalPrice}>
                             {Math.round(row.price / 10000)}
                             <span className={style.smtext}>萬</span>
                           </p>
                         </TableCell>
-
                         <TableCell align="right">
-                          <IconButton aria-label="delete" size="small"
-                            onClick={handleMenuClick}
+                          <IconButton size="small"
+                            onClick={() => {
+                              onZoomIdChange(row.id)
+                            }}
                           >
-                            <MoreVertIcon fontSize="inherit" />
+                            <ZoomInIcon fontSize="small" />
                           </IconButton>
-
-                          <Menu
-                            id="basic-menu"
-                            anchorEl={anchorEl}
-                            open={menuOpen}
-                            onClose={handleMenuClose}
-                            sx={{ boxShadow: 'none' }}
-                          >
-                            <MenuItem onClick={handleMenuClose}>
-                              <ListItemIcon>
-                                <ZoomInIcon fontSize="small" />
-                              </ListItemIcon>
-                              <ListItemText>Zoom to</ListItemText>
-                            </MenuItem>
-                          </Menu>
-
                         </TableCell>
+
+                        {/* <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={menuOpen}
+                          onClose={handleMenuClose}
+                          sx={{ boxShadow: 'none' }}
+                        >
+                          <MenuItem onClick={() => {
+                            handleMenuClose()
+                            onZoomIdChange(row.id)
+                            console.log(row.id)
+                          }}>
+                            <ListItemIcon>
+                              <ZoomInIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Zoom to</ListItemText>
+                          </MenuItem>
+                        </Menu> */}
                       </TableRow>
                     )
                   })

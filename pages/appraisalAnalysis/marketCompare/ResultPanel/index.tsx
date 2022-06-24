@@ -58,7 +58,6 @@ const ResultPanel = (props: IResultPanel) => {
 
               <TabPanel value="1" sx={{ padding: '0px' }}>
                 <ResultTable data={props.filteredResults} />
-
               </TabPanel>
 
               <TabPanel value="2" sx={{ padding: '0px' }}>

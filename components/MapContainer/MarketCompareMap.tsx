@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import style from './index.module.scss'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
 import SketchViewModel from '@arcgis/core/widgets/Sketch/SketchViewModel'
@@ -14,7 +14,7 @@ import Point from '@arcgis/core/geometry/Point'
 import Graphic from '@arcgis/core/Graphic'
 import useMap from '../../hooks/useMap'
 import classNames from 'classnames'
-import { SpatialQueryType } from '../../pages/appraisalAnalysis/marketCompare'
+import { SpatialQueryType, ZoomContext } from '../../pages/appraisalAnalysis/marketCompare'
 import { IMarketCompareResult } from '../../api/prod'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 import { PolygonSketchMode } from '../PolygonSketch'
@@ -37,6 +37,7 @@ export interface IMarketCompareMap {
   filteredResults: IMarketCompareResult[]
   spatialQueryType: SpatialQueryType
   sketchMode: PolygonSketchMode
+  zoomId: string | null
   onCoordinateSelect: (longitude: number | null, latitude: number | null) => void
   onSketchModeChange: (value: PolygonSketchMode) => void
   onGeojsonChange: (value: string | null) => void
@@ -52,7 +53,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   const [longitude, setlongitude] = useState<number | undefined>(undefined)
   const [latitude, setlatitude] = useState<number | undefined>(undefined)
   const { asyncMap, asyncMapView, map, mapView } = useMap(mapRef, mapOptions)
-
+  const { zoomId } = useContext(ZoomContext)
   // const [basemapGallery, setbasemapGallery] = useState<BasemapGallery | undefined>(undefined)
   // const [basemapGalleryExpand, setbasemapGalleryExpand] = useState<Expand | undefined>(undefined)
 
@@ -80,6 +81,30 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     }
   }
 
+  const handleZoomToId = async (id: string) => {
+    (await asyncMapView).zoom = 20;
+
+    if (aprLayer) {
+      for (let i = 0; i < aprLayer.graphics.length; i++) {
+        if (aprLayer.graphics.at(i).attributes.id === id) {
+          (await asyncMapView).goTo(aprLayer.graphics.at(i))
+          aprLayer.graphics.at(i).symbol = new PictureMarkerSymbol({
+            url: '/aprRegion/home.png',
+            width: '100px',
+            height: '100px'
+          })
+        } else {
+          aprLayer.graphics.at(i).symbol = new PictureMarkerSymbol({
+            url: '/aprRegion/home.png',
+            width: '30px',
+            height: '30px'
+          })
+        }
+      }
+    }
+
+  }
+
   useEffect(() => {
     const pLayer = new GraphicsLayer({ id: 'pointLayer' })
     const bLayer = new GraphicsLayer({ id: 'bufferLayer' })
@@ -100,6 +125,9 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       const aprResultGraphics = new Collection<Graphic>()
       props.filteredResults.forEach((aprResult) => {
         const pointGraphic = new Graphic({
+          attributes: {
+            id: aprResult.id
+          },
           geometry: new Point({
             longitude: aprResult.longitude,
             latitude: aprResult.latitude
@@ -115,7 +143,6 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       })
       if (map && aprLayer) {
         aprLayer.graphics = aprResultGraphics
-        console.log(aprLayer)
         map.add(aprLayer)
       }
     }
@@ -199,6 +226,12 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       }
     }
   }, [props.spatialQueryType, props.sketchMode])
+
+  useEffect(() => {
+    if (zoomId !== null) {
+      handleZoomToId(zoomId)
+    }
+  }, [zoomId])
 
   return (
     <>
