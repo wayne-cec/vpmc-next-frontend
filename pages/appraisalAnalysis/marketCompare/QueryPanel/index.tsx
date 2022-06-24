@@ -1,20 +1,8 @@
 import React from 'react'
 import style from './index.module.scss'
-import Image from 'next/image'
 import classNames from 'classnames'
-import {
-  TextField, Select, MenuItem,
-  InputLabel, FormControl, Checkbox,
-  Grid, Radio
-} from '@mui/material'
 import MarketCompareResultCard from '../../../../components/MarketCompareResultCard'
-import CoordinateSelector from '../../../../components/CoordinateSelector'
-import PolygonSketch from '../../../../components/PolygonSketch'
 import { PolygonSketchMode } from '../../../../components/PolygonSketch'
-import {
-  assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
-  landTransactionAreaSet, ageSet
-} from '../../../../lib/marketComapreConst'
 import { IMarketCompareResult } from '../../../../api/prod'
 import { SpatialQueryType } from '..'
 import SpatialQuery from './SpatialQuery'
@@ -41,7 +29,7 @@ export interface IQueryPanel {
   isLandAreaCheckable: boolean
   assetTypeCode: number
   bufferRadius: number
-  transactionTime?: number
+  transactiontime?: number
   buildingTransferArea?: number
   landTransferArea?: number
   age?: number
@@ -77,7 +65,6 @@ const QueryPanel = (props: IQueryPanel) => {
       [style.show]: true
     })}>
       <div className={style.filterGroup}>
-
         <SpatialQuery
           longitude={props.longitude}
           latitude={props.latitude}
@@ -94,7 +81,6 @@ const QueryPanel = (props: IQueryPanel) => {
           onDraw={props.onDraw}
           onClear={props.onClear}
         />
-
         <AttributeQuery
           assetTypeCode={props.assetTypeCode}
           isTransactionTimeFiltered={props.isTransactionTimeFiltered}
@@ -109,7 +95,7 @@ const QueryPanel = (props: IQueryPanel) => {
           isParkSpaceFosced={props.isParkSpaceFosced}
           isBuildingAreaCheckable={props.isBuildingAreaCheckable}
           isLandAreaCheckable={props.isLandAreaCheckable}
-          transactionTime={props.transactionTime}
+          transactiontime={props.transactiontime}
           buildingTransferArea={props.buildingTransferArea}
           landTransferArea={props.landTransferArea}
           age={props.age}
@@ -124,12 +110,10 @@ const QueryPanel = (props: IQueryPanel) => {
           onAgeFilteredChange={props.onAgeFilteredChange}
           onAgeSelect={props.onAgeSelect}
         />
-
         <Action
           onCustomizeParamBtnClick={props.onCustomizeParamBtnClick}
           handleFormSubmit={props.handleFormSubmit}
         />
-
       </div>
 
       {/* 用手機瀏覽時才會渲染 */}
