@@ -17,6 +17,9 @@ import { WithNavFooterProtected } from '../../../layout/BaseLayout'
 import QueryPanel from './QueryPanel'
 import ResultPanel from './ResultPanel'
 import React, { createContext } from 'react'
+import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
+import MapView from '@arcgis/core/views/MapView'
+import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
 
 const square = 3.305785
 
@@ -28,8 +31,8 @@ const MarketMapContainer = dynamic(
 )
 
 export const ZoomContext = createContext<{
-  zoomId: string | null
-  onZoomIdChange: (value: string | null) => void
+  zoomId: { id: string } | null
+  onZoomIdChange: (value: { id: string } | null) => void
 }>({
   zoomId: null,
   onZoomIdChange: (value) => { }
@@ -78,7 +81,7 @@ const MarketCompare: NextPage = () => {
   const [graphData, setgraphData] = useState<IGraphData | null>(null)
   const [spatialQueryType, setspatialQueryType] = useState<SpatialQueryType>('buffer')
   const [sketchMode, setsketchMode] = useState<PolygonSketchMode>('inactive')
-  const [zoomId, setzoomId] = useState<string | null>(null)
+  const [zoomId, setzoomId] = useState<{ id: string } | null>(null)
 
   const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
     setlongitude(longitude)
@@ -92,7 +95,6 @@ const MarketCompare: NextPage = () => {
       setlocatedCounty(null)
       setlocatedTown(null)
     }
-
   }
 
   const handleFormSubmit = async () => {

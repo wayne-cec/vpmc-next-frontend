@@ -37,7 +37,7 @@ export interface IMarketCompareMap {
   filteredResults: IMarketCompareResult[]
   spatialQueryType: SpatialQueryType
   sketchMode: PolygonSketchMode
-  zoomId: string | null
+  zoomId: { id: string } | null
   onCoordinateSelect: (longitude: number | null, latitude: number | null) => void
   onSketchModeChange: (value: PolygonSketchMode) => void
   onGeojsonChange: (value: string | null) => void
@@ -229,7 +229,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
 
   useEffect(() => {
     if (zoomId !== null) {
-      handleZoomToId(zoomId)
+      handleZoomToId(zoomId.id)
     }
   }, [zoomId])
 
