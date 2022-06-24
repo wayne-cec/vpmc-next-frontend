@@ -52,7 +52,7 @@ const MarketCompare: NextPage = () => {
 
   const [assetTypeCode, setassetTypeCode] = useState<number>(0)
   const [bufferRadius, setbufferRadius] = useState<number>(300)
-  const [transactionTime, settransactionTime] = useState<number | null>(null)
+  const [transactiontime, settransactionTime] = useState<number | null>(null)
   const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
   const [age, setage] = useState<number | null>(null)
@@ -104,9 +104,9 @@ const MarketCompare: NextPage = () => {
         return
       }
 
-      if (isTransactionTimeFiltered && transactionTime) {
+      if (isTransactionTimeFiltered && transactiontime) {
         const dateNow = new Date()
-        params.transactionTimeStart = moment(dateNow).add(-transactionTime, 'year').format('YYYY/MM/DD')
+        params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
         params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
       }
       if (isBuildingAreaFiltered && buildingTransferArea !== null) {
@@ -219,7 +219,7 @@ const MarketCompare: NextPage = () => {
           isLandAreaCheckable={isLandAreaCheckable}
           assetTypeCode={assetTypeCode}
           bufferRadius={bufferRadius}
-          transactionTime={transactionTime!}
+          transactiontime={transactiontime!}
           buildingTransferArea={buildingTransferArea!}
           landTransferArea={landTransferArea!}
           age={age!}

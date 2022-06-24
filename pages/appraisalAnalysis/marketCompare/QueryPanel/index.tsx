@@ -29,7 +29,7 @@ export interface IQueryPanel {
   isLandAreaCheckable: boolean
   assetTypeCode: number
   bufferRadius: number
-  transactionTime?: number
+  transactiontime?: number
   buildingTransferArea?: number
   landTransferArea?: number
   age?: number
@@ -95,7 +95,7 @@ const QueryPanel = (props: IQueryPanel) => {
           isParkSpaceFosced={props.isParkSpaceFosced}
           isBuildingAreaCheckable={props.isBuildingAreaCheckable}
           isLandAreaCheckable={props.isLandAreaCheckable}
-          transactionTime={props.transactionTime}
+          transactiontime={props.transactiontime}
           buildingTransferArea={props.buildingTransferArea}
           landTransferArea={props.landTransferArea}
           age={props.age}

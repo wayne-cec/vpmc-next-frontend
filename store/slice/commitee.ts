@@ -4,7 +4,7 @@ import { persistConfig } from '../config'
 import { persistReducer } from 'redux-persist'
 
 export interface ICommiteeAprDetail {
-  transactionTime: string
+  transactiontime: string
   transferFloor: number
   unitPrice: number
   priceWithoutParking: number

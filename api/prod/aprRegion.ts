@@ -10,8 +10,8 @@ export interface IResult {
   buildingType: number
   priceWithoutParking: number
   unitPrice: number
-  completionTime?: string
-  transactionTime: string
+  completiontime?: string
+  transactiontime: string
   age: number
 }
 

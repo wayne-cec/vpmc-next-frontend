@@ -86,3 +86,9 @@ background-image: linear-gradient(315deg, #f8f9d2 0%, #e8dbfc 74%); */
 .esri-expand{
 margin-top: 5px
 }
+.MuiMenu-paper{
+  box-shadow: none !important;
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color) !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
+}
