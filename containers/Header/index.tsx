@@ -30,8 +30,8 @@ export const statistic = [
 ]
 
 export const aprV2Link = [
-  { name: '社區個別', route: '/aprV2/commitee', protected: true },
-  { name: '地區總體', route: '/aprV2/region', protected: true }
+  // { name: '社區個別', route: '/aprV2/commitee', protected: true },
+  // { name: '地區總體', route: '/aprV2/region', protected: true }
 ]
 
 const renderContent = (index: number, link: {
@@ -91,6 +91,7 @@ const Header = () => {
           <NavButton
             onMouseOver={() => { setaprV2(true) }}
             onMouseLeave={() => { setaprV2(false) }}
+            onClick={() => { Router.push('/aprV2/commitee') }}
           >實價登陸2.0</NavButton>
         </div>
         <div className={style.contact}>
@@ -174,7 +175,7 @@ const Header = () => {
         }
       </HeaderDrawer>
 
-      <HeaderDrawer
+      {/* <HeaderDrawer
         open={aprV2}
         onMouseOver={() => { setaprV2(true) }}
         onMouseLeave={() => { setaprV2(false) }}
@@ -188,7 +189,7 @@ const Header = () => {
               : renderContent(index, link)
           })
         }
-      </HeaderDrawer>
+      </HeaderDrawer> */}
 
     </div>
   )

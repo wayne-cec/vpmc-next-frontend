@@ -17,10 +17,15 @@ import { parseCommitee } from '../../lib/parseCommitee'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 import useMap from '../../hooks/useMap'
 import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
+import { createGeoJSONURL } from '../../lib/calculateAge'
+import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer'
+import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol'
+import { useCountyGraphPendingStatus } from '../../pages/aprV2/commitee'
 
 export const square = 3.305785
 
 export interface IEsriMap {
+  townGeojson: any | null
   basemap: string
   onExtentChange: (value: ICommitee[]) => void
 }
@@ -91,9 +96,33 @@ const mapOptions = {
   }
 }
 
+let townGeoJsonLayer = new GeoJSONLayer()
+
 const AprV2Map = (props: IEsriMap) => {
+  const { setpending } = useCountyGraphPendingStatus()
   const mapRef = useRef<HTMLDivElement>(null)
   const { asyncMap, asyncMapView } = useMap(mapRef, mapOptions)
+
+  const renderTownGeojsonToMap = async () => {
+    if (props.townGeojson) {
+      (await asyncMap).remove(townGeoJsonLayer)
+      townGeoJsonLayer = new GeoJSONLayer({
+        url: createGeoJSONURL(props.townGeojson),
+        renderer: new SimpleRenderer({
+          symbol: new SimpleFillSymbol({
+            outline: { color: [0, 0, 0, 0.33] },
+            color: [255, 145, 28, 0.19]
+          })
+        })
+      });
+      (await asyncMap).add(townGeoJsonLayer);
+      townGeoJsonLayer.when(async () => {
+        (await asyncMapView).goTo(townGeoJsonLayer.fullExtent);
+        (await asyncMap).reorder(townGeoJsonLayer, 0);
+        setpending(false)
+      })
+    }
+  }
 
   const fetchTownData = async (map: Map) => {
     const promises: any[] = []
@@ -330,6 +359,10 @@ const AprV2Map = (props: IEsriMap) => {
   useEffect(() => {
     addWatchUtilToMapView()
   }, [])
+
+  useEffect(() => {
+    renderTownGeojsonToMap()
+  }, [props.townGeojson])
 
   return (
     <>

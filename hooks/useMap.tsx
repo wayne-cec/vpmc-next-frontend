@@ -42,7 +42,10 @@ class TaskStack<T> {
   }
 }
 
-const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOption }: UseMapParams) => {
+const useMap = (
+  elemRef: React.RefObject<HTMLDivElement>,
+  { mapOption, mapViewOption }: UseMapParams
+) => {
   const mapRef = useRef<Map>()
   const mapViewRef = useRef<MapView>()
   const mapStack = useRef(new TaskStack<Map>())
