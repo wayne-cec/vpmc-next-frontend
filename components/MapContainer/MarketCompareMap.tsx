@@ -41,6 +41,7 @@ export interface IMarketCompareMap {
   onCoordinateSelect: (longitude: number | null, latitude: number | null) => void
   onSketchModeChange: (value: PolygonSketchMode) => void
   onGeojsonChange: (value: string | null) => void
+  onSpatialQueryTypeChange: (value: SpatialQueryType) => void
 }
 
 const MarketCompareMap = (props: IMarketCompareMap) => {
@@ -202,7 +203,9 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
         })
         sketchViewModel.on('create', (event) => {
           if (event.state === "complete") {
-            props.onSketchModeChange('inactive')
+            // props.onSketchModeChange('inactive')
+            props.onSpatialQueryTypeChange('none')
+            props
             const projectedGeometry = projection.project(event.graphic.geometry, new SpatialReference({ wkid: 4326 }))
             // @ts-ignore
             const geometry: number[][][] = projectedGeometry.rings
@@ -211,14 +214,72 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
           }
         })
         sketchViewModel.create('polygon')
+      } else if (props.spatialQueryType === 'circle' && props.sketchMode !== 'inactive') {
+        map.remove(sketchLayer)
+        sketchLayer.graphics = new Collection<Graphic>()
+        aprLayer.graphics = new Collection<Graphic>()
+        map.add(sketchLayer)
+        const sketchViewModel = new SketchViewModel({
+          layer: sketchLayer,
+          view: mapView,
+          polygonSymbol: new SimpleFillSymbol({
+            style: "solid",
+            outline: { width: 1.5, color: [255, 97, 13, 1] },
+            color: [255, 116, 0, 0.11]
+          }),
+          defaultCreateOptions: { hasZ: false }
+        })
+        sketchViewModel.on('create', (event) => {
+          if (event.state === "complete") {
+            // props.onSketchModeChange('inactive')
+            props.onSpatialQueryTypeChange('none')
+            const projectedGeometry = projection.project(event.graphic.geometry, new SpatialReference({ wkid: 4326 }))
+            // @ts-ignore
+            const geometry: number[][][] = projectedGeometry.rings
+            let geojson = ` {"type": "Polygon","coordinates": ${JSON.stringify(geometry)}}`
+            props.onGeojsonChange(geojson)
+          }
+        })
+        sketchViewModel.create('circle')
+      } else if (props.spatialQueryType === 'rectangle' && props.sketchMode !== 'inactive') {
+        map.remove(sketchLayer)
+        sketchLayer.graphics = new Collection<Graphic>()
+        aprLayer.graphics = new Collection<Graphic>()
+        map.add(sketchLayer)
+        const sketchViewModel = new SketchViewModel({
+          layer: sketchLayer,
+          view: mapView,
+          polygonSymbol: new SimpleFillSymbol({
+            style: "solid",
+            outline: { width: 1.5, color: [255, 97, 13, 1] },
+            color: [255, 116, 0, 0.11]
+          }),
+          defaultCreateOptions: { hasZ: false }
+        })
+        sketchViewModel.on('create', (event) => {
+          if (event.state === "complete") {
+            // props.onSketchModeChange('inactive')
+            props.onSpatialQueryTypeChange('none')
+            const projectedGeometry = projection.project(event.graphic.geometry, new SpatialReference({ wkid: 4326 }))
+            // @ts-ignore
+            const geometry: number[][][] = projectedGeometry.rings
+            let geojson = ` {"type": "Polygon","coordinates": ${JSON.stringify(geometry)}}`
+            props.onGeojsonChange(geojson)
+          }
+        })
+        sketchViewModel.create('rectangle')
+      } else if (props.spatialQueryType === 'clear' && props.sketchMode !== 'inactive') {
+        map.remove(sketchLayer)
+        sketchLayer.graphics = new Collection<Graphic>()
+        map.add(sketchLayer)
       }
 
-      if (props.sketchMode === 'inactive') {
+      if (props.sketchMode === 'draw') {
         map.removeMany([pointLayer, bufferLayer, aprLayer])
         aprLayer.graphics = new Collection<Graphic>()
         map.add(sketchLayer)
       }
-      if (props.spatialQueryType === 'buffer') {
+      if (props.sketchMode === 'inactive') {
         // props.onGeojsonChange(null)
         map.removeMany([sketchLayer, aprLayer])
         map.addMany([pointLayer, bufferLayer])
@@ -237,7 +298,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     <>
       <div className={classNames({
         [style.esriMapMarketCompare]: true,
-        [style.active]: props.active
+        [style.active]: props.active || (props.spatialQueryType !== 'none' && props.spatialQueryType !== 'buffer')
       })} ref={mapRef}>
       </div>
     </>

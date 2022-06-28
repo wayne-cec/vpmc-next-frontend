@@ -31,34 +31,38 @@ const SpatialQuery = (props: ISpatialQuery) => {
       [style.spatialQuery]: true,
       [style.divide]: true
     })}>
-      <CoordinateSelector
-        longitude={props.longitude!}
-        latitude={props.latitude!}
-        locatedCounty={props.locatedCounty!}
-        locatedTown={props.locatedTown!}
-        active={props.isSelectorActive!}
-        enabled={props.spatialQueryType === 'buffer'}
-        onClick={() => {
-          props.onCoordinatorSelectorClick(!props.isSelectorActive)
-        }}
-      />
+
       <Grid container spacing={2}>
         {/* 搜索範圍 */}
         <Grid item xs={2}>
           <Radio
-            checked={props.spatialQueryType === 'buffer'}
+            checked={props.sketchMode === 'inactive'}
             onChange={() => {
               props.onSpatialQueryTypeChange('buffer')
+              props.onSketchModeChange('inactive')
             }}
             value="a"
             name="radio-buttons"
             inputProps={{ 'aria-label': 'A' }}
           />
         </Grid>
-        <Grid item xs={5}>
+        <Grid item xs={7}>
+          <CoordinateSelector
+            longitude={props.longitude!}
+            latitude={props.latitude!}
+            locatedCounty={props.locatedCounty!}
+            locatedTown={props.locatedTown!}
+            active={props.isSelectorActive!}
+            enabled={props.sketchMode === 'inactive'}
+            onClick={() => {
+              props.onCoordinatorSelectorClick(!props.isSelectorActive)
+            }}
+          />
+        </Grid>
+        <Grid item xs={3}>
           <TextField
             type='number'
-            label="勘估標的距離(m)"
+            label="距離(m)"
             size='small'
             InputProps={{ inputProps: { min: 0 } }}
             value={props.bufferRadius}
@@ -67,15 +71,22 @@ const SpatialQuery = (props: ISpatialQuery) => {
                 Number(event.target.value)
               )
             }}
-            disabled={props.spatialQueryType !== 'buffer'}
+            disabled={props.sketchMode !== 'inactive'}
             fullWidth
           ></TextField>
         </Grid>
         <Grid item xs={2}>
           <Radio
-            checked={props.spatialQueryType === 'polygon'}
+            checked={
+              // props.spatialQueryType === 'polygon' ||
+              // props.spatialQueryType === 'circle' ||
+              // props.spatialQueryType === 'rectangle'
+              props.sketchMode === 'draw'
+            }
             onChange={() => {
-              props.onSpatialQueryTypeChange('polygon')
+              // props.onSpatialQueryTypeChange('rectangle')
+              props.onSpatialQueryTypeChange('none')
+              props.onSketchModeChange('draw')
               props.onCoordinatorSelectorClick(false)
             }}
             value="a"
@@ -83,13 +94,20 @@ const SpatialQuery = (props: ISpatialQuery) => {
             inputProps={{ 'aria-label': 'A' }}
           />
         </Grid>
-        <Grid item xs={3}
+        <Grid item xs={10}
           className={style.polygonSketchContainer}
         >
           <PolygonSketch
-            active={props.spatialQueryType === 'polygon'}
+            active={
+              // props.spatialQueryType === 'polygon' ||
+              // props.spatialQueryType === 'circle' ||
+              // props.spatialQueryType === 'rectangle' || 
+              props.sketchMode === 'draw'
+            }
             mode={props.sketchMode}
+            spatialQueryType={props.spatialQueryType}
             onModeChange={props.onSketchModeChange}
+            onSpatialQueryTypeChange={props.onSpatialQueryTypeChange}
             onDraw={props.onDraw}
             onClear={props.onDraw}
           />
