@@ -298,7 +298,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     <>
       <div className={classNames({
         [style.esriMapMarketCompare]: true,
-        [style.active]: props.active || (props.spatialQueryType !== 'none' && props.spatialQueryType !== 'buffer')
+        [style.active]: props.active || (props.spatialQueryType !== 'none' && props.spatialQueryType !== 'buffer' && props.spatialQueryType !== 'clear')
       })} ref={mapRef}>
       </div>
     </>

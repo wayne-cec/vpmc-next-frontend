@@ -407,7 +407,12 @@ const ResultTable = (props: IResultTable) => {
                 )
               }
               {
-                pending ? <p>pending</p> : null
+                pending
+                  ? <div className={style.loadingSection}>
+                    <div className={style.loader}></div>
+                    <span>匹配管委會資料中</span>
+                  </div>
+                  : null
               }
             </TableBody>
           </Table>
