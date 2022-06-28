@@ -61,8 +61,8 @@ const Footer = () => {
           }
         </div>
         <div className={style.tree}>
-          <p className={style.title}>實價登陸2.0</p>
-          {
+          <p className={style.title} onClick={() => { Router.push('/aprV2/commitee') }}>實價登陸2.0</p>
+          {/* {
             aprV2Link.map((link, index) => {
               return link.protected
                 ? isAuthenticated
@@ -70,7 +70,7 @@ const Footer = () => {
                   : null
                 : renderContent(index, link)
             })
-          }
+          } */}
         </div>
       </div>
 

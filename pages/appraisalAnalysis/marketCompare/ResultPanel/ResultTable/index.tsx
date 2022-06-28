@@ -14,6 +14,9 @@ import moment from 'moment'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
 import { ZoomContext } from '../..'
+import api from '../../../../../api'
+import { parseCommitee } from '../../../../../lib/parseCommitee'
+import classNames from 'classnames'
 
 export interface Data {
   id: string
@@ -22,6 +25,7 @@ export interface Data {
   unitPrice: number
   parkingSpacePrice: number
   price: number
+  organization: string
 }
 
 export interface HeadCell {
@@ -75,6 +79,12 @@ export const headCells: readonly HeadCell[] = [
     numeric: false,
     disablePadding: true,
     label: '交易日期'
+  },
+  {
+    id: 'organization',
+    numeric: true,
+    disablePadding: false,
+    label: '管委會'
   },
   {
     id: 'transferFloor',
@@ -180,15 +190,7 @@ const ResultTable = (props: IResultTable) => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [rows, setrows] = useState<Data[]>([])
   const { onZoomIdChange } = useContext(ZoomContext)
-
-  useEffect(() => {
-    const newRows: Data[] = []
-    props.data.forEach((d) => {
-      const row: Data = { ...d }
-      newRows.push(row)
-    })
-    setrows([...newRows])
-  }, [props.data])
+  const [pending, setpending] = useState<boolean>(false)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -248,6 +250,30 @@ const ResultTable = (props: IResultTable) => {
     setAnchorEl(null)
   }
 
+  const handleGetCommiteeByAprId = async (id: string) => {
+    const { statusCode, responseContent } = await api.prod.getCommiteeByAprId(id)
+    if (statusCode === 200) {
+      return responseContent.organization
+    }
+    return undefined
+  }
+
+  const handleGetRowsCommitee = async () => {
+    setpending(true)
+    const newRows: Data[] = []
+    for (let i = 0; i < props.data.length; i++) {
+      const organization = await handleGetCommiteeByAprId(props.data[i].id)
+      const row: Data = { ...props.data[i], organization: organization ? organization : '無管委會' } //
+      newRows.push(row)
+    }
+    setrows([...newRows])
+    setpending(false)
+  }
+
+  useEffect(() => {
+    handleGetRowsCommitee()
+  }, [props.data])
+
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%' }}>
@@ -267,11 +293,15 @@ const ResultTable = (props: IResultTable) => {
             />
             <TableBody>
               {
-                stableSort(rows, getComparator(order, orderBy))
+                pending ? null : stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.id)
-                    const labelId = `enhanced-table-checkbox-${index}`
+                    const labelId = `enhanced-table-checkbox-${index}`;
+
+                    // (async () => {
+                    //   await handleGetCommiteeByAprId(row.id)
+                    // })();
 
                     return (
                       <TableRow
@@ -299,6 +329,17 @@ const ResultTable = (props: IResultTable) => {
                           padding="none"
                         >
                           {moment(new Date(row.transactiontime)).format('YYYY-MM-DD')}
+                        </TableCell>
+                        <TableCell
+                          align="right"
+                        >
+                          <span
+                            className={classNames({
+                              [style.organization]: true,
+                              [style.disable]: row.organization === '無管委會'
+                            })}
+                          >{parseCommitee(row.organization)}
+                          </span>
                         </TableCell>
                         <TableCell align="right">
                           {row.transferFloor}樓
@@ -364,6 +405,9 @@ const ResultTable = (props: IResultTable) => {
                     <TableCell colSpan={6} />
                   </TableRow>
                 )
+              }
+              {
+                pending ? <p>pending</p> : null
               }
             </TableBody>
           </Table>
