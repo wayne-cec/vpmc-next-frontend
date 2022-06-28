@@ -29,13 +29,22 @@ const CoordinateSelector = (props: ICoordinateSelector) => {
     >
       <div className={style.titleContainer}>
         <Image src={props.enabled ? '/aprRegion/gps.png' : '/aprRegion/gps-disabled.png'} width='25px' height='25px' />
-        <p>
-          {
-            props.longitude === null || props.latitude === null
-              ? '請定位座標'
-              : `經度: ${Math.round(props.longitude * 1000) / 1000},\xa0 緯度: ${Math.round(props.latitude * 1000) / 1000}`
-          }
-        </p>
+        <div>
+          <p>
+            {
+              props.longitude === null || props.latitude === null
+                ? '請定位座標'
+                : `經度: ${Math.round(props.longitude * 1000) / 1000}`
+            }
+          </p>
+          <p>
+            {
+              props.longitude === null || props.latitude === null
+                ? ''
+                : `緯度: ${Math.round(props.latitude * 1000) / 1000}`
+            }
+          </p>
+        </div>
       </div>
       <p className={style.regionTitle}>
         {

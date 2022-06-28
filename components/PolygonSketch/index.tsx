@@ -3,13 +3,16 @@ import style from './index.module.scss'
 import classNames from 'classnames'
 import Image from 'next/image'
 import { Tooltip } from '@mui/material'
+import { SpatialQueryType } from '../../pages/appraisalAnalysis/marketCompare'
 
 export type PolygonSketchMode = 'draw' | 'inactive'
 
 export interface IPolygonSketch {
   active: boolean
   mode: PolygonSketchMode
+  spatialQueryType: SpatialQueryType
   onModeChange: (value: PolygonSketchMode) => void
+  onSpatialQueryTypeChange: (value: SpatialQueryType) => void
   onDraw: () => void
   onClear: () => void
 }
@@ -22,15 +25,54 @@ const PolygonSketch = (props: IPolygonSketch) => {
     })}>
       <span className={style.legend}>自定義範圍</span>
 
-      <Tooltip title="框選範圍">
+      <Tooltip title="矩型範圍">
         <div className={classNames({
           [style.btnContainer]: true,
-          [style.focus]: props.mode === 'draw',
+          [style.focus]: props.spatialQueryType === 'rectangle', // props.mode === 'draw',
           [style.active]: props.active
         })}
           onClick={() => {
             if (props.active) {
               props.onDraw()
+              props.onSpatialQueryTypeChange('rectangle')
+            }
+          }}
+        >
+          <Image src={
+            props.active ? '/marketCompare/rectangle.png' : '/marketCompare/rectangle-disabled.png'
+          } width='25px' height='25px' />
+        </div>
+      </Tooltip>
+
+      <Tooltip title="圓形範圍">
+        <div className={classNames({
+          [style.btnContainer]: true,
+          [style.focus]: props.spatialQueryType === 'circle', // props.mode === 'draw',
+          [style.active]: props.active
+        })}
+          onClick={() => {
+            if (props.active) {
+              props.onDraw()
+              props.onSpatialQueryTypeChange('circle')
+            }
+          }}
+        >
+          <Image src={
+            props.active ? '/marketCompare/circle.png' : '/marketCompare/circle-disabled.png'
+          } width='25px' height='25px' />
+        </div>
+      </Tooltip>
+
+      <Tooltip title="不規則範圍">
+        <div className={classNames({
+          [style.btnContainer]: true,
+          [style.focus]: props.spatialQueryType === 'polygon', // props.mode === 'draw',
+          [style.active]: props.active
+        })}
+          onClick={() => {
+            if (props.active) {
+              props.onDraw()
+              props.onSpatialQueryTypeChange('polygon')
             }
           }}
         >
@@ -40,14 +82,14 @@ const PolygonSketch = (props: IPolygonSketch) => {
         </div>
       </Tooltip>
 
-      {/* <Tooltip title="清除">
+      <Tooltip title="清除">
         <div className={classNames({
           [style.btnContainer]: true,
           [style.active]: props.active
         })}
           onClick={() => {
             if (props.active) {
-              props.onClear()
+              props.onSpatialQueryTypeChange('clear')
             }
           }}
         >
@@ -56,7 +98,7 @@ const PolygonSketch = (props: IPolygonSketch) => {
           } width='25px' height='25px' />
         </div>
 
-      </Tooltip> */}
+      </Tooltip>
 
     </div>
   )

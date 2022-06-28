@@ -11,7 +11,7 @@
         }
     }
     .titleContainer{
-        @apply flex items-center;
+        @apply flex items-center text-xs;
         p{
             @apply ml-1;
         }
@@ -20,7 +20,7 @@
         }
     }
     .regionTitle{
-        @apply border-l border-border pl-2;
+        @apply border-l border-border pl-2 text-xs;
         @media(max-width: 1100px){
             @apply text-xs;
         }
