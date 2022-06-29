@@ -182,7 +182,7 @@ export interface IResultTable {
 const square = 3.305785
 
 const ResultTable = (props: IResultTable) => {
-  const [order, setOrder] = useState<Order>('asc')
+  const [order, setOrder] = useState<Order>('desc')
   const [orderBy, setOrderBy] = useState<keyof Data>('price')
   const [selected, setSelected] = useState<readonly string[]>([])
   const [page, setPage] = useState(0)
@@ -191,6 +191,7 @@ const ResultTable = (props: IResultTable) => {
   const [rows, setrows] = useState<Data[]>([])
   const { onZoomIdChange } = useContext(ZoomContext)
   const [pending, setpending] = useState<boolean>(false)
+  const [renderRows, setrenderRows] = useState<Data[]>([])
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -262,17 +263,56 @@ const ResultTable = (props: IResultTable) => {
     setpending(true)
     const newRows: Data[] = []
     for (let i = 0; i < props.data.length; i++) {
-      const organization = await handleGetCommiteeByAprId(props.data[i].id)
-      const row: Data = { ...props.data[i], organization: organization ? organization : '無管委會' } //
+      // const organization = await handleGetCommiteeByAprId(props.data[i].id)
+      // const row: Data = { ...props.data[i], organization: organization ? organization : '無管委會' } //
+      const row: Data = { ...props.data[i], organization: 'aa' }
       newRows.push(row)
     }
     setrows([...newRows])
     setpending(false)
   }
 
+  const handleLoadingData = async () => {
+    setpending(true)
+    const newRows: Data[] = []
+    for (let i = 0; i < props.data.length; i++) {
+      const row: Data = { ...props.data[i], organization: 'a' }
+      newRows.push(row)
+    }
+    setrows([...newRows])
+    const firstRows = stableSort(newRows, getComparator(order, orderBy))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    if (firstRows.length !== 0) {
+      for (let i = 0; i < firstRows.length; i++) {
+        const organization = await handleGetCommiteeByAprId(firstRows[i].id)
+        firstRows[i].organization = organization ? organization : '無管委會'
+      }
+      setrenderRows(firstRows)
+    }
+    setrenderRows(firstRows)
+    setpending(false)
+  }
+
+  const handleChangPage = async () => {
+    const filteredRows = stableSort(rows, getComparator(order, orderBy))
+      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    if (filteredRows.length !== 0) {
+      for (let i = 0; i < filteredRows.length; i++) {
+        const organization = await handleGetCommiteeByAprId(filteredRows[i].id)
+        filteredRows[i].organization = organization ? organization : '無管委會'
+      }
+      setrenderRows(filteredRows)
+    }
+  }
+
   useEffect(() => {
-    handleGetRowsCommitee()
+    handleLoadingData()
   }, [props.data])
+
+  useEffect(() => {
+    handleChangPage()
+  }, [page, order, orderBy])
+
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -293,87 +333,85 @@ const ResultTable = (props: IResultTable) => {
             />
             <TableBody>
               {
-                pending ? null : stableSort(rows, getComparator(order, orderBy))
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, index) => {
-                    const isItemSelected = isSelected(row.id)
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                pending ? null : renderRows.map((row, index) => {
+                  const isItemSelected = isSelected(row.id)
+                  const labelId = `enhanced-table-checkbox-${index}`;
 
-                    // (async () => {
-                    //   await handleGetCommiteeByAprId(row.id)
-                    // })();
+                  // (async () => {
+                  //   await handleGetCommiteeByAprId(row.id)
+                  // })();
 
-                    return (
-                      <TableRow
-                        hover
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.id}
-                        selected={isItemSelected}
+                  return (
+                    <TableRow
+                      hover
+                      role="checkbox"
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                    >
+                      <TableCell padding="checkbox">
+                        <Checkbox
+                          color="primary"
+                          checked={isItemSelected}
+                          inputProps={{
+                            'aria-labelledby': labelId,
+                          }}
+                          onClick={(event) => handleRowClick(event, row.id)}
+                        />
+                      </TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
                       >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              'aria-labelledby': labelId,
-                            }}
-                            onClick={(event) => handleRowClick(event, row.id)}
-                          />
-                        </TableCell>
-                        <TableCell
-                          component="th"
-                          id={labelId}
-                          scope="row"
-                          padding="none"
+                        {moment(new Date(row.transactiontime)).format('YYYY-MM-DD')}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                      >
+                        <span
+                          className={classNames({
+                            [style.organization]: true,
+                            [style.disable]: row.organization === '無管委會'
+                          })}
+                        >{parseCommitee(row.organization)}
+                        </span>
+                      </TableCell>
+                      <TableCell align="right">
+                        {row.transferFloor}樓
+                      </TableCell>
+                      <TableCell align="right">
+                        <span className={style.unitPrice}>
+                          {Math.round((row.unitPrice * square) / 1000) / 10}
+                        </span>
+                        <span className={style.unit}>萬</span>
+                      </TableCell>
+                      <TableCell align="right">
+                        {
+                          row.parkingSpacePrice === 0
+                            ? '無車位'
+                            : `${Math.round(row.parkingSpacePrice / 10000)}萬`
+                        }
+                      </TableCell>
+                      <TableCell align="right">
+                        <p className={style.totalPrice}>
+                          {Math.round(row.price / 10000)}
+                          <span className={style.smtext}>萬</span>
+                        </p>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton size="small"
+                          onClick={() => {
+                            onZoomIdChange({ id: row.id })
+                          }}
                         >
-                          {moment(new Date(row.transactiontime)).format('YYYY-MM-DD')}
-                        </TableCell>
-                        <TableCell
-                          align="right"
-                        >
-                          <span
-                            className={classNames({
-                              [style.organization]: true,
-                              [style.disable]: row.organization === '無管委會'
-                            })}
-                          >{parseCommitee(row.organization)}
-                          </span>
-                        </TableCell>
-                        <TableCell align="right">
-                          {row.transferFloor}樓
-                        </TableCell>
-                        <TableCell align="right">
-                          <span className={style.unitPrice}>
-                            {Math.round((row.unitPrice * square) / 1000) / 10}
-                          </span>
-                          <span className={style.unit}>萬</span>
-                        </TableCell>
-                        <TableCell align="right">
-                          {
-                            row.parkingSpacePrice === 0
-                              ? '無車位'
-                              : `${Math.round(row.parkingSpacePrice / 10000)}萬`
-                          }
-                        </TableCell>
-                        <TableCell align="right">
-                          <p className={style.totalPrice}>
-                            {Math.round(row.price / 10000)}
-                            <span className={style.smtext}>萬</span>
-                          </p>
-                        </TableCell>
-                        <TableCell align="right">
-                          <IconButton size="small"
-                            onClick={() => {
-                              onZoomIdChange({ id: row.id })
-                            }}
-                          >
-                            <ZoomInIcon fontSize="small" />
-                          </IconButton>
-                        </TableCell>
+                          <ZoomInIcon fontSize="small" />
+                        </IconButton>
+                      </TableCell>
 
-                        {/* <Menu
+                      {/* <Menu
                           id="basic-menu"
                           anchorEl={anchorEl}
                           open={menuOpen}
@@ -391,9 +429,9 @@ const ResultTable = (props: IResultTable) => {
                             <ListItemText>Zoom to</ListItemText>
                           </MenuItem>
                         </Menu> */}
-                      </TableRow>
-                    )
-                  })
+                    </TableRow>
+                  )
+                })
               }
               {
                 emptyRows > 0 && (
