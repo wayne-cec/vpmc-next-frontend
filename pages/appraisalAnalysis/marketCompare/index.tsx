@@ -340,6 +340,14 @@ const MarketCompare: NextPage = () => {
                 setage(value)
                 setisAgeFosced(true)
               }}
+              onParkSpaceTypeFilteredChange={() => {
+                setisParkSpaceFiltered(prev => !prev)
+                setparkSpaceType(0)
+              }}
+              onParkSpaceTypeSelect={(value) => {
+                setparkSpaceType(value)
+                setisParkSpaceFosced(true)
+              }}
               onCustomizeParamBtnClick={() => {
                 setmsgOpen(true)
                 seterrorTitle('訊息')

@@ -41,8 +41,25 @@ export interface IGraphData {
   }
 }
 
+export const assetTypeMapping: { [key: number]: number } = {
+  0: 0,
+  1: 100,
+  2: 200,
+  3: 1,
+  4: 3,
+  5: 4,
+  6: 5,
+  7: 6,
+  8: 7,
+  9: 8,
+  10: 9,
+  11: 10,
+  12: 11,
+  13: 2
+}
+
 export const marketCompare = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
   if (params.longitude && params.latitude && params.bufferRadius) {
     url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
   }
