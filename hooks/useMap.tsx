@@ -7,6 +7,9 @@ import Measurement from '../widgets/Measurement'
 import HelloWorld from '../widgets/TestWidget'
 import * as ReactDOM from 'react-dom'
 import MeasurementWidget from '@arcgis/core/widgets/Measurement'
+import esriConfig from '@arcgis/core/config'
+
+esriConfig.apiKey = 'AAPK7a564af3e78b413c89adcae13354e42bJ-ZHdv19-sspveCwprkRppRmExhV6qAdgOiUBh9ztWvrxfNfG-0w_1VKW7IthPGZ'
 
 export type UseMapParams = {
   mapOption?: __esri.MapProperties
@@ -42,7 +45,10 @@ class TaskStack<T> {
   }
 }
 
-const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOption }: UseMapParams) => {
+const useMap = (
+  elemRef: React.RefObject<HTMLDivElement>,
+  { mapOption, mapViewOption }: UseMapParams
+) => {
   const mapRef = useRef<Map>()
   const mapViewRef = useRef<MapView>()
   const mapStack = useRef(new TaskStack<Map>())
@@ -71,14 +77,6 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         container: elemRef.current
       })
 
-      // const staticElement = renderToStaticMarkup(TestWidget({}))
-      // const testWidget = TestWidget({})
-      // createElementFromHTML(renderToString(testWidget))
-      // const a = document.createElement('button')
-      // a.innerHTML = 'asdasd'
-      // const a = createElementFromHTML(renderToString(testWidget))
-      // mapView.ui.add(a, 'top-right')
-
       const basemapGallery = new BasemapGallery({
         view: mapView
       })
@@ -96,9 +94,9 @@ const useMap = (elemRef: React.RefObject<HTMLDivElement>, { mapOption, mapViewOp
         content: node
       })
 
-      mapView.ui.add(measurementWidget, "bottom-left")
-      mapView.ui.add(basemapGalleryExpand, 'bottom-right')
-      mapView.ui.add(measurementExpand, "bottom-right")
+      mapView.ui.add(measurementWidget, "bottom-right")
+      mapView.ui.add(basemapGalleryExpand, 'top-right')
+      mapView.ui.add(measurementExpand, "top-right")
 
       ReactDOM.render(
         <Measurement

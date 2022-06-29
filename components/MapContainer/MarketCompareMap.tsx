@@ -22,7 +22,7 @@ import * as projection from '@arcgis/core/geometry/projection'
 import SpatialReference from '@arcgis/core/geometry/SpatialReference'
 
 const mapOptions = {
-  mapOption: { basemap: 'gray' },
+  mapOption: { basemap: 'arcgis-community' },
   mapViewOption: {
     center: [121.4640139307843, 25.013838580240503],
     zoom: 13,
@@ -298,7 +298,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     <>
       <div className={classNames({
         [style.esriMapMarketCompare]: true,
-        [style.active]: props.active || (props.spatialQueryType !== 'none' && props.spatialQueryType !== 'buffer')
+        [style.active]: props.active || (props.spatialQueryType !== 'none' && props.spatialQueryType !== 'buffer' && props.spatialQueryType !== 'clear')
       })} ref={mapRef}>
       </div>
     </>

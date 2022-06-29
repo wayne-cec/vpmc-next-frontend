@@ -1,0 +1,15 @@
+.panelButton{
+    @apply bg-white w-[48px] h-[48px] 
+    shadow-md rounded m-1 flex items-center
+    justify-center cursor-pointer;
+    transition: 0.3s;
+    @mixin highlighted {
+        @apply bg-main-primary text-white;
+    }
+    &:hover{
+        @include highlighted;
+    }
+    &.focused{
+        @include highlighted;
+    }
+}
