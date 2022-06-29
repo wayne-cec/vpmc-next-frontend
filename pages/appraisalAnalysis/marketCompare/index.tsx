@@ -20,6 +20,8 @@ import React, { createContext } from 'react'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import MapView from '@arcgis/core/views/MapView'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
+import PanelContainer from '../../../components/PanelContainer'
+import PanelButton from '../../../components/PanelContainer/PanelButton'
 
 const square = 3.305785
 
@@ -95,6 +97,9 @@ const MarketCompare: NextPage = () => {
   const [sketchMode, setsketchMode] = useState<PolygonSketchMode>('inactive')
   const [zoomId, setzoomId] = useState<{ id: string } | null>(null)
   const [pending, setpending] = useState<boolean>(false)
+
+  const [queryPanelShow, setqueryPanelShow] = useState<boolean>(true)
+  const [resultPanelShow, setresultPanelShow] = useState<boolean>(false)
 
   const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
     setlongitude(longitude)
@@ -193,6 +198,8 @@ const MarketCompare: NextPage = () => {
         if (statusCode === 200) {
           setgraphData(responseContent2)
           setpending(false)
+          setqueryPanelShow(false)
+          setresultPanelShow(true)
         } else {
           setmsgOpen(true)
           seterrorTitle('錯誤')
@@ -212,6 +219,16 @@ const MarketCompare: NextPage = () => {
       seterrorContent('請輸入資產類別')
       setpending(false)
     }
+  }
+
+  const handleShowQueryPanel = () => {
+    setqueryPanelShow(prev => !prev)
+    setresultPanelShow(false)
+  }
+
+  const handleShowResultPanel = () => {
+    setresultPanelShow(prev => !prev)
+    setqueryPanelShow(false)
   }
 
   useEffect(() => {
@@ -239,7 +256,23 @@ const MarketCompare: NextPage = () => {
         }}>
           <div className={style.main}>
 
+            <PanelContainer>
+              <PanelButton
+                content='查詢'
+                icon={queryPanelShow ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
+                focused={queryPanelShow}
+                onClick={handleShowQueryPanel}
+              />
+              <PanelButton
+                content='結果'
+                icon={resultPanelShow ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
+                focused={resultPanelShow}
+                onClick={handleShowResultPanel}
+              />
+            </PanelContainer>
+
             <QueryPanel
+              show={queryPanelShow}
               longitude={longitude!}
               latitude={latitude!}
               locatedCounty={locatedCounty!}
@@ -316,6 +349,7 @@ const MarketCompare: NextPage = () => {
             />
 
             <ResultPanel
+              show={resultPanelShow}
               filteredResults={filteredResults!}
               graphData={graphData!}
               onClose={() => {

@@ -1,18 +1,18 @@
 @import '../../../../styles/Animate.module.scss';
 
 .resultPanel{
-    @apply hidden flex-col absolute z-10 bg-white m-2 p-4 rounded-md
-    shadow-md w-fit right-0 h-fit overflow-y-auto;
+    @apply hidden flex-col absolute z-10 bg-white my-3 mx-1 p-4 rounded
+    shadow-md w-fit left-[60px] h-fit overflow-y-auto;
     @media(max-width: 1100px){
         @apply hidden;
     }
     &.slideIn{
         @apply flex;
-        @include animate-css(bounceInRight); // fadeInRight
+        @include animate-css(bounceInLeft); // fadeInRight
     }
     &.slideOut{
         @apply flex;
-        @include animate-css(bounceOutRight); // fadeOutRight
+        @include animate-css(bounceOutLeft); // fadeOutRight
     }
     
     .resultHeader{

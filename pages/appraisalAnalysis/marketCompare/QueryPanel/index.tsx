@@ -10,6 +10,7 @@ import AttributeQuery from './AttributeQuery'
 import Action from './Action'
 
 export interface IQueryPanel {
+  show: boolean
   longitude?: number
   latitude?: number
   locatedCounty?: string
@@ -62,7 +63,8 @@ const QueryPanel = (props: IQueryPanel) => {
   return (
     <div className={classNames({
       [style.queryPanel]: true,
-      [style.show]: true
+      [style.show]: props.show,
+      [style.hide]: !props.show,
     })}>
       <div className={style.filterGroup}>
         <SpatialQuery
