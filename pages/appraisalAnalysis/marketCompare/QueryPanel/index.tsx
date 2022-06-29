@@ -10,6 +10,7 @@ import AttributeQuery from './AttributeQuery'
 import Action from './Action'
 
 export interface IQueryPanel {
+  show: boolean
   longitude?: number
   latitude?: number
   locatedCounty?: string
@@ -53,6 +54,8 @@ export interface IQueryPanel {
   onLandAreaSelect: (value: number) => void //(value) => {setlandTransferArea(value)setisLandAreaFosced(true)}
   onAgeFilteredChange: () => void //() => {setisAgeFiltered(prev => !prev)setage(0)}
   onAgeSelect: (value: number) => void //(value) => {setage(value)setisAgeFosced(true)}
+  onParkSpaceTypeFilteredChange: () => void
+  onParkSpaceTypeSelect: (value: number) => void
   onCustomizeParamBtnClick: () => void //() => {setmsgOpen(true)seterrorTitle('訊息')seterrorContent('自定義參數功能尚未開發')}
   handleFormSubmit: () => void
 }
@@ -62,7 +65,8 @@ const QueryPanel = (props: IQueryPanel) => {
   return (
     <div className={classNames({
       [style.queryPanel]: true,
-      [style.show]: true
+      [style.show]: props.show,
+      [style.hide]: !props.show,
     })}>
       <div className={style.filterGroup}>
         <SpatialQuery
@@ -109,6 +113,8 @@ const QueryPanel = (props: IQueryPanel) => {
           onLandAreaSelect={props.onLandAreaSelect}
           onAgeFilteredChange={props.onAgeFilteredChange}
           onAgeSelect={props.onAgeSelect}
+          onParkSpaceTypeFilteredChange={props.onParkSpaceTypeFilteredChange}
+          onParkSpaceTypeSelect={props.onParkSpaceTypeSelect}
         />
         <Action
           onCustomizeParamBtnClick={props.onCustomizeParamBtnClick}

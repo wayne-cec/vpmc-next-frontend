@@ -17,6 +17,7 @@ import TabPanel from '@mui/lab/TabPanel'
 const square = 3.305785
 
 export interface IResultPanel {
+  show: boolean
   filteredResults: IMarketCompareResult[]
   graphData: IGraphData
   onClose: () => void
@@ -28,8 +29,8 @@ const ResultPanel = (props: IResultPanel) => {
   return (
     <div className={classNames({
       [style.resultPanel]: true,
-      [style.slideIn]: props.filteredResults && props.filteredResults.length !== 0,
-      [style.slideOut]: !(props.filteredResults && props.filteredResults.length !== 0)
+      [style.slideIn]: props.show,//props.filteredResults && props.filteredResults.length !== 0,
+      [style.slideOut]: !props.show//!(props.filteredResults && props.filteredResults.length !== 0)
     })}>
       {
         props.filteredResults && props.filteredResults.length !== 0
@@ -40,9 +41,9 @@ const ResultPanel = (props: IResultPanel) => {
                 <span className={style.count}>{props.filteredResults.length}</span>
                 筆實價登陸紀錄
               </span>
-              <span className={style.closeBtn}
+              {/* <span className={style.closeBtn}
                 onClick={props.onClose}
-              >✖</span>
+              >✖</span> */}
             </div>
 
             <TabContext value={tabPage}>
@@ -121,7 +122,9 @@ const ResultPanel = (props: IResultPanel) => {
 
             </TabContext>
           </>
-          : null
+          : <div>
+            尚未有查詢結果
+          </div>
       }
     </div>
   )

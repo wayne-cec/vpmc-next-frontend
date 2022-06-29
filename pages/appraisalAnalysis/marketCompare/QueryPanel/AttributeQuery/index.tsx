@@ -7,8 +7,9 @@ import {
 } from '@mui/material'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
-  landTransactionAreaSet, ageSet
+  landTransactionAreaSet, ageSet, parkSpaceSet
 } from '../../../../../lib/marketComapreConst'
+import { assetTypeMapping } from '../../../../../api/prod'
 
 
 export interface IAttributeQuery {
@@ -39,6 +40,8 @@ export interface IAttributeQuery {
   onLandAreaSelect: (value: number) => void
   onAgeFilteredChange: () => void
   onAgeSelect: (value: number) => void
+  onParkSpaceTypeFilteredChange: () => void
+  onParkSpaceTypeSelect: (value: number) => void
 }
 
 const AttributeQuery = (props: IAttributeQuery) => {
@@ -116,185 +119,190 @@ const AttributeQuery = (props: IAttributeQuery) => {
         </Grid>
 
         {/* 建坪面積 */}
-        <Grid item xs={2}>
-          <Checkbox
-            checked={props.isBuildingAreaFiltered}
-            onClick={props.onBuildingAreaFilteredChange}
-            disabled={!props.isBuildingAreaCheckable}
-          />
-        </Grid>
-        <Grid item xs={10}>
-          <FormControl size='small' fullWidth>
-            {
-              props.isBuildingAreaFiltered && !props.isBuildingAreaFosced
-                ? <></>
-                : <InputLabel id="building-transfer-area">建坪面積</InputLabel>
-            }
-            <Select
-              labelId="building-transfer-area"
-              label="建坪面積"
-              id="building-transfer-area-select"
-              size='small'
-              value={props.isBuildingAreaFiltered ? props.buildingTransferArea : ''}
-              onChange={(event) => {
-                props.onBuildingAreaSelect(Number(event.target.value))
-              }}
-              disabled={!props.isBuildingAreaFiltered}
-              // autoFocus={isBuildingAreaFiltered}
-              fullWidth
-            >
-              {
-                Object.keys(buildingTransactionAreaSet).map((assetCode, index) => {
-                  return <MenuItem
-                    key={index}
-                    value={assetCode}
-                  >{buildingTransactionAreaSet[Number(assetCode)]}</MenuItem>
-                })
-              }
-            </Select>
-          </FormControl>
+        {
+          assetTypeMapping[props.assetTypeCode] !== 100 && assetTypeMapping[props.assetTypeCode] !== 200
+            ? <>
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={props.isBuildingAreaFiltered}
+                  onClick={props.onBuildingAreaFilteredChange}
+                  disabled={!props.isBuildingAreaCheckable}
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <FormControl size='small' fullWidth>
+                  {
+                    props.isBuildingAreaFiltered && !props.isBuildingAreaFosced
+                      ? <></>
+                      : <InputLabel id="building-transfer-area">建坪面積</InputLabel>
+                  }
+                  <Select
+                    labelId="building-transfer-area"
+                    label="建坪面積"
+                    id="building-transfer-area-select"
+                    size='small'
+                    value={props.isBuildingAreaFiltered ? props.buildingTransferArea : ''}
+                    onChange={(event) => {
+                      props.onBuildingAreaSelect(Number(event.target.value))
+                    }}
+                    disabled={!props.isBuildingAreaFiltered}
+                    // autoFocus={isBuildingAreaFiltered}
+                    fullWidth
+                  >
+                    {
+                      Object.keys(buildingTransactionAreaSet).map((assetCode, index) => {
+                        return <MenuItem
+                          key={index}
+                          value={assetCode}
+                        >{buildingTransactionAreaSet[Number(assetCode)]}</MenuItem>
+                      })
+                    }
+                  </Select>
+                </FormControl>
 
-        </Grid>
+              </Grid>
+            </>
+            : null
+        }
 
         {/* 地坪面積 */}
-        <Grid item xs={2}>
-          <Checkbox
-            checked={props.isLandAreaFiltered}
-            onClick={props.onLandAreaFilteredChange}
-            disabled={!props.isLandAreaCheckable}
-          />
-        </Grid>
-        <Grid item xs={10}>
-          <FormControl size='small' fullWidth>
-            {
-              props.isLandAreaFiltered && !props.isLandAreaFosced
-                ? <></>
-                : <InputLabel id="land-transfer-area">地坪面積</InputLabel>
-            }
-            <Select
-              labelId="land-transfer-area"
-              label="地坪面積"
-              id="land-transfer-area-select"
-              size='small'
-              fullWidth
-              value={props.isLandAreaFiltered ? props.landTransferArea : ''}
-              onChange={(event) => {
-                props.onLandAreaSelect(Number(event.target.value))
-              }}
-              // autoFocus={isLandAreaFiltered}
-              disabled={!props.isLandAreaFiltered}
-            >
-              {
-                Object.keys(landTransactionAreaSet).map((assetCode, index) => {
-                  return <MenuItem
-                    key={index}
-                    value={assetCode}
-                  >{landTransactionAreaSet[Number(assetCode)]}</MenuItem>
-                })
-              }
-            </Select>
-          </FormControl>
+        {
+          assetTypeMapping[props.assetTypeCode] === 100
+            ? <>
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={props.isLandAreaFiltered}
+                  onClick={props.onLandAreaFilteredChange}
+                  disabled={!props.isLandAreaCheckable}
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <FormControl size='small' fullWidth>
+                  {
+                    props.isLandAreaFiltered && !props.isLandAreaFosced
+                      ? <></>
+                      : <InputLabel id="land-transfer-area">地坪面積</InputLabel>
+                  }
+                  <Select
+                    labelId="land-transfer-area"
+                    label="地坪面積"
+                    id="land-transfer-area-select"
+                    size='small'
+                    fullWidth
+                    value={props.isLandAreaFiltered ? props.landTransferArea : ''}
+                    onChange={(event) => {
+                      props.onLandAreaSelect(Number(event.target.value))
+                    }}
+                    // autoFocus={isLandAreaFiltered}
+                    disabled={!props.isLandAreaFiltered}
+                  >
+                    {
+                      Object.keys(landTransactionAreaSet).map((assetCode, index) => {
+                        return <MenuItem
+                          key={index}
+                          value={assetCode}
+                        >{landTransactionAreaSet[Number(assetCode)]}</MenuItem>
+                      })
+                    }
+                  </Select>
+                </FormControl>
 
-        </Grid>
+              </Grid>
+            </>
+            : null
+        }
 
         {/* 屋齡 */}
-        <Grid item xs={2}>
-          <Checkbox
-            checked={props.isAgeFiltered}
-            onClick={props.onAgeFilteredChange}
-          />
-        </Grid>
-        <Grid item xs={10}>
-          <FormControl size='small' fullWidth>
-            {
-              props.isAgeFiltered && !props.isAgeFosced
-                ? <></>
-                : <InputLabel id="age">屋齡</InputLabel>
-            }
-            <Select
-              labelId="age"
-              label="屋齡"
-              id="age-select"
-              size='small'
-              value={props.isAgeFiltered ? props.age : ''}
-              onChange={(event) => {
-                props.onAgeSelect(Number(event.target.value))
-              }}
-              disabled={!props.isAgeFiltered}
-              // autoFocus={isAgeFiltered}
-              fullWidth
-            >
-              {
-                Object.keys(ageSet).map((assetCode, index) => {
-                  return <MenuItem
-                    key={index}
-                    value={assetCode}
-                  >{ageSet[Number(assetCode)]}</MenuItem>
-                })
-              }
-            </Select>
-          </FormControl>
+        {
+          assetTypeMapping[props.assetTypeCode] !== 100 && assetTypeMapping[props.assetTypeCode] !== 200
+            ? <>
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={props.isAgeFiltered}
+                  onClick={props.onAgeFilteredChange}
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <FormControl size='small' fullWidth>
+                  {
+                    props.isAgeFiltered && !props.isAgeFosced
+                      ? <></>
+                      : <InputLabel id="age">屋齡</InputLabel>
+                  }
+                  <Select
+                    labelId="age"
+                    label="屋齡"
+                    id="age-select"
+                    size='small'
+                    value={props.isAgeFiltered ? props.age : ''}
+                    onChange={(event) => {
+                      props.onAgeSelect(Number(event.target.value))
+                    }}
+                    disabled={!props.isAgeFiltered}
+                    // autoFocus={isAgeFiltered}
+                    fullWidth
+                  >
+                    {
+                      Object.keys(ageSet).map((assetCode, index) => {
+                        return <MenuItem
+                          key={index}
+                          value={assetCode}
+                        >{ageSet[Number(assetCode)]}</MenuItem>
+                      })
+                    }
+                  </Select>
+                </FormControl>
 
-        </Grid>
+              </Grid>
+            </>
+            : null
+        }
 
         {/* 車位類型 */}
-        {/* <Grid item xs={2}>
-          <Checkbox
-            checked={props.isParkSpaceFiltered}
-            onClick={() => {
-              setisParkSpaceFiltered(prev => !prev)
-              setparkSpaceType(0)
-              if (props.isLandAreaFiltered) {
-                setisLandAreaFiltered(false)
-                setisLandAreaCheckable(false)
-              } else if (!props.isLandAreaCheckable) {
-                setisLandAreaFiltered(true)
-                setisLandAreaCheckable(true)
-              }
+        {
+          assetTypeMapping[props.assetTypeCode] !== 100
+            ? <>
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={props.isParkSpaceFiltered}
+                  onClick={props.onParkSpaceTypeFilteredChange}
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <FormControl size='small' fullWidth>
+                  {
+                    props.isParkSpaceFiltered && !props.isParkSpaceFosced
+                      ? <></>
+                      : <InputLabel id="park-space">車位類型</InputLabel>
+                  }
+                  <Select
+                    labelId="park-space"
+                    label="車位類型"
+                    id="park-space-select"
+                    size='small'
+                    fullWidth
+                    value={props.isParkSpaceFiltered ? props.parkSpaceType : ''}
+                    onChange={(event) => {
+                      props.onParkSpaceTypeSelect(Number(event.target.value))
+                    }}
+                    // autoFocus={isParkSpaceFiltered}
+                    disabled={!props.isParkSpaceFiltered}
+                  >
+                    {
+                      Object.keys(parkSpaceSet).map((assetCode, index) => {
+                        return <MenuItem
+                          key={index}
+                          value={assetCode}
+                        >{parkSpaceSet[Number(assetCode)]}</MenuItem>
+                      })
+                    }
+                  </Select>
+                </FormControl>
 
-              if (props.isBuildingAreaFiltered) {
-                setisBuildingAreaFiltered(false)
-                setisBuildingAreaCheckable(false)
-              } else if (!props.isBuildingAreaCheckable) {
-                setisBuildingAreaFiltered(true)
-                setisBuildingAreaCheckable(true)
-              }
-            }}
-          />
-        </Grid> */}
-        {/* <Grid item xs={10}>
-          <FormControl size='small' fullWidth>
-            {
-              props.isParkSpaceFiltered && !props.isParkSpaceFosced
-                ? <></>
-                : <InputLabel id="park-space">車位類型</InputLabel>
-            }
-            <Select
-              labelId="park-space"
-              label="車位類型"
-              id="park-space-select"
-              size='small'
-              fullWidth
-              value={props.isParkSpaceFiltered ? props.parkSpaceType : ''}
-              onChange={(event) => {
-                setparkSpaceType(Number(event.target.value))
-                setisParkSpaceFosced(true)
-              }}
-              // autoFocus={isParkSpaceFiltered}
-              disabled={!props.isParkSpaceFiltered}
-            >
-              {
-                Object.keys(parkSpaceSet).map((assetCode, index) => {
-                  return <MenuItem
-                    key={index}
-                    value={assetCode}
-                  >{parkSpaceSet[Number(assetCode)]}</MenuItem>
-                })
-              }
-            </Select>
-          </FormControl>
-
-        </Grid> */}
+              </Grid>
+            </>
+            : null
+        }
 
         {/* 使用分區 */}
         {/* <Grid item xs={2}>
