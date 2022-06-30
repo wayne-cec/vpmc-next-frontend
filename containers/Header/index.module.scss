@@ -15,6 +15,12 @@
                 }
             }
         }
+        .marqueeContainer{
+            @apply w-[370px];
+            @media(max-width: 1100px){
+                @apply hidden;
+            }
+        }
         .buttonGroup{
             @media(max-width: 1100px){
                 @apply hidden;

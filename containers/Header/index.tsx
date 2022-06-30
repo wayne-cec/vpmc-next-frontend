@@ -12,6 +12,8 @@ import api from '../../api'
 import { AuthContext } from '../../layout/BaseLayout'
 import { useAuth } from '../../layout/BaseLayout'
 import UserGreet from '../../components/UserGreet'
+import Marquee from 'react-fast-marquee'
+import MarqueeNews from '../../components/MarqueeNews'
 
 export const appraisalAnalysis = [
   { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true },
@@ -76,25 +78,48 @@ const Header = () => {
             ></Image>
           </div>
         </div>
-        <div className={style.buttonGroup}>
-          <NavButton
-            onMouseOver={() => { setappAnalysis(true) }}
-            onMouseLeave={() => { setappAnalysis(false) }}
-          >估價分析</NavButton>
-          {/* <NavButton
-            onMouseOver={() => { setonlineSup(true) }}
-            onMouseLeave={() => { setonlineSup(false) }}
-          >線上支援</NavButton> */}
-          <NavButton
-            onMouseOver={() => { setstaticsOpen(true) }}
-            onMouseLeave={() => { setstaticsOpen(false) }}
-          >統計及行情</NavButton>
-          <NavButton
-            onMouseOver={() => { setaprV2(true) }}
-            onMouseLeave={() => { setaprV2(false) }}
-            onClick={() => { Router.push('/aprV2/commitee') }}
-          >實價登陸2.0</NavButton>
-        </div>
+        {
+          isAuthenticated
+            ? <>
+              <div className={style.marqueeContainer}>
+                <Marquee
+                  gradientWidth={10}
+                  speed={30}
+                >
+                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
+
+                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
+
+                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
+
+                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
+
+                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
+                </Marquee>
+              </div>
+
+              <div className={style.buttonGroup}>
+                <NavButton
+                  onMouseOver={() => { setappAnalysis(true) }}
+                  onMouseLeave={() => { setappAnalysis(false) }}
+                >估價分析</NavButton>
+                {/* <NavButton
+               onMouseOver={() => { setonlineSup(true) }}
+               onMouseLeave={() => { setonlineSup(false) }}
+             >線上支援</NavButton> */}
+                <NavButton
+                  onMouseOver={() => { setstaticsOpen(true) }}
+                  onMouseLeave={() => { setstaticsOpen(false) }}
+                >統計及行情</NavButton>
+                <NavButton
+                  onMouseOver={() => { setaprV2(true) }}
+                  onMouseLeave={() => { setaprV2(false) }}
+                  onClick={() => { Router.push('/aprV2/commitee') }}
+                >實價登陸2.0</NavButton>
+              </div>
+            </> : null
+        }
+
         <div className={style.contact}>
           {
             isAuthenticated
@@ -118,7 +143,6 @@ const Header = () => {
                 }}
               >登入</NavButton>
           }
-
         </div>
 
         <div className={style.burger}>
