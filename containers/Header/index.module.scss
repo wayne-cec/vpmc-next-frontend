@@ -16,7 +16,7 @@
             }
         }
         .marqueeContainer{
-            @apply w-[370px];
+            @apply w-[500px] ml-4;
             @media(max-width: 1100px){
                 @apply hidden;
             }

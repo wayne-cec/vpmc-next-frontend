@@ -13,7 +13,8 @@ import { AuthContext } from '../../layout/BaseLayout'
 import { useAuth } from '../../layout/BaseLayout'
 import UserGreet from '../../components/UserGreet'
 import Marquee from 'react-fast-marquee'
-import MarqueeNews from '../../components/MarqueeNews'
+import MarqueeNews from '../../components/CustomMarquee/MarqueeNews'
+import CustomMarquee from '../../components/CustomMarquee'
 
 export const appraisalAnalysis = [
   { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true },
@@ -82,22 +83,8 @@ const Header = () => {
           isAuthenticated
             ? <>
               <div className={style.marqueeContainer}>
-                <Marquee
-                  gradientWidth={10}
-                  speed={30}
-                >
-                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
-
-                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
-
-                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
-
-                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
-
-                  <MarqueeNews type={'快訊'} title={'沒有啦，這是假新聞'} />
-                </Marquee>
+                <CustomMarquee />
               </div>
-
               <div className={style.buttonGroup}>
                 <NavButton
                   onMouseOver={() => { setappAnalysis(true) }}

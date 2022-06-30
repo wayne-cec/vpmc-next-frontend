@@ -1,0 +1,13 @@
+.marqueeNews{
+    @apply mx-4 cursor-pointer p-1 rounded-md;
+    .newsType{
+        @apply px-2 mr-1 bg-main-primary text-white
+        rounded-md;
+    }
+    &:hover{
+        @apply bg-main-primary text-white;
+        .newsType{
+            @apply bg-white text-black;
+        }
+    }
+}
