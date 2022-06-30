@@ -11,6 +11,7 @@ import { selectUser, setUserProfile, setUserToken } from '../../store/slice/user
 import api from '../../api'
 import { AuthContext } from '../../layout/BaseLayout'
 import { useAuth } from '../../layout/BaseLayout'
+import UserGreet from '../../components/UserGreet'
 
 export const appraisalAnalysis = [
   { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true },
@@ -97,7 +98,11 @@ const Header = () => {
         <div className={style.contact}>
           {
             isAuthenticated
-              ? <><span>您好! {userInfo.userProfile?.username}</span>
+              ? <>
+                <UserGreet
+                  username={userInfo.userProfile?.username!}
+                />
+
                 <NavButton
                   onClick={handleLogout}
                   style={{
@@ -105,7 +110,6 @@ const Header = () => {
                     paddingBottom: '1px'
                   }}
                 >登出</NavButton></>
-
               : <NavButton
                 onClick={() => { Router.push('/login') }}
                 style={{

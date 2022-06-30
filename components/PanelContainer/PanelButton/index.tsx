@@ -9,6 +9,7 @@ export interface IPanelButton {
   icon: string
   focused: boolean
   onClick: () => void
+  onHover: (value: boolean) => void
 }
 
 const PanelButton = (props: IPanelButton) => {
@@ -19,6 +20,8 @@ const PanelButton = (props: IPanelButton) => {
         [style.focused]: props.focused
       })}
         onClick={props.onClick}
+        onMouseOver={() => { props.onHover(true) }}
+        onMouseLeave={() => { props.onHover(false) }}
       >
         <Image src={props.icon} width='36px' height='36px' />
       </div>

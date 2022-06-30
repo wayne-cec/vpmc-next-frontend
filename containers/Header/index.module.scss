@@ -21,6 +21,7 @@
             }
         }
         .contact{
+            @apply flex items-center;
             @media(max-width: 1100px){
                 @apply hidden;
             }
