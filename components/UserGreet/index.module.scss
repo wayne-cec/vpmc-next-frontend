@@ -16,4 +16,19 @@
     .btnContainer{
         @apply flex;
     }
+    .userContainer{
+        @apply flex flex-col text-sm;
+        .logoutBtn{
+            @apply bg-main-primary rounded-md text-white
+            shadow-md text-center cursor-pointer;
+        }
+        .loginBtn{
+            @apply  text-center cursor-pointer text-base px-2 py-1 
+            rounded-md; 
+            transition: 0.3s;
+            &:hover{
+                @apply bg-main-primary text-white ;
+            }
+        }
+    }
 }

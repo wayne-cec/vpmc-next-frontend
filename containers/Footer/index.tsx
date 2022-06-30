@@ -48,7 +48,7 @@ const Footer = () => {
             })
           }
         </div> */}
-        <div className={style.tree}>
+        {/* <div className={style.tree}>
           <p className={style.title}>統計及行情</p>
           {
             statistic.map((link, index) => {
@@ -59,7 +59,7 @@ const Footer = () => {
                 : renderContent(index, link)
             })
           }
-        </div>
+        </div> */}
         <div className={style.tree}>
           <p className={style.title} onClick={() => { Router.push('/aprV2/commitee') }}>實價登陸2.0</p>
           {/* {

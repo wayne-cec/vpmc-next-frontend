@@ -29,8 +29,8 @@ export const onlineSupport = [
 ]
 
 export const statistic = [
-  { name: '使照建照', route: '/statistic/license', protected: true },
-  { name: '臺灣總經概覽', route: '/statistic/economic', protected: true }
+  // { name: '使照建照', route: '/statistic/license', protected: true },
+  // { name: '臺灣總經概覽', route: '/statistic/economic', protected: true }
 ]
 
 export const aprV2Link = [
@@ -94,10 +94,10 @@ const Header = () => {
                onMouseOver={() => { setonlineSup(true) }}
                onMouseLeave={() => { setonlineSup(false) }}
              >線上支援</NavButton> */}
-                <NavButton
+                {/* <NavButton
                   onMouseOver={() => { setstaticsOpen(true) }}
                   onMouseLeave={() => { setstaticsOpen(false) }}
-                >統計及行情</NavButton>
+                >統計及行情</NavButton> */}
                 <NavButton
                   onMouseOver={() => { setaprV2(true) }}
                   onMouseLeave={() => { setaprV2(false) }}
@@ -108,9 +108,16 @@ const Header = () => {
         }
 
         <div className={style.contact}>
-          {
+          <UserGreet
+            username={userInfo.userProfile?.username!}
+            isAuthenticated={isAuthenticated}
+            onLogout={handleLogout}
+            onLogin={() => { Router.push('/login') }}
+          />
+          {/* {
             isAuthenticated
-              ? <>
+              ?
+              <>
                 <UserGreet
                   username={userInfo.userProfile?.username!}
                 />
@@ -128,7 +135,7 @@ const Header = () => {
                   paddingBottom: '1px'
                 }}
               >登入</NavButton>
-          }
+          } */}
         </div>
 
         <div className={style.burger}>
@@ -173,7 +180,7 @@ const Header = () => {
         }
       </HeaderDrawer>
 
-      <HeaderDrawer
+      {/* <HeaderDrawer
         open={staticsOpen}
         onMouseOver={() => { setstaticsOpen(true) }}
         onMouseLeave={() => { setstaticsOpen(false) }}
@@ -187,7 +194,7 @@ const Header = () => {
               : renderContent(index, link)
           })
         }
-      </HeaderDrawer>
+      </HeaderDrawer> */}
 
       {/* <HeaderDrawer
         open={aprV2}
