@@ -114,7 +114,6 @@ const Header = () => {
                 <UserGreet
                   username={userInfo.userProfile?.username!}
                 />
-
                 <NavButton
                   onClick={handleLogout}
                   style={{
