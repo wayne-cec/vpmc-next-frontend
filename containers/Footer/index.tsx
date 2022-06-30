@@ -36,7 +36,7 @@ const Footer = () => {
             })
           }
         </div>
-        <div className={style.tree}>
+        {/* <div className={style.tree}>
           <p className={style.title}>線上支援</p>
           {
             onlineSupport.map((link, index) => {
@@ -47,7 +47,7 @@ const Footer = () => {
                 : renderContent(index, link)
             })
           }
-        </div>
+        </div> */}
         <div className={style.tree}>
           <p className={style.title}>統計及行情</p>
           {

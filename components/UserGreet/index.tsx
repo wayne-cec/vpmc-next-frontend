@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import api from '../../api'
-import { BulletinFileType, IStaticFile } from '../../api/prod'
+import { BulletinFileType, IStaticFile, LawFileType } from '../../api/prod'
 
 export interface IUserGreet {
   username: string
@@ -22,13 +22,24 @@ const UserGreet = (props: IUserGreet) => {
   const [lawFileDialogOpen, setlawFileDialogOpen] = useState<boolean>(false)
   const [bulletinFileFialogOpen, setbulletinFileFialogOpen] = useState<boolean>(false)
   const [bulletinExpanded, setbulletinExpanded] = useState<BulletinFileType | false>(false)
+  const [lawExpanded, setlawExpanded] = useState<LawFileType | false>(false)
   const [bulletinFiles, setbulletinFiles] = useState<IStaticFile[]>([])
   const [generalLawFiles, setgeneralLawFiles] = useState<IStaticFile[]>([])
   const [reportFiles, setreportFiles] = useState<IStaticFile[]>([])
+  const [appraisalLawFiles, setappraisalLawFiles] = useState<IStaticFile[]>([])
+  const [urbanLawFiles, seturbanLawFiles] = useState<IStaticFile[]>([])
+  const [publicAssetLawFiles, setpublicAssetLawFiles] = useState<IStaticFile[]>([])
+  const [urbanUpdateFiles, seturbanUpdateFiles] = useState<IStaticFile[]>([])
+  const [insuranceLawFiles, setinsuranceLawFiles] = useState<IStaticFile[]>([])
 
   const handleBulletinChange =
     (panel: BulletinFileType) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setbulletinExpanded(isExpanded ? panel : false);
+    }
+
+  const handleLawChange =
+    (panel: LawFileType) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setlawExpanded(isExpanded ? panel : false);
     }
 
   const getStaticBulletinFiles = async (type: BulletinFileType) => {
@@ -40,10 +51,26 @@ const UserGreet = (props: IUserGreet) => {
     }
   }
 
+  const getStaticLawFiles = async (type: LawFileType) => {
+    const responseContent = await api.prod.getStaticLawFiles(type)
+    if (responseContent) {
+      if (type === 'AppraisalLaw') setappraisalLawFiles(responseContent)
+      if (type === 'UrbanLaw') seturbanLawFiles(responseContent)
+      if (type === 'PublicAssetLaw') setpublicAssetLawFiles(responseContent)
+      if (type === 'UrbanUpdateLaw') seturbanUpdateFiles(responseContent)
+      if (type === 'InsuranceLaw') setinsuranceLawFiles(responseContent)
+    }
+  }
+
   useEffect(() => {
     getStaticBulletinFiles('Bulletin')
     getStaticBulletinFiles('GeneralLaw')
     getStaticBulletinFiles('ReportSample')
+    getStaticLawFiles('AppraisalLaw')
+    getStaticLawFiles('UrbanLaw')
+    getStaticLawFiles('PublicAssetLaw')
+    getStaticLawFiles('UrbanUpdateLaw')
+    getStaticLawFiles('InsuranceLaw')
   }, [])
 
   return (
@@ -140,52 +167,7 @@ const UserGreet = (props: IUserGreet) => {
               }
             </AccordionDetails>
           </Accordion>
-
-          {/* <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>通則</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-              {
-                bulletinFiles.map((file, index) => {
-                  return <Link href="#" underline="hover" key={index}>
-                    {file.alias}
-                  </Link>
-                })
-              }
-            </AccordionDetails>
-          </Accordion>
-
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>公報</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-            </AccordionDetails>
-          </Accordion>
-
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
-            >
-              <Typography>容積代金估價報告書範本</Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-            </AccordionDetails>
-          </Accordion> */}
-
         </DialogContent>
-
         <DialogActions>
           <Button onClick={() => { setbulletinFileFialogOpen(false) }}>
             確認
@@ -199,36 +181,104 @@ const UserGreet = (props: IUserGreet) => {
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">估價相關法令</DialogTitle>
+
         <DialogContent>
-
-          <Accordion>
+          <Accordion expanded={lawExpanded === 'AppraisalLaw'} onChange={handleLawChange('AppraisalLaw')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
+              aria-controls="panel1bh-content"
+              id="panel1bh-header"
             >
-              <Typography>Accordion 1</Typography>
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>估價法令</Typography>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails sx={{ display: 'flex', flexDirection: 'column', width: 'fit-content' }} >
+              {
+                appraisalLawFiles.map((file, index) => {
+                  return <Link href={file.serverPath} underline="hover" key={index}
+                    target="_blank" rel="noopener"
+                  >
+                    {file.alias}
+                  </Link>
+                })
+              }
             </AccordionDetails>
           </Accordion>
-
-          <Accordion>
+          <Accordion expanded={lawExpanded === 'UrbanLaw'} onChange={handleLawChange('UrbanLaw')}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
-              aria-controls="panel1a-content"
-              id="panel1a-header"
+              aria-controls="panel2bh-content"
+              id="panel2bh-header"
             >
-              <Typography>Accordion 1</Typography>
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>都市計畫法令</Typography>
             </AccordionSummary>
-            <AccordionDetails>
-              <Typography>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-                malesuada lacus ex, sit amet blandit leo lobortis eget.
-              </Typography>
+            <AccordionDetails sx={{ display: 'flex', flexDirection: 'column' }}>
+              {
+                urbanLawFiles.map((file, index) => {
+                  return <Link href={file.serverPath} underline="hover" key={index}
+                    target="_blank" rel="noopener">
+                    {file.alias}
+                  </Link>
+                })
+              }
             </AccordionDetails>
           </Accordion>
-
+          <Accordion expanded={lawExpanded === 'PublicAssetLaw'} onChange={handleLawChange('PublicAssetLaw')}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel3bh-content"
+              id="panel3bh-header"
+            >
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>公有財產法令</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ display: 'flex', flexDirection: 'column' }}>
+              {
+                publicAssetLawFiles.map((file, index) => {
+                  return <Link href={file.serverPath} underline="hover" key={index}
+                    target="_blank" rel="noopener">
+                    {file.alias}
+                  </Link>
+                })
+              }
+            </AccordionDetails>
+          </Accordion>
+          <Accordion expanded={lawExpanded === 'UrbanUpdateLaw'} onChange={handleLawChange('UrbanUpdateLaw')}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel3bh-content"
+              id="panel3bh-header"
+            >
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>都市更新法令</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ display: 'flex', flexDirection: 'column' }}>
+              {
+                urbanUpdateFiles.map((file, index) => {
+                  return <Link href={file.serverPath} underline="hover" key={index}
+                    target="_blank" rel="noopener">
+                    {file.alias}
+                  </Link>
+                })
+              }
+            </AccordionDetails>
+          </Accordion>
+          <Accordion expanded={lawExpanded === 'InsuranceLaw'} onChange={handleLawChange('InsuranceLaw')}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel3bh-content"
+              id="panel3bh-header"
+            >
+              <Typography sx={{ width: '33%', flexShrink: 0 }}>保險業資產評價估法令</Typography>
+            </AccordionSummary>
+            <AccordionDetails sx={{ display: 'flex', flexDirection: 'column' }}>
+              {
+                insuranceLawFiles.map((file, index) => {
+                  return <Link href={file.serverPath} underline="hover" key={index}
+                    target="_blank" rel="noopener">
+                    {file.alias}
+                  </Link>
+                })
+              }
+            </AccordionDetails>
+          </Accordion>
         </DialogContent>
 
         <DialogActions>

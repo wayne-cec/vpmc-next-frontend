@@ -13,7 +13,7 @@ import {
   DialogTitle, Button
 } from '@mui/material'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
-import { WithNavFooterProtected } from '../../../layout/BaseLayout'
+import { WithNavProtected } from '../../../layout/BaseLayout'
 import QueryPanel from './QueryPanel'
 import ResultPanel from './ResultPanel'
 import React, { createContext } from 'react'
@@ -422,4 +422,4 @@ const MarketCompare: NextPage = () => {
   )
 }
 
-export default WithNavFooterProtected(MarketCompare)
+export default WithNavProtected(MarketCompare)

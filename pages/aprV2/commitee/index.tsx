@@ -12,7 +12,7 @@ import doubleRightHover from '../../../public/aprV2/doubleRight-hover.png'
 import doubleLeftHover from '../../../public/aprV2/doubleLeft-hover.png'
 import { ICommitee } from '../../../components/MapContainer/AprV2Map'
 import { ICommiteeAprDetail } from '../../../store/slice/commitee'
-import { WithNavFooterProtected } from '../../../layout/BaseLayout'
+import { WithNavProtected } from '../../../layout/BaseLayout'
 import { IAprRegionGraphDisplayData } from '../../../api/prod'
 import { ICountyData, ITownData } from '../../../api/prod'
 import api from '../../../api'
@@ -230,4 +230,4 @@ const AprV2: NextPage = () => {
   )
 }
 
-export default WithNavFooterProtected(AprV2)
+export default WithNavProtected(AprV2)
