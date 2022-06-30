@@ -5,8 +5,8 @@
         height: calc(100vh - 75px);
     }
     .panel{ 
-        @apply flex flex-col h-fit absolute z-10 bg-white m-2 p-4 rounded-md
-        shadow-md w-[440px] right-0;
+        @apply flex flex-col h-fit absolute z-50 bg-white m-2 p-4 rounded-md
+        shadow-md w-[440px] left-0;
         @media(max-width: 1100px){
             @apply static m-0 w-auto;
         }

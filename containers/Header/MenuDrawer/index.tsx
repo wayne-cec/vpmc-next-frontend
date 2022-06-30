@@ -65,7 +65,7 @@ const MenuDrawer = (props: IMenuDrawer) => {
               })
             }
           </div>
-          <div className={style.tree}>
+          {/* <div className={style.tree}>
             <p className={style.title}>線上支援</p>
             {
               onlineSupport.map((link, index) => {
@@ -76,8 +76,8 @@ const MenuDrawer = (props: IMenuDrawer) => {
                   : renderContent(index, link, props.onClose)
               })
             }
-          </div>
-          <div className={style.tree}>
+          </div> */}
+          {/* <div className={style.tree}>
             <p className={style.title}>統計及行情</p>
             {
               statistic.map((link, index) => {
@@ -88,7 +88,7 @@ const MenuDrawer = (props: IMenuDrawer) => {
                   : renderContent(index, link, props.onClose)
               })
             }
-          </div>
+          </div> */}
           <div className={style.tree}>
             <p className={style.title} onClick={() => { Router.push('/aprV2/commitee') }}>實價登陸2.0</p>
             {/* {

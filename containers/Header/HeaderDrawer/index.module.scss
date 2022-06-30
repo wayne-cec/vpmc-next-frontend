@@ -1,5 +1,6 @@
 .headerDrawer{
-    @apply w-full h-0 bg-black relative p-4 z-10;
+    @apply w-full h-0 bg-black fixed p-4 
+    z-50 bg-opacity-80;
     &.show{
         @apply h-20;
         transition: 0.4s;

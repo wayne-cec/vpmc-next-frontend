@@ -11,6 +11,10 @@ import { selectUser, setUserProfile, setUserToken } from '../../store/slice/user
 import api from '../../api'
 import { AuthContext } from '../../layout/BaseLayout'
 import { useAuth } from '../../layout/BaseLayout'
+import UserGreet from '../../components/UserGreet'
+import Marquee from 'react-fast-marquee'
+import MarqueeNews from '../../components/CustomMarquee/MarqueeNews'
+import CustomMarquee from '../../components/CustomMarquee'
 
 export const appraisalAnalysis = [
   { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true },
@@ -25,8 +29,8 @@ export const onlineSupport = [
 ]
 
 export const statistic = [
-  { name: '使照建照', route: '/statistic/license', protected: true },
-  { name: '臺灣總經概覽', route: '/statistic/economic', protected: true }
+  // { name: '使照建照', route: '/statistic/license', protected: true },
+  // { name: '臺灣總經概覽', route: '/statistic/economic', protected: true }
 ]
 
 export const aprV2Link = [
@@ -75,29 +79,48 @@ const Header = () => {
             ></Image>
           </div>
         </div>
-        <div className={style.buttonGroup}>
-          <NavButton
-            onMouseOver={() => { setappAnalysis(true) }}
-            onMouseLeave={() => { setappAnalysis(false) }}
-          >估價分析</NavButton>
-          <NavButton
-            onMouseOver={() => { setonlineSup(true) }}
-            onMouseLeave={() => { setonlineSup(false) }}
-          >線上支援</NavButton>
-          <NavButton
-            onMouseOver={() => { setstaticsOpen(true) }}
-            onMouseLeave={() => { setstaticsOpen(false) }}
-          >統計及行情</NavButton>
-          <NavButton
-            onMouseOver={() => { setaprV2(true) }}
-            onMouseLeave={() => { setaprV2(false) }}
-            onClick={() => { Router.push('/aprV2/commitee') }}
-          >實價登陸2.0</NavButton>
-        </div>
+        {
+          isAuthenticated
+            ? <>
+              <div className={style.marqueeContainer}>
+                <CustomMarquee />
+              </div>
+              <div className={style.buttonGroup}>
+                <NavButton
+                  onMouseOver={() => { setappAnalysis(true) }}
+                  onMouseLeave={() => { setappAnalysis(false) }}
+                >估價分析</NavButton>
+                {/* <NavButton
+               onMouseOver={() => { setonlineSup(true) }}
+               onMouseLeave={() => { setonlineSup(false) }}
+             >線上支援</NavButton> */}
+                {/* <NavButton
+                  onMouseOver={() => { setstaticsOpen(true) }}
+                  onMouseLeave={() => { setstaticsOpen(false) }}
+                >統計及行情</NavButton> */}
+                <NavButton
+                  onMouseOver={() => { setaprV2(true) }}
+                  onMouseLeave={() => { setaprV2(false) }}
+                  onClick={() => { Router.push('/aprV2/commitee') }}
+                >實價登陸2.0</NavButton>
+              </div>
+            </> : null
+        }
+
         <div className={style.contact}>
-          {
+          <UserGreet
+            username={userInfo.userProfile?.username!}
+            isAuthenticated={isAuthenticated}
+            onLogout={handleLogout}
+            onLogin={() => { Router.push('/login') }}
+          />
+          {/* {
             isAuthenticated
-              ? <><span>您好! {userInfo.userProfile?.username}</span>
+              ?
+              <>
+                <UserGreet
+                  username={userInfo.userProfile?.username!}
+                />
                 <NavButton
                   onClick={handleLogout}
                   style={{
@@ -105,7 +128,6 @@ const Header = () => {
                     paddingBottom: '1px'
                   }}
                 >登出</NavButton></>
-
               : <NavButton
                 onClick={() => { Router.push('/login') }}
                 style={{
@@ -113,8 +135,7 @@ const Header = () => {
                   paddingBottom: '1px'
                 }}
               >登入</NavButton>
-          }
-
+          } */}
         </div>
 
         <div className={style.burger}>
@@ -159,7 +180,7 @@ const Header = () => {
         }
       </HeaderDrawer>
 
-      <HeaderDrawer
+      {/* <HeaderDrawer
         open={staticsOpen}
         onMouseOver={() => { setstaticsOpen(true) }}
         onMouseLeave={() => { setstaticsOpen(false) }}
@@ -173,7 +194,7 @@ const Header = () => {
               : renderContent(index, link)
           })
         }
-      </HeaderDrawer>
+      </HeaderDrawer> */}
 
       {/* <HeaderDrawer
         open={aprV2}

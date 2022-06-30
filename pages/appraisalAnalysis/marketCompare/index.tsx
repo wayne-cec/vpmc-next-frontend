@@ -13,7 +13,7 @@ import {
   DialogTitle, Button
 } from '@mui/material'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
-import { WithNavFooterProtected } from '../../../layout/BaseLayout'
+import { WithNavProtected } from '../../../layout/BaseLayout'
 import QueryPanel from './QueryPanel'
 import ResultPanel from './ResultPanel'
 import React, { createContext } from 'react'
@@ -100,6 +100,8 @@ const MarketCompare: NextPage = () => {
 
   const [queryPanelShow, setqueryPanelShow] = useState<boolean>(true)
   const [resultPanelShow, setresultPanelShow] = useState<boolean>(false)
+  const [queryPanelHover, setqueryPanelHover] = useState<boolean>(false)
+  const [resultPanelHover, setresultPanelHover] = useState<boolean>(false)
 
   const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
     setlongitude(longitude)
@@ -259,15 +261,17 @@ const MarketCompare: NextPage = () => {
             <PanelContainer>
               <PanelButton
                 content='查詢'
-                icon={queryPanelShow ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
+                icon={queryPanelShow || queryPanelHover ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
                 focused={queryPanelShow}
                 onClick={handleShowQueryPanel}
+                onHover={(value) => { setqueryPanelHover(value) }}
               />
               <PanelButton
                 content='結果'
-                icon={resultPanelShow ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
+                icon={resultPanelShow || resultPanelHover ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
                 focused={resultPanelShow}
                 onClick={handleShowResultPanel}
+                onHover={(value) => { setresultPanelHover(value) }}
               />
             </PanelContainer>
 
@@ -418,4 +422,4 @@ const MarketCompare: NextPage = () => {
   )
 }
 
-export default WithNavFooterProtected(MarketCompare)
+export default WithNavProtected(MarketCompare)
