@@ -5,13 +5,16 @@ import MapView from '@arcgis/core/views/MapView'
 import { Tooltip } from '@mui/material'
 import MeasurementWidget from '@arcgis/core/widgets/Measurement'
 import Image from 'next/image'
+import Map from "@arcgis/core/Map"
 
 export const widgetContext = createContext<{
+  map?: Map
   mapView?: MapView
   show: boolean
   measurement?: MeasurementWidget
   onShowChange: (value: boolean) => void
 }>({
+  map: undefined,
   mapView: undefined,
   show: false,
   measurement: undefined,
@@ -21,6 +24,7 @@ export const widgetContext = createContext<{
 export interface IWidgetExpand {
   icon: string
   tooltip: string
+  map: Map
   mapView: MapView
   disabled: boolean
   children?: React.ReactNode
@@ -56,6 +60,7 @@ const WidgetExpand = (props: IWidgetExpand) => {
           </div>
         </Tooltip>
         <widgetContext.Provider value={{
+          map: props.map,
           mapView: props.mapView,
           show: widgetShow,
           measurement: props.measurement,

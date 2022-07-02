@@ -7,11 +7,18 @@ import * as ReactDOM from 'react-dom'
 import MeasurementWidget from '@arcgis/core/widgets/Measurement'
 import esriConfig from '@arcgis/core/config'
 import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
+import toggleFullScreen from '../lib/toggleFullScreen'
+import BasemapClass from "@arcgis/core/Basemap"
+import WMTSLayer from '@arcgis/core/layers/WMTSLayer'
 
 import Measurement from '../widgets/Measurement'
 import WidgetExpand from '../widgets/WidgetExpand'
-import toggleFullScreen from '../lib/toggleFullScreen'
+import Basemap from '../widgets/Basemap'
 
+// if (esriConfig.request.trustedServers) {
+//   alert('aaa')
+//   esriConfig.request.trustedServers.push('https://wmts.nlsc.gov.tw/')
+// }
 esriConfig.apiKey = 'AAPK7a564af3e78b413c89adcae13354e42bJ-ZHdv19-sspveCwprkRppRmExhV6qAdgOiUBh9ztWvrxfNfG-0w_1VKW7IthPGZ'
 
 export type UseMapParams = {
@@ -90,15 +97,6 @@ const useMap = (
         content: basemapGallery
       })
 
-      // const measurementExpand = new Expand({
-      //   expandIconClass: "esri-icon-measure",
-      //   view: mapView,
-      //   content: node
-      // })
-
-      // mapView.ui.add(basemapGalleryExpand, 'top-right')
-      // mapView.ui.add(measurementExpand, "top-right")
-
 
       const measurementWidget = new MeasurementWidget()
       mapView.ui.add(measurementWidget, "bottom-right")
@@ -111,6 +109,7 @@ const useMap = (
           icon='/widgets/locate.png'
           tooltip='定位'
           disabled={true}
+          map={mapStack.current.obj}
           mapView={mapView}
         >
         </WidgetExpand>,
@@ -124,9 +123,11 @@ const useMap = (
         <WidgetExpand
           icon='/widgets/layer.png'
           tooltip='圖層'
-          disabled={true}
+          disabled={false}
+          map={mapStack.current.obj}
           mapView={mapView}
         >
+          <Basemap />
         </WidgetExpand>,
         basemapNode
       )
@@ -139,6 +140,7 @@ const useMap = (
           icon='/widgets/measurement.png'
           tooltip='測量'
           disabled={false}
+          map={mapStack.current.obj}
           mapView={mapView}
           measurement={measurementWidget}
         >
@@ -155,6 +157,7 @@ const useMap = (
           icon='/widgets/info.png'
           tooltip='資訊'
           disabled={true}
+          map={mapStack.current.obj}
           mapView={mapView}
         >
         </WidgetExpand>,
@@ -169,6 +172,7 @@ const useMap = (
           icon='/widgets/print.png'
           tooltip='列印'
           disabled={false}
+          map={mapStack.current.obj}
           mapView={mapView}
           onPrint={() => { print() }}
         >
@@ -184,6 +188,7 @@ const useMap = (
           icon='/widgets/full.png'
           tooltip='全畫面'
           disabled={false}
+          map={mapStack.current.obj}
           mapView={mapView}
           onFullScreenChange={() => { toggleFullScreen() }}
         >
@@ -191,6 +196,7 @@ const useMap = (
         fullScreenNode
       )
 
+      // mapStack.current.obj.basemap = new BasemapClass()
 
 
       mapViewRef.current = mapView

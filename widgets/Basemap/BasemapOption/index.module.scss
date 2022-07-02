@@ -1,0 +1,26 @@
+
+.basemapOption{
+    @apply w-[200px] h-fit flex p-2 items-center
+    justify-around border-b border-border cursor-pointer;
+    .mapImg{
+        @apply flex border border-border;
+    }
+    span{
+        @apply text-border;
+    }
+    @mixin highlighted {
+        @apply border-black bg-gray-200;
+        .mapImg{
+            @apply border-black;
+        }
+        span{
+            @apply text-black;
+        }
+    }
+    &:hover{
+        @include highlighted;
+    }
+    &.active{
+        @include highlighted;
+    }
+}
