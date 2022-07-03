@@ -1,7 +1,7 @@
 
 .basemapOption{
     @apply w-[200px] h-fit flex p-2 items-center
-    justify-around border-b border-border cursor-pointer;
+    justify-between border-b border-border cursor-pointer;
     .mapImg{
         @apply flex border border-border;
     }
