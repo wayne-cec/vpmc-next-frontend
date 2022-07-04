@@ -1,0 +1,7 @@
+
+.addressResult{
+    @apply py-4 cursor-pointer flex items-center border-t border-border;
+    &:hover{
+        @apply bg-gray-200 border-black;
+    }
+}
