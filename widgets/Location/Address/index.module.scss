@@ -1,0 +1,14 @@
+
+@import '../../../styles/TextNonSelect.module.scss';
+@mixin queryBtn {
+    @apply bg-main-primary h-[40px] px-2 
+    text-white rounded-md shadow-md flex items-center 
+    justify-center cursor-pointer m-2;
+    @include textNoneSelectable;
+}
+.countyQuery{
+    @apply flex items-center justify-center;
+    .queryBtn{
+        @include queryBtn;
+    }
+}

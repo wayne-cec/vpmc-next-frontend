@@ -70,7 +70,7 @@ const basemapDataList: IBasemapData[] = [
 ]
 
 const Basemap = () => {
-  const { map, show } = useContext(widgetContext)
+  const { map, show, onShowChange } = useContext(widgetContext)
   const [activeBasemap, setactiveBasemap] = useState<string>('DEFAULT')
 
   const handleRemoveAllBasemaps = () => {
@@ -94,6 +94,7 @@ const Basemap = () => {
               if (map) {
                 setactiveBasemap(basemap.id)
                 handleRemoveAllBasemaps()
+                onShowChange(false)
                 if (basemap.id === 'DEFAULT') return
                 map.add(basemap.tileLayer)
               }
@@ -101,21 +102,6 @@ const Basemap = () => {
           />
         })
       }
-      {/* <BasemapOption
-        icon={'/basemaps/default.png'}
-        title={'預設地圖'}
-        active={defaultBaseMap === 'DEFAULT'}
-        onClick={() => {
-          if (map) {
-            const tileLayer = new WebTileLayer({
-              urlTemplate: 'https://wmts.nlsc.gov.tw/wmts/PHOTO_MIX/default/GoogleMapsCompatible/{level}/{row}/{col}'
-            })
-            console.log(tileLayer)
-            map.add(tileLayer)
-            map.reorder(tileLayer, 0)
-          }
-        }}
-      /> */}
     </div>
   )
 }

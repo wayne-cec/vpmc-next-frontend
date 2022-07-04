@@ -1,19 +1,16 @@
 import { useEffect, useRef } from 'react'
-import Map from "@arcgis/core/Map"
-import MapView from "@arcgis/core/views/MapView"
-import Expand from '@arcgis/core/widgets/Expand'
-import BasemapGallery from '@arcgis/core/widgets/BasemapGallery'
+import Map from '@arcgis/core/Map'
+import MapView from '@arcgis/core/views/MapView'
 import * as ReactDOM from 'react-dom'
 import MeasurementWidget from '@arcgis/core/widgets/Measurement'
 import esriConfig from '@arcgis/core/config'
 import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
 import toggleFullScreen from '../lib/toggleFullScreen'
-import BasemapClass from "@arcgis/core/Basemap"
-import WMTSLayer from '@arcgis/core/layers/WMTSLayer'
 
 import Measurement from '../widgets/Measurement'
 import WidgetExpand from '../widgets/WidgetExpand'
 import Basemap from '../widgets/Basemap'
+import Location from '../widgets/Location'
 
 // if (esriConfig.request.trustedServers) {
 //   alert('aaa')
@@ -88,16 +85,6 @@ const useMap = (
       })
       mapView.ui = new DefaultUI()
 
-      const basemapGallery = new BasemapGallery({
-        view: mapView
-      })
-      const basemapGalleryExpand = new Expand({
-        expandIconClass: "esri-icon-basemap",
-        view: mapView,
-        content: basemapGallery
-      })
-
-
       const measurementWidget = new MeasurementWidget()
       mapView.ui.add(measurementWidget, "bottom-right")
 
@@ -108,10 +95,11 @@ const useMap = (
         <WidgetExpand
           icon='/widgets/locate.png'
           tooltip='定位'
-          disabled={true}
+          disabled={false}
           map={mapStack.current.obj}
           mapView={mapView}
         >
+          <Location />
         </WidgetExpand>,
         locateNode
       )
