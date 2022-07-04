@@ -1,14 +1,21 @@
 import { useEffect, useRef } from 'react'
-import Map from "@arcgis/core/Map"
-import MapView from "@arcgis/core/views/MapView"
-import Expand from '@arcgis/core/widgets/Expand'
-import BasemapGallery from '@arcgis/core/widgets/BasemapGallery'
-import Measurement from '../widgets/Measurement'
-import HelloWorld from '../widgets/TestWidget'
+import Map from '@arcgis/core/Map'
+import MapView from '@arcgis/core/views/MapView'
 import * as ReactDOM from 'react-dom'
 import MeasurementWidget from '@arcgis/core/widgets/Measurement'
 import esriConfig from '@arcgis/core/config'
+import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
+import toggleFullScreen from '../lib/toggleFullScreen'
 
+import Measurement from '../widgets/Measurement'
+import WidgetExpand from '../widgets/WidgetExpand'
+import Basemap from '../widgets/Basemap'
+import Location from '../widgets/Location'
+
+// if (esriConfig.request.trustedServers) {
+//   alert('aaa')
+//   esriConfig.request.trustedServers.push('https://wmts.nlsc.gov.tw/')
+// }
 esriConfig.apiKey = 'AAPK7a564af3e78b413c89adcae13354e42bJ-ZHdv19-sspveCwprkRppRmExhV6qAdgOiUBh9ztWvrxfNfG-0w_1VKW7IthPGZ'
 
 export type UseMapParams = {
@@ -76,34 +83,109 @@ const useMap = (
         ...mapViewOption,
         container: elemRef.current
       })
-
-      const basemapGallery = new BasemapGallery({
-        view: mapView
-      })
-      const basemapGalleryExpand = new Expand({
-        expandIconClass: "esri-icon-basemap",
-        view: mapView,
-        content: basemapGallery
-      })
+      mapView.ui = new DefaultUI()
 
       const measurementWidget = new MeasurementWidget()
-      const node = document.createElement("div")
-      const measurementExpand = new Expand({
-        expandIconClass: "esri-icon-measure",
-        view: mapView,
-        content: node
-      })
-
       mapView.ui.add(measurementWidget, "bottom-right")
-      mapView.ui.add(basemapGalleryExpand, 'top-right')
-      mapView.ui.add(measurementExpand, "top-right")
 
+      // 定位widget
+      const locateNode = document.createElement("div")
+      mapView.ui.add(locateNode, "top-right")
       ReactDOM.render(
-        <Measurement
+        <WidgetExpand
+          icon='/widgets/locate.png'
+          tooltip='定位'
+          disabled={false}
+          map={mapStack.current.obj}
+          mapView={mapView}
+        >
+          <Location />
+        </WidgetExpand>,
+        locateNode
+      )
+
+      // 圖層widget
+      const basemapNode = document.createElement("div")
+      mapView.ui.add(basemapNode, "top-right")
+      ReactDOM.render(
+        <WidgetExpand
+          icon='/widgets/layer.png'
+          tooltip='圖層'
+          disabled={false}
+          map={mapStack.current.obj}
+          mapView={mapView}
+        >
+          <Basemap />
+        </WidgetExpand>,
+        basemapNode
+      )
+
+      // 測量widget
+      const measurementNode = document.createElement("div")
+      mapView.ui.add(measurementNode, "top-right")
+      ReactDOM.render(
+        <WidgetExpand
+          icon='/widgets/measurement.png'
+          tooltip='測量'
+          disabled={false}
+          map={mapStack.current.obj}
           mapView={mapView}
           measurement={measurementWidget}
-        />, node
+        >
+          <Measurement />
+        </WidgetExpand>,
+        measurementNode
       )
+
+      // 資訊widget
+      const infoNode = document.createElement("div")
+      mapView.ui.add(infoNode, "top-right")
+      ReactDOM.render(
+        <WidgetExpand
+          icon='/widgets/info.png'
+          tooltip='資訊'
+          disabled={true}
+          map={mapStack.current.obj}
+          mapView={mapView}
+        >
+        </WidgetExpand>,
+        infoNode
+      )
+
+      // 列印widget
+      const printNode = document.createElement("div")
+      mapView.ui.add(printNode, "top-right")
+      ReactDOM.render(
+        <WidgetExpand
+          icon='/widgets/print.png'
+          tooltip='列印'
+          disabled={false}
+          map={mapStack.current.obj}
+          mapView={mapView}
+          onPrint={() => { print() }}
+        >
+        </WidgetExpand>,
+        printNode
+      )
+
+      // 全畫面widget
+      const fullScreenNode = document.createElement("div")
+      mapView.ui.add(fullScreenNode, "top-right")
+      ReactDOM.render(
+        <WidgetExpand
+          icon='/widgets/full.png'
+          tooltip='全畫面'
+          disabled={false}
+          map={mapStack.current.obj}
+          mapView={mapView}
+          onFullScreenChange={() => { toggleFullScreen() }}
+        >
+        </WidgetExpand>,
+        fullScreenNode
+      )
+
+      // mapStack.current.obj.basemap = new BasemapClass()
+
 
       mapViewRef.current = mapView
       mapViewStack.current.setObject(mapView)

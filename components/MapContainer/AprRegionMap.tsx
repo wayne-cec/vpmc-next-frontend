@@ -14,7 +14,7 @@ import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
 export const square = 3.305785
 
 const mapOptions = {
-  mapOption: { basemap: 'arcgis-community' },
+  mapOption: { basemap: 'arcgis-community' }, // arcgis-community
   mapViewOption: {
     center: [121.4640139307843, 25.013838580240503],
     zoom: 13,

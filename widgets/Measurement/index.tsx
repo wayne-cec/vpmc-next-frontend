@@ -1,37 +1,46 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import MapView from '@arcgis/core/views/MapView'
 import { Tooltip } from '@mui/material'
 import MeasurementWidget from '@arcgis/core/widgets/Measurement'
+import { widgetContext } from '../WidgetExpand'
 
-export interface IMeasurement {
-  mapView: MapView
-  measurement: MeasurementWidget
-}
+// export interface IMeasurement {
+//   mapView: MapView
+//   measurement: MeasurementWidget
+// }
 
-const Measurement = (props: IMeasurement) => {
-  // const measurement = useRef(new MeasurementWidget())
+const Measurement = () => {
+  // const [widgetShow, setwidgetShow] = useState<boolean>(false)
+  const { mapView, measurement, show, onShowChange } = useContext(widgetContext)
 
   const distanceMeasurement = () => {
-    props.measurement.activeTool = 'distance'
+    if (measurement)
+      measurement.activeTool = 'distance'
   }
 
   const areaMeasurement = () => {
-    props.measurement.activeTool = 'area'
+    if (measurement)
+      measurement.activeTool = 'area'
   }
 
   const clearMeasurements = () => {
-    props.measurement.clear()
+    if (measurement)
+      measurement.clear()
   }
 
   useEffect(() => {
-    props.measurement.view = props.mapView
-
+    if (measurement && mapView)
+      measurement.view = mapView
   }, [])
 
   return (
-    <div className={style.measurementWidget}>
+    <div className={classNames({
+      [style.measurementWidget]: true,
+      [style.show]: show,
+      [style.hide]: !show
+    })}>
       <Tooltip title='測量距離'>
         <button className='esri-widget--button esri-interactive esri-icon-measure-line'
           onClick={distanceMeasurement}
@@ -54,7 +63,6 @@ const Measurement = (props: IMeasurement) => {
       </Tooltip>
 
     </div>
-
   )
 }
 

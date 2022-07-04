@@ -1,3 +1,4 @@
+@import '../../styles/Animate.module.scss';
 .townSelector{
     @apply w-[130px] h-[40px] rounded-md border
     border-border m-2 cursor-pointer flex items-center justify-between px-2;
@@ -16,28 +17,25 @@
     &.show{
         @apply border-main-primary;
     }
+    &:hover{
+        @apply border-black;
+    }
 }
 .popPanel{
     @apply w-[500px] h-fit bg-white absolute 
-    rounded-b-md border-t-2
-    border-main-primary shadow-2xl hidden p-4 z-50;
+    rounded-b-md border-t-2 border-main-primary 
+    shadow-2xl p-4 z-50 hidden;
+    top: var(--top);
+    left: var(--left);
     @media(max-width: 1100px){
         @apply w-[210px];
     }
-    @keyframes slidein {
-        from {
-          @apply top-[60px] bg-transparent;
-        }
-      
-        to {
-            @apply top-[75px] bg-opacity-100;
-        }
-    }
     &.show{
-        animation-name: slidein;
-        animation-duration: 0.2s;
-        animation-timing-function: ease-out;
-        @apply top-[75px] flex flex-col;
+        @apply flex flex-col;
+        @include animate-css(bounceInDown, 0.5s);
+    }
+    &.hide{
+        @include animate-css(bounceOutUp, 0.5s);
     }
     @mixin textNoneSelectable {
         -webkit-touch-callout: none; 

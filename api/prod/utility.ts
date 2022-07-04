@@ -39,3 +39,13 @@ export const getCountyTownNameByCoordinate = async (longitude: number, latitude:
   const responseContent = await response.json() as { countyname: string, townname: string }
   return { statusCode, responseContent }
 }
+
+export const getCoordinateByCountyTownName = async (county: string, town: string) => {
+  const response = await fetch(process.env.API_DOMAIN_PROD + `/api/Utility/getCoordinateByCountyTownName?county=${county}&town=${town}`, {
+    method: 'GET',
+    redirect: 'follow'
+  })
+  const statusCode = response.status
+  const responseContent = await response.json() as { longitude: number, latitude: number }
+  return { statusCode, responseContent }
+}
