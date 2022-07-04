@@ -1,9 +1,9 @@
 .lawBtn{
     @apply text-black rounded-md  bg-main-second 
-    flex items-center mx-1  cursor-pointer p-1 border border-black;
+    flex items-center mx-1  cursor-pointer p-1 border border-border;
 
     @mixin hover {
-        @apply bg-main-primary text-main-second shadow-md;
+        @apply bg-main-primary text-main-second shadow-md border-black;
         transition: 0.3s;
     }
 
