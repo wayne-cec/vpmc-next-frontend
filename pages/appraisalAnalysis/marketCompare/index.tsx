@@ -22,6 +22,8 @@ import MapView from '@arcgis/core/views/MapView'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
 import PanelContainer from '../../../components/PanelContainer'
 import PanelButton from '../../../components/PanelContainer/PanelButton'
+import { parseCommitee } from '../../../lib/parseCommitee'
+import AprDetailContent from './AprDetailContent'
 
 const square = 3.305785
 
@@ -31,6 +33,22 @@ const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
   { ssr: false }
 )
+
+export interface IDetailAprInfo {
+  transactiontime: string
+  completiontime: string
+  transferFloor: number
+  unitPrice: number
+  priceWithoutParking: number
+  roomNumber: number
+  hallNumber: number
+  bathNumber: number
+  buildingTransferArea: number
+  parkingSpacePrice: number
+  parkingSpaceTransferArea: number
+  price: number
+  organization: string
+}
 
 export const ZoomContext = createContext<{
   zoomId: { id: string } | null
@@ -51,6 +69,14 @@ export const PendingContext = createContext<{
 export const usePendingStatus = () => {
   return useContext(PendingContext)
 }
+
+export const DetailContext = createContext<{
+  onDetailAprChange: (id: string) => void
+  onShow: (value: boolean) => void
+}>({
+  onDetailAprChange: (id) => { },
+  onShow: (value) => { }
+})
 
 const MarketCompare: NextPage = () => {
   const [longitude, setlongitude] = useState<number | null>(null)
@@ -102,6 +128,10 @@ const MarketCompare: NextPage = () => {
   const [resultPanelShow, setresultPanelShow] = useState<boolean>(false)
   const [queryPanelHover, setqueryPanelHover] = useState<boolean>(false)
   const [resultPanelHover, setresultPanelHover] = useState<boolean>(false)
+
+  const [detailPanelShow, setdetailPanelShow] = useState<boolean>(false)
+  const [detailAprId, setdetailAprId] = useState<{ id: string }>({ id: '' })
+  const [detailAprInfo, setdetailAprInfo] = useState<IDetailAprInfo | null>(null)
 
   const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
     setlongitude(longitude)
@@ -233,6 +263,14 @@ const MarketCompare: NextPage = () => {
     setqueryPanelShow(false)
   }
 
+  const handleGetCommiteeByAprId = async (id: string) => {
+    const { statusCode, responseContent } = await api.prod.getCommiteeByAprId(id)
+    if (statusCode === 200) {
+      return responseContent.organization
+    }
+    return undefined
+  }
+
   useEffect(() => {
     if (filteredResults?.length === 0) {
       setmsgOpen(true)
@@ -240,6 +278,25 @@ const MarketCompare: NextPage = () => {
       seterrorContent('查無資料')
     }
   }, [filteredResults])
+
+  useEffect(() => {
+    (async () => {
+      if (filteredResults == null) return
+      if (filteredResults.length === 0) return
+      const detailApr = filteredResults.filter(apr => apr.id === detailAprId.id)
+      if (detailApr.length === 0) {
+        setdetailPanelShow(false)
+        setmsgOpen(true)
+        seterrorTitle('訊息')
+        seterrorContent(`查無 ${detailAprId.id} 的詳細資訊，請聯繫開發人員。`)
+        return
+      }
+      const commiteeName = await handleGetCommiteeByAprId(detailAprId.id)
+      setdetailPanelShow(true)
+      setdetailAprInfo({ ...detailApr[0], organization: commiteeName ? commiteeName : '無管委會' })
+    })()
+  }, [detailAprId])
+
 
   return (
     <>
@@ -256,166 +313,195 @@ const MarketCompare: NextPage = () => {
           pending: pending,
           setpending: (value) => { setpending(value) }
         }}>
-          <div className={style.main}>
-
-            <PanelContainer>
-              <PanelButton
-                content='查詢'
-                icon={queryPanelShow || queryPanelHover ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
-                focused={queryPanelShow}
-                onClick={handleShowQueryPanel}
-                onHover={(value) => { setqueryPanelHover(value) }}
-              />
-              <PanelButton
-                content='結果'
-                icon={resultPanelShow || resultPanelHover ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
-                focused={resultPanelShow}
-                onClick={handleShowResultPanel}
-                onHover={(value) => { setresultPanelHover(value) }}
-              />
-            </PanelContainer>
-
-            <QueryPanel
-              show={queryPanelShow}
-              longitude={longitude!}
-              latitude={latitude!}
-              locatedCounty={locatedCounty!}
-              locatedTown={locatedTown!}
-              isSelectorActive={isSelectorActive}
-              isTransactionTimeFiltered={isTransactionTimeFiltered}
-              isBuildingAreaFiltered={isBuildingAreaFiltered}
-              isLandAreaFiltered={isLandAreaFiltered}
-              isAgeFiltered={isAgeFiltered}
-              isParkSpaceFiltered={isParkSpaceFiltered}
-              isTransactionTimeFosced={isTransactionTimeFosced}
-              isBuildingAreaFosced={isBuildingAreaFosced}
-              isLandAreaFosced={isLandAreaFosced}
-              isAgeFosced={isAgeFosced}
-              isParkSpaceFosced={isParkSpaceFosced}
-              isBuildingAreaCheckable={isBuildingAreaCheckable}
-              isLandAreaCheckable={isLandAreaCheckable}
-              assetTypeCode={assetTypeCode}
-              bufferRadius={bufferRadius}
-              transactiontime={transactiontime!}
-              buildingTransferArea={buildingTransferArea!}
-              landTransferArea={landTransferArea!}
-              age={age!}
-              parkSpaceType={parkSpaceType!}
-              polygonGoejson={polygonGoejson!}
-              filteredResults={filteredResults!}
-              spatialQueryType={spatialQueryType}
-              sketchMode={sketchMode}
-              onCoordinatorSelectorClick={(value) => { setisCoordinateSelectorActive(value) }}
-              onSpatialQueryTypeChange={setspatialQueryType}
-              onBufferRadiusChange={(value) => { setbufferRadius(value) }}
-              onSketchModeChange={(value) => { setsketchMode(value) }}
-              onDraw={() => { setsketchMode('draw') }}
-              onClear={() => { setspatialQueryType('clear') }}
-              onAssetTypeChange={(value) => { setassetTypeCode(value) }}
-              onTransactionTimeFilteredChange={() => {
-                setisTransactionTimeFiltered(prev => !prev)
-                settransactionTime(1)
-              }}
-              onTransactionTimeSelect={(value) => {
-                settransactionTime(value)
-                setisTransactionTimeFosced(true)
-              }}
-              onBuildingAreaFilteredChange={() => {
-                setisBuildingAreaFiltered(prev => !prev)
-                setbuildingTransferArea(0)
-              }}
-              onBuildingAreaSelect={(value) => {
-                setbuildingTransferArea(value)
-                setisBuildingAreaFosced(true)
-              }}
-              onLandAreaFilteredChange={() => {
-                setisLandAreaFiltered(prev => !prev)
-                setlandTransferArea(0)
-              }}
-              onLandAreaSelect={(value) => {
-                setlandTransferArea(value)
-                setisLandAreaFosced(true)
-              }}
-              onAgeFilteredChange={() => {
-                setisAgeFiltered(prev => !prev)
-                setage(0)
-              }}
-              onAgeSelect={(value) => {
-                setage(value)
-                setisAgeFosced(true)
-              }}
-              onParkSpaceTypeFilteredChange={() => {
-                setisParkSpaceFiltered(prev => !prev)
-                setparkSpaceType(0)
-              }}
-              onParkSpaceTypeSelect={(value) => {
-                setparkSpaceType(value)
-                setisParkSpaceFosced(true)
-              }}
-              onCustomizeParamBtnClick={() => {
-                setmsgOpen(true)
-                seterrorTitle('訊息')
-                seterrorContent('自定義參數功能尚未開發')
-              }}
-              handleFormSubmit={handleFormSubmit}
-            />
-
-            <ResultPanel
-              show={resultPanelShow}
-              filteredResults={filteredResults!}
-              graphData={graphData!}
-              onClose={() => {
-                setfilteredResults(null)
-              }}
-            />
-
-            <div className={style.content}>
-              <div className={style.mapContainer}>
-                <MarketMapContainer
-                  active={isSelectorActive}
-                  bufferRadius={bufferRadius!}
-                  filteredResults={filteredResults!}
-                  spatialQueryType={spatialQueryType}
-                  sketchMode={sketchMode}
-                  zoomId={zoomId}
-                  onCoordinateSelect={handleCoordinateSelect}
-                  onSketchModeChange={setsketchMode}
-                  onGeojsonChange={setpolygonGoejson}
-                  onSpatialQueryTypeChange={setspatialQueryType}
+          <DetailContext.Provider value={{
+            onDetailAprChange: (id) => { setdetailAprId({ id: id }) },
+            onShow: (value) => { setdetailPanelShow(value) }
+          }}>
+            <div className={style.main}>
+              <PanelContainer>
+                <PanelButton
+                  content='查詢'
+                  icon={queryPanelShow || queryPanelHover ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
+                  focused={queryPanelShow}
+                  onClick={handleShowQueryPanel}
+                  onHover={(value) => { setqueryPanelHover(value) }}
                 />
+                <PanelButton
+                  content='結果'
+                  icon={resultPanelShow || resultPanelHover ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
+                  focused={resultPanelShow}
+                  onClick={handleShowResultPanel}
+                  onHover={(value) => { setresultPanelHover(value) }}
+                />
+              </PanelContainer>
+
+              <QueryPanel
+                show={queryPanelShow}
+                longitude={longitude!}
+                latitude={latitude!}
+                locatedCounty={locatedCounty!}
+                locatedTown={locatedTown!}
+                isSelectorActive={isSelectorActive}
+                isTransactionTimeFiltered={isTransactionTimeFiltered}
+                isBuildingAreaFiltered={isBuildingAreaFiltered}
+                isLandAreaFiltered={isLandAreaFiltered}
+                isAgeFiltered={isAgeFiltered}
+                isParkSpaceFiltered={isParkSpaceFiltered}
+                isTransactionTimeFosced={isTransactionTimeFosced}
+                isBuildingAreaFosced={isBuildingAreaFosced}
+                isLandAreaFosced={isLandAreaFosced}
+                isAgeFosced={isAgeFosced}
+                isParkSpaceFosced={isParkSpaceFosced}
+                isBuildingAreaCheckable={isBuildingAreaCheckable}
+                isLandAreaCheckable={isLandAreaCheckable}
+                assetTypeCode={assetTypeCode}
+                bufferRadius={bufferRadius}
+                transactiontime={transactiontime!}
+                buildingTransferArea={buildingTransferArea!}
+                landTransferArea={landTransferArea!}
+                age={age!}
+                parkSpaceType={parkSpaceType!}
+                polygonGoejson={polygonGoejson!}
+                filteredResults={filteredResults!}
+                spatialQueryType={spatialQueryType}
+                sketchMode={sketchMode}
+                onCoordinatorSelectorClick={(value) => { setisCoordinateSelectorActive(value) }}
+                onSpatialQueryTypeChange={setspatialQueryType}
+                onBufferRadiusChange={(value) => { setbufferRadius(value) }}
+                onSketchModeChange={(value) => { setsketchMode(value) }}
+                onDraw={() => { setsketchMode('draw') }}
+                onClear={() => { setspatialQueryType('clear') }}
+                onAssetTypeChange={(value) => { setassetTypeCode(value) }}
+                onTransactionTimeFilteredChange={() => {
+                  setisTransactionTimeFiltered(prev => !prev)
+                  settransactionTime(1)
+                }}
+                onTransactionTimeSelect={(value) => {
+                  settransactionTime(value)
+                  setisTransactionTimeFosced(true)
+                }}
+                onBuildingAreaFilteredChange={() => {
+                  setisBuildingAreaFiltered(prev => !prev)
+                  setbuildingTransferArea(0)
+                }}
+                onBuildingAreaSelect={(value) => {
+                  setbuildingTransferArea(value)
+                  setisBuildingAreaFosced(true)
+                }}
+                onLandAreaFilteredChange={() => {
+                  setisLandAreaFiltered(prev => !prev)
+                  setlandTransferArea(0)
+                }}
+                onLandAreaSelect={(value) => {
+                  setlandTransferArea(value)
+                  setisLandAreaFosced(true)
+                }}
+                onAgeFilteredChange={() => {
+                  setisAgeFiltered(prev => !prev)
+                  setage(0)
+                }}
+                onAgeSelect={(value) => {
+                  setage(value)
+                  setisAgeFosced(true)
+                }}
+                onParkSpaceTypeFilteredChange={() => {
+                  setisParkSpaceFiltered(prev => !prev)
+                  setparkSpaceType(0)
+                }}
+                onParkSpaceTypeSelect={(value) => {
+                  setparkSpaceType(value)
+                  setisParkSpaceFosced(true)
+                }}
+                onCustomizeParamBtnClick={() => {
+                  setmsgOpen(true)
+                  seterrorTitle('訊息')
+                  seterrorContent('自定義參數功能尚未開發')
+                }}
+                handleFormSubmit={handleFormSubmit}
+              />
+
+              <ResultPanel
+                show={resultPanelShow}
+                filteredResults={filteredResults!}
+                graphData={graphData!}
+                onClose={() => {
+                  setfilteredResults(null)
+                }}
+              />
+
+              <div className={style.content}>
+                <div className={style.mapContainer}>
+                  <MarketMapContainer
+                    active={isSelectorActive}
+                    bufferRadius={bufferRadius!}
+                    filteredResults={filteredResults!}
+                    spatialQueryType={spatialQueryType}
+                    sketchMode={sketchMode}
+                    zoomId={zoomId}
+                    onCoordinateSelect={handleCoordinateSelect}
+                    onSketchModeChange={setsketchMode}
+                    onGeojsonChange={setpolygonGoejson}
+                    onSpatialQueryTypeChange={setspatialQueryType}
+                  />
+                </div>
               </div>
-            </div>
 
-            <Dialog
-              open={msgOpen}
-              onClose={() => {
-                setmsgOpen(false)
-                seterrorTitle('')
-                seterrorContent('')
-              }}
-              aria-labelledby="responsive-dialog-title"
-            >
-              <DialogTitle id="responsive-dialog-title">
-                {errorTitle}
-              </DialogTitle>
-              <DialogContent>
-                <DialogContentText>
-                  {errorContent}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-
-                <Button onClick={() => {
+              <Dialog
+                open={msgOpen}
+                onClose={() => {
                   setmsgOpen(false)
                   seterrorTitle('')
                   seterrorContent('')
-                }}>
-                  確認
-                </Button>
-              </DialogActions>
-            </Dialog>
+                }}
+                aria-labelledby="responsive-dialog-title"
+              >
+                <DialogTitle id="responsive-dialog-title">
+                  {errorTitle}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    {errorContent}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => {
+                    setmsgOpen(false)
+                    seterrorTitle('')
+                    seterrorContent('')
+                  }}>
+                    確認
+                  </Button>
+                </DialogActions>
+              </Dialog>
 
-          </div>
+              <Dialog
+                open={detailPanelShow}
+                onClose={() => {
+                  setdetailPanelShow(false)
+                }}
+                aria-labelledby="responsive-dialog-title"
+              >
+                <DialogTitle id="responsive-dialog-title"
+                  sx={{ paddingBottom: '0px' }}
+                >
+                  {parseCommitee(detailAprInfo ? detailAprInfo.organization : '無管委會')}
+                </DialogTitle>
+
+                <DialogContent>
+                  <AprDetailContent {...detailAprInfo!} />
+                </DialogContent>
+
+                <DialogActions>
+                  <Button onClick={() => {
+                    setdetailPanelShow(false)
+                  }}>
+                    確認
+                  </Button>
+                </DialogActions>
+              </Dialog>
+
+            </div>
+          </DetailContext.Provider>
         </PendingContext.Provider>
       </ZoomContext.Provider>
     </>

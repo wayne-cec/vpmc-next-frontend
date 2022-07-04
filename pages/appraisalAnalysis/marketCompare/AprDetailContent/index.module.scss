@@ -1,0 +1,19 @@
+.aprDetailContent{
+    @apply p-0;
+    .chipContainer{
+        @apply flex;
+        .chip{
+            @apply py-1 px-2 rounded-md bg-main-primary
+            text-white my-2 mr-2;
+    
+        }
+    }
+    .priceContainer{
+        @apply w-[600px] h-[100px] bg-transparent 
+        flex justify-between mt-2;
+        .priceChip{
+            @apply bg-blue-600 bg-opacity-30 w-[190px] h-full
+            rounded-md;
+        }
+    }
+}

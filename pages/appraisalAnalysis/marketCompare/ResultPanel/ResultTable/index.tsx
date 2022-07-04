@@ -12,7 +12,7 @@ import { visuallyHidden } from '@mui/utils'
 import { IMarketCompareResult } from '../../../../../api/prod'
 import moment from 'moment'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
-import { ZoomContext } from '../..'
+import { DetailContext, ZoomContext } from '../..'
 import api from '../../../../../api'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import classNames from 'classnames'
@@ -214,6 +214,7 @@ const ResultTable = (props: IResultTable) => {
   const { onZoomIdChange } = useContext(ZoomContext)
   const [pending, setpending] = useState<boolean>(false)
   const [renderRows, setrenderRows] = useState<Data[]>([])
+  const { onDetailAprChange, onShow } = useContext(DetailContext)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -463,7 +464,8 @@ const ResultTable = (props: IResultTable) => {
                       <TableCell align="right">
                         <IconButton size="small"
                           onClick={() => {
-                            // onZoomIdChange({ id: row.id })
+                            onDetailAprChange(row.id)
+                            // onShow(true)
                           }}
                         >
                           <ArticleIcon fontSize="small" />
