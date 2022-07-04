@@ -11,13 +11,13 @@ import {
 import { visuallyHidden } from '@mui/utils'
 import { IMarketCompareResult } from '../../../../../api/prod'
 import moment from 'moment'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
 import { ZoomContext } from '../..'
 import api from '../../../../../api'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import classNames from 'classnames'
 import { getAge } from '../../../../../lib/calculateAge'
+import ArticleIcon from '@mui/icons-material/Article';
 
 export interface Data {
   id: string
@@ -125,6 +125,12 @@ export const headCells: readonly HeadCell[] = [
     numeric: true,
     disablePadding: false,
     label: '總價(萬)'
+  },
+  {
+    id: 'id',
+    numeric: false,
+    disablePadding: true,
+    label: ''
   },
   {
     id: 'id',
@@ -454,24 +460,16 @@ const ResultTable = (props: IResultTable) => {
                         </IconButton>
                       </TableCell>
 
-                      {/* <Menu
-                          id="basic-menu"
-                          anchorEl={anchorEl}
-                          open={menuOpen}
-                          onClose={handleMenuClose}
-                          sx={{ boxShadow: 'none' }}
+                      <TableCell align="right">
+                        <IconButton size="small"
+                          onClick={() => {
+                            // onZoomIdChange({ id: row.id })
+                          }}
                         >
-                          <MenuItem onClick={() => {
-                            handleMenuClose()
-                            onZoomIdChange(row.id)
-                            console.log(row.id)
-                          }}>
-                            <ListItemIcon>
-                              <ZoomInIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Zoom to</ListItemText>
-                          </MenuItem>
-                        </Menu> */}
+                          <ArticleIcon fontSize="small" />
+                        </IconButton>
+                      </TableCell>
+
                     </TableRow>
                   )
                 })
