@@ -17,9 +17,9 @@ const CountySelector = (props: ICountySelector) => {
   const [open, setopen] = useState<boolean>(false)
   const [coordinate, setcoordinate] = useState<{ x: string, y: string }>()
 
-  useOutside(ref, () => {
-    setopen(false)
-  })
+  // useOutside(ref, () => {
+  //   setopen(false)
+  // })
 
   const handleClick = () => {
     setopen(prev => !prev)

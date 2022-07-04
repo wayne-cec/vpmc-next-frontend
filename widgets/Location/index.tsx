@@ -14,36 +14,8 @@ import Address from './Address'
 import api from '../../api'
 
 const Location = () => {
-  const { map, show, onShowChange } = useContext(widgetContext)
+  const { show } = useContext(widgetContext)
   const [tabPage, settabPage] = useState<string>('1')
-  const [county, setcounty] = useState<string | null>(null)
-  const [town, settown] = useState<string | null>(null)
-  const [countyData, setcountyData] = useState<ICountyData | null>(null)
-  const [townData, settownData] = useState<ITownData | null>(null)
-
-  const reFetchTownData = async (county: string) => {
-    const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
-    if (statusCode === 200) {
-      settown(responseContent2['鄉鎮市區'][0].name)
-      settownData(responseContent2)
-    }
-  }
-
-  useEffect(() => {
-    const fetchDefaultCountyData = async () => {
-      const { statusCode, responseContent } = await api.prod.listCountiesByRegion()
-      if (statusCode === 200) {
-        setcountyData(responseContent)
-        setcounty(responseContent['北部'][0].name)
-        const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(responseContent['北部'][0].name)
-        if (statusCode === 200) {
-          settownData(responseContent2)
-          settown(responseContent2['鄉鎮市區'][0].name)
-        }
-      }
-    }
-    fetchDefaultCountyData()
-  }, [])
 
   return (
     <div className={classNames({
@@ -60,8 +32,8 @@ const Location = () => {
           >
             <Tab label="行政區" value="1" />
             <Tab label="門牌" value="2" />
-            <Tab label="地號" value="3" />
-            <Tab label="座標" value="4" />
+            <Tab label="地號" value="3" disabled />
+            <Tab label="座標" value="4" disabled />
           </TabList>
         </Box>
 

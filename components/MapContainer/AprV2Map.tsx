@@ -87,7 +87,7 @@ export interface ISimpleCommiteeData {
 }
 
 const mapOptions = {
-  mapOption: { basemap: 'arcgis-community' },
+  mapOption: { basemap: 'gray' },
   mapViewOption: {
     center: [121.4640139307843, 25.013838580240503],
     zoom: 13,
