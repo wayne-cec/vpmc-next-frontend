@@ -24,6 +24,7 @@ import PanelContainer from '../../../components/PanelContainer'
 import PanelButton from '../../../components/PanelContainer/PanelButton'
 import { parseCommitee } from '../../../lib/parseCommitee'
 import AprDetailContent from './AprDetailContent'
+import { IDetailAprInfo } from './AprDetailContent'
 
 const square = 3.305785
 
@@ -33,22 +34,6 @@ const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
   { ssr: false }
 )
-
-export interface IDetailAprInfo {
-  transactiontime: string
-  completiontime: string
-  transferFloor: number
-  unitPrice: number
-  priceWithoutParking: number
-  roomNumber: number
-  hallNumber: number
-  bathNumber: number
-  buildingTransferArea: number
-  parkingSpacePrice: number
-  parkingSpaceTransferArea: number
-  price: number
-  organization: string
-}
 
 export const ZoomContext = createContext<{
   zoomId: { id: string } | null

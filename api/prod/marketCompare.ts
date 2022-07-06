@@ -19,6 +19,12 @@ export interface IMarketCompareResult {
   parkingSpacePrice: number
   parkingSpaceTransferArea: number
   price: number
+  landAmount: number
+  buildingAmount: number
+  parkAmount: number
+  buildingType: number
+  floor: number
+  urbanLandUse: number
   longitude: number
   latitude: number
 }
