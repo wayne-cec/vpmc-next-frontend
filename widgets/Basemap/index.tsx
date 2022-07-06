@@ -94,7 +94,7 @@ const Basemap = () => {
               if (map) {
                 setactiveBasemap(basemap.id)
                 handleRemoveAllBasemaps()
-                onShowChange(false)
+                onShowChange('none')
                 if (basemap.id === 'DEFAULT') return
                 map.add(basemap.tileLayer)
               }
