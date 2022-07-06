@@ -1,0 +1,47 @@
+.aprDetailContent{
+    @apply p-0;
+    .chipContainer{
+        @apply flex;
+        .chip{
+            @apply py-1 px-2 rounded-md bg-main-primary
+            text-white my-2 mr-2;
+    
+        }
+    }
+    .priceContainer{
+        @apply w-[600px] h-[100px] bg-transparent 
+        flex justify-between mt-2;
+        .priceChip{
+            @apply bg-blue-600 bg-opacity-10 w-[190px] h-full
+            rounded-md flex items-center justify-center flex-col;
+            .unitPrice{
+                @apply text-red-500 text-3xl font-extrabold;
+            }
+            .unitPriceUnit{
+                @apply text-red-500 text-base font-light;
+            }
+            .transferBuildingArea{
+                @apply text-3xl font-extrabold;
+            }
+            .transferBuildingAreaUnit{
+                @apply text-base font-light;
+            }
+            .caption{
+                @apply text-base ;
+                color: #666;
+            }
+        }
+    }
+
+    .detailContainer{
+        @apply w-[600px] h-fit bg-transparent
+        mt-4;
+        .gridContainer{
+            @apply flex items-center justify-center;
+            span{
+                @apply text-xl;
+            }
+
+        }
+    }
+}

@@ -11,12 +11,13 @@ import {
 import { visuallyHidden } from '@mui/utils'
 import { IMarketCompareResult } from '../../../../../api/prod'
 import moment from 'moment'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
-import { ZoomContext } from '../..'
+import { DetailContext, ZoomContext } from '../..'
 import api from '../../../../../api'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import classNames from 'classnames'
+import { getAge } from '../../../../../lib/calculateAge'
+import ArticleIcon from '@mui/icons-material/Article';
 
 export interface Data {
   id: string
@@ -26,6 +27,9 @@ export interface Data {
   parkingSpacePrice: number
   price: number
   organization: string
+  buildingTransferArea: number
+  completiontime: string
+  parkingSpaceTransferArea: number
 }
 
 export interface HeadCell {
@@ -87,10 +91,22 @@ export const headCells: readonly HeadCell[] = [
     label: '管委會'
   },
   {
+    id: 'completiontime',
+    numeric: true,
+    disablePadding: true,
+    label: '屋齡'
+  },
+  {
     id: 'transferFloor',
     numeric: true,
     disablePadding: false,
     label: '樓層'
+  },
+  {
+    id: 'buildingTransferArea',
+    numeric: true,
+    disablePadding: false,
+    label: '坪數'
   },
   {
     id: 'unitPrice',
@@ -109,6 +125,12 @@ export const headCells: readonly HeadCell[] = [
     numeric: true,
     disablePadding: false,
     label: '總價(萬)'
+  },
+  {
+    id: 'id',
+    numeric: false,
+    disablePadding: true,
+    label: ''
   },
   {
     id: 'id',
@@ -192,6 +214,7 @@ const ResultTable = (props: IResultTable) => {
   const { onZoomIdChange } = useContext(ZoomContext)
   const [pending, setpending] = useState<boolean>(false)
   const [renderRows, setrenderRows] = useState<Data[]>([])
+  const { onDetailAprChange, onShow } = useContext(DetailContext)
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -231,6 +254,7 @@ const ResultTable = (props: IResultTable) => {
   }
 
   const handleRowClick = (event: React.MouseEvent<unknown>, id: string) => {
+    alert(id)
     if (event.type === 'click') {
       handleSelect(id)
     } else if (event.type === 'contextmenu') {
@@ -337,10 +361,6 @@ const ResultTable = (props: IResultTable) => {
                   const isItemSelected = isSelected(row.id)
                   const labelId = `enhanced-table-checkbox-${index}`;
 
-                  // (async () => {
-                  //   await handleGetCommiteeByAprId(row.id)
-                  // })();
-
                   return (
                     <TableRow
                       hover
@@ -350,6 +370,7 @@ const ResultTable = (props: IResultTable) => {
                       key={row.id}
                       selected={isItemSelected}
                     >
+
                       <TableCell padding="checkbox">
                         <Checkbox
                           color="primary"
@@ -360,6 +381,7 @@ const ResultTable = (props: IResultTable) => {
                           onClick={(event) => handleRowClick(event, row.id)}
                         />
                       </TableCell>
+
                       <TableCell
                         component="th"
                         id={labelId}
@@ -368,6 +390,7 @@ const ResultTable = (props: IResultTable) => {
                       >
                         {moment(new Date(row.transactiontime)).format('YYYY-MM-DD')}
                       </TableCell>
+
                       <TableCell
                         align="right"
                       >
@@ -379,15 +402,40 @@ const ResultTable = (props: IResultTable) => {
                         >{parseCommitee(row.organization)}
                         </span>
                       </TableCell>
+
+                      <TableCell
+                        component="th"
+                        scope="row"
+                        padding="none"
+                        align="right"
+                      >
+                        <span className={classNames({
+                          [style.age]: true,
+                          [style.green]: getAge(row.completiontime) <= 5,
+                          [style.yellow]: getAge(row.completiontime) > 5 && getAge(row.completiontime) <= 20,
+                          [style.red]: getAge(row.completiontime) > 20
+                        })}>
+                          {getAge(row.completiontime)}年
+                        </span>
+                      </TableCell>
+
                       <TableCell align="right">
                         {row.transferFloor}樓
                       </TableCell>
+
+                      <TableCell align="right">
+                        <span>
+                          {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪
+                        </span>
+                      </TableCell>
+
                       <TableCell align="right">
                         <span className={style.unitPrice}>
                           {Math.round((row.unitPrice * square) / 1000) / 10}
                         </span>
                         <span className={style.unit}>萬</span>
                       </TableCell>
+
                       <TableCell align="right">
                         {
                           row.parkingSpacePrice === 0
@@ -395,12 +443,14 @@ const ResultTable = (props: IResultTable) => {
                             : `${Math.round(row.parkingSpacePrice / 10000)}萬`
                         }
                       </TableCell>
+
                       <TableCell align="right">
                         <p className={style.totalPrice}>
                           {Math.round(row.price / 10000)}
                           <span className={style.smtext}>萬</span>
                         </p>
                       </TableCell>
+
                       <TableCell align="right">
                         <IconButton size="small"
                           onClick={() => {
@@ -411,24 +461,17 @@ const ResultTable = (props: IResultTable) => {
                         </IconButton>
                       </TableCell>
 
-                      {/* <Menu
-                          id="basic-menu"
-                          anchorEl={anchorEl}
-                          open={menuOpen}
-                          onClose={handleMenuClose}
-                          sx={{ boxShadow: 'none' }}
+                      <TableCell align="right">
+                        <IconButton size="small"
+                          onClick={() => {
+                            onDetailAprChange(row.id)
+                            // onShow(true)
+                          }}
                         >
-                          <MenuItem onClick={() => {
-                            handleMenuClose()
-                            onZoomIdChange(row.id)
-                            console.log(row.id)
-                          }}>
-                            <ListItemIcon>
-                              <ZoomInIcon fontSize="small" />
-                            </ListItemIcon>
-                            <ListItemText>Zoom to</ListItemText>
-                          </MenuItem>
-                        </Menu> */}
+                          <ArticleIcon fontSize="small" />
+                        </IconButton>
+                      </TableCell>
+
                     </TableRow>
                   )
                 })

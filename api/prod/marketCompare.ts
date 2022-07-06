@@ -1,5 +1,10 @@
 import { IResult, IResultStatistics } from "./aprRegion"
 
+// 缺交易標的數量 example: 1建物1土地1車位
+// 缺少交易資產類型
+// 缺少土地使用分區
+// 缺少總樓層
+
 export interface IMarketCompareResult {
   id: string
   transactiontime: string
