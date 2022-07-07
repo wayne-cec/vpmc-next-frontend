@@ -7,7 +7,7 @@ import {
 } from '@mui/material'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
-  landTransactionAreaSet, ageSet, parkSpaceSet
+  landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../../../lib/marketComapreConst'
 import { assetTypeMapping } from '../../../../../api/prod'
 
@@ -19,11 +19,13 @@ export interface IAttributeQuery {
   isLandAreaFiltered: boolean
   isAgeFiltered: boolean
   isParkSpaceFiltered: boolean
+  isUrbanUsageFiltered: boolean
   isTransactionTimeFosced: boolean
   isBuildingAreaFosced: boolean
   isLandAreaFosced: boolean
   isAgeFosced: boolean
   isParkSpaceFosced: boolean
+  isUrbanUsageFosced: boolean
   isBuildingAreaCheckable: boolean
   isLandAreaCheckable: boolean
   transactiontime?: number
@@ -31,6 +33,7 @@ export interface IAttributeQuery {
   landTransferArea?: number
   age?: number
   parkSpaceType?: number
+  urbanLandUse?: number
   onAssetTypeChange: (value: number) => void
   onTransactionTimeFilteredChange: () => void
   onTransactionTimeSelect: (value: number) => void
@@ -42,6 +45,9 @@ export interface IAttributeQuery {
   onAgeSelect: (value: number) => void
   onParkSpaceTypeFilteredChange: () => void
   onParkSpaceTypeSelect: (value: number) => void
+
+  onUrbanLaudUseFilteredChange: () => void
+  onUrbanLaudUseSelect: (value: number) => void
 }
 
 const AttributeQuery = (props: IAttributeQuery) => {
@@ -260,7 +266,7 @@ const AttributeQuery = (props: IAttributeQuery) => {
 
         {/* 車位類型 */}
         {
-          assetTypeMapping[props.assetTypeCode] !== 100
+          assetTypeMapping[props.assetTypeCode] === 200
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -305,48 +311,51 @@ const AttributeQuery = (props: IAttributeQuery) => {
         }
 
         {/* 使用分區 */}
-        {/* <Grid item xs={2}>
-          <Checkbox
-            checked={isUrbanUsageFiltered}
-            onClick={() => {
-              setisUrbanUsageFiltered(prev => !prev)
-              seturbanLandUse(0)
-            }}
-          />
-        </Grid>
-        <Grid item xs={10}>
-          <FormControl size='small' fullWidth>
-            {
-              isUrbanUsageFiltered && !isUrbanUsageFosced
-                ? <></>
-                : <InputLabel id="land-use">使用分區</InputLabel>
-            }
-            <Select
-              labelId="land-use"
-              label="使用分區"
-              id="land-use-select"
-              size='small'
-              fullWidth
-              value={isUrbanUsageFiltered ? urbanLandUse : null}
-              onChange={(event) => {
-                seturbanLandUse(Number(event.target.value))
-                setisUrbanUsageFosced(true)
-              }}
-              // autoFocus={isUrbanUsageFiltered}
-              disabled={!isUrbanUsageFiltered}
-            >
-              {
-                Object.keys(urbanUsageSet).map((assetCode, index) => {
-                  return <MenuItem
-                    key={index}
-                    value={assetCode}
-                  >{urbanUsageSet[Number(assetCode)]}</MenuItem>
-                })
-              }
-            </Select>
-          </FormControl>
+        {
+          assetTypeMapping[props.assetTypeCode] !== 200
+            ? <>
 
-        </Grid> */}
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={props.isUrbanUsageFiltered}
+                  onClick={props.onUrbanLaudUseFilteredChange}
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <FormControl size='small' fullWidth>
+                  {
+                    props.isUrbanUsageFiltered && !props.isUrbanUsageFosced
+                      ? <></>
+                      : <InputLabel id="land-use">使用分區</InputLabel>
+                  }
+                  <Select
+                    labelId="land-use"
+                    label="使用分區"
+                    id="land-use-select"
+                    size='small'
+                    fullWidth
+                    value={props.isUrbanUsageFiltered ? props.urbanLandUse : null}
+                    onChange={(event) => {
+                      props.onUrbanLaudUseSelect(Number(event.target.value))
+                    }}
+                    // autoFocus={isUrbanUsageFiltered}
+                    disabled={!props.isUrbanUsageFiltered}
+                  >
+                    {
+                      Object.keys(urbanUsageSet).map((assetCode, index) => {
+                        return <MenuItem
+                          key={index}
+                          value={assetCode}
+                        >{urbanUsageSet[Number(assetCode)]}</MenuItem>
+                      })
+                    }
+                  </Select>
+                </FormControl>
+
+              </Grid>
+            </>
+            : null
+        }
 
       </Grid>
     </div>
