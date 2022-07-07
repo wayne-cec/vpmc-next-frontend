@@ -25,6 +25,10 @@ export interface IMarketCompareResult {
   buildingType: number
   floor: number
   urbanLandUse: number
+  buildingArea: number
+  subBuildingArea: number
+  belconyArea: number
+  landTransferArea: number
   longitude: number
   latitude: number
 }

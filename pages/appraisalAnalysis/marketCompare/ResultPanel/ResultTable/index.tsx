@@ -37,6 +37,10 @@ export interface Data {
   buildingType: number
   floor: number
   urbanLandUse: number
+  buildingArea: number
+  subBuildingArea: number
+  landTransferArea: number
+  belconyArea: number
 }
 
 export interface HeadCell {
