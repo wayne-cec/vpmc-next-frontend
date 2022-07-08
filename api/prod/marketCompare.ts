@@ -19,6 +19,16 @@ export interface IMarketCompareResult {
   parkingSpacePrice: number
   parkingSpaceTransferArea: number
   price: number
+  landAmount: number
+  buildingAmount: number
+  parkAmount: number
+  buildingType: number
+  floor: number
+  urbanLandUse: number
+  buildingArea: number
+  subBuildingArea: number
+  belconyArea: number
+  landTransferArea: number
   longitude: number
   latitude: number
 }
@@ -38,6 +48,7 @@ export interface IMarketCompare {
   ageStart?: number
   ageEnd?: number
   parkingSpaceType?: number
+  urbanLandUse?: number
 }
 
 export interface IGraphData {
@@ -86,6 +97,9 @@ export const marketCompare = async (params: IMarketCompare) => {
   if (params.parkingSpaceType) {
     url += `&parkingSpaceType=${params.parkingSpaceType}`
   }
+  if (params.urbanLandUse) {
+    url += `&urbanLandUse=${params.urbanLandUse}`
+  }
 
   const response = await fetch(url, {
     method: 'GET',
@@ -118,6 +132,9 @@ export const marketCompareStatistic = async (params: IMarketCompare) => {
   }
   if (params.parkingSpaceType) {
     url += `&parkingSpaceType=${params.parkingSpaceType}`
+  }
+  if (params.urbanLandUse) {
+    url += `&urbanLandUse=${params.urbanLandUse}`
   }
 
   const response = await fetch(url, {

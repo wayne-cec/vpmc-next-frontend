@@ -36,12 +36,28 @@
     .detailContainer{
         @apply w-[600px] h-fit bg-transparent
         mt-4;
-        .gridContainer{
-            @apply flex items-center justify-center;
-            span{
-                @apply text-xl;
-            }
+    }
 
+    .AreaDetailContainer{
+        @apply w-[600px] h-fit bg-transparent
+        mt-4;
+        .heading{
+            @apply flex items-center justify-between
+            bg-blue-600 bg-opacity-10 my-4 rounded-md
+            p-4 text-lg;
+        }
+        .headingSub{
+            @apply flex items-center justify-between
+            bg-blue-600 bg-opacity-10 mt-4 rounded-t-md
+            p-4 text-lg;
+        }
+        .subInfoContainer{
+            @apply flex flex-col items-start text-lg my-0
+            p-4 border-[3px] border-blue-600 border-opacity-10;
+            .subInfo{
+                @apply flex items-center 
+                justify-between w-full text-gray-500;
+            }
         }
     }
 }

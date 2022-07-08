@@ -13,7 +13,7 @@ export interface IAddressInfo {
 }
 
 const Address = () => {
-  const { mapView, map, onShowChange } = useContext(widgetContext)
+  const { map } = useContext(widgetContext)
   const [address, setaddress] = useState<string>('')
   const [pending, setpending] = useState<boolean>(false)
   const [addressList, setaddressList] = useState<IAddressInfo[]>([])

@@ -14,12 +14,13 @@ export interface ITownSelector {
 
 const TownSelector = (props: ITownSelector) => {
   const ref = useRef<HTMLDivElement>(null)
+  const refPanel = useRef<HTMLDivElement>(null)
   const [open, setopen] = useState<boolean>(false)
   const [coordinate, setcoordinate] = useState<{ x: string, y: string }>()
 
-  // useOutside(ref, () => {
-  //   setopen(false)
-  // })
+  useOutside(refPanel, () => {
+    setopen(false)
+  })
 
   const handleClick = () => {
     setopen(prev => !prev)
@@ -70,6 +71,7 @@ const TownSelector = (props: ITownSelector) => {
               [style.hide]: !open
             })}
               style={getCSSVar()}
+              ref={refPanel}
             >
               {
                 Object.keys(props.townData).map((section, index) => {

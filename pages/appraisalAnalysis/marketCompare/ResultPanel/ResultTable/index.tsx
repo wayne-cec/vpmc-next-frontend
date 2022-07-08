@@ -6,7 +6,7 @@ import {
   IconButton, Checkbox, Paper, TableSortLabel,
   TableRow, TablePagination, TableHead, TableContainer,
   TableCell, TableBody, Menu, MenuItem, ListItemIcon,
-  ListItemText
+  ListItemText, Tooltip
 } from '@mui/material'
 import { visuallyHidden } from '@mui/utils'
 import { IMarketCompareResult } from '../../../../../api/prod'
@@ -17,7 +17,8 @@ import api from '../../../../../api'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import classNames from 'classnames'
 import { getAge } from '../../../../../lib/calculateAge'
-import ArticleIcon from '@mui/icons-material/Article';
+import ArticleIcon from '@mui/icons-material/Article'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 export interface Data {
   id: string
@@ -30,6 +31,16 @@ export interface Data {
   buildingTransferArea: number
   completiontime: string
   parkingSpaceTransferArea: number
+  landAmount: number
+  buildingAmount: number
+  parkAmount: number
+  buildingType: number
+  floor: number
+  urbanLandUse: number
+  buildingArea: number
+  subBuildingArea: number
+  landTransferArea: number
+  belconyArea: number
 }
 
 export interface HeadCell {
@@ -190,6 +201,13 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
                 </Box>
               ) : null}
             </TableSortLabel>
+            {
+              headCell.id === 'buildingTransferArea'
+                ? <Tooltip title='已扣車位'>
+                  <HelpOutlineIcon sx={{ fontSize: 20 }} />
+                </Tooltip>
+                : null
+            }
           </TableCell>
         ))}
       </TableRow>
@@ -281,19 +299,6 @@ const ResultTable = (props: IResultTable) => {
       return responseContent.organization
     }
     return undefined
-  }
-
-  const handleGetRowsCommitee = async () => {
-    setpending(true)
-    const newRows: Data[] = []
-    for (let i = 0; i < props.data.length; i++) {
-      // const organization = await handleGetCommiteeByAprId(props.data[i].id)
-      // const row: Data = { ...props.data[i], organization: organization ? organization : '無管委會' } //
-      const row: Data = { ...props.data[i], organization: 'aa' }
-      newRows.push(row)
-    }
-    setrows([...newRows])
-    setpending(false)
   }
 
   const handleLoadingData = async () => {
@@ -440,7 +445,10 @@ const ResultTable = (props: IResultTable) => {
                         {
                           row.parkingSpacePrice === 0
                             ? '無車位'
-                            : `${Math.round(row.parkingSpacePrice / 10000)}萬`
+                            : <>
+                              <p>{`${Math.round(row.parkingSpacePrice / 10000)}萬`}</p>
+                              <p>{row.parkAmount}個車位</p>
+                            </>
                         }
                       </TableCell>
 

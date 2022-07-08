@@ -24,6 +24,7 @@ import PanelContainer from '../../../components/PanelContainer'
 import PanelButton from '../../../components/PanelContainer/PanelButton'
 import { parseCommitee } from '../../../lib/parseCommitee'
 import AprDetailContent from './AprDetailContent'
+import { IDetailAprInfo } from './AprDetailContent'
 
 const square = 3.305785
 
@@ -33,22 +34,6 @@ const MarketMapContainer = dynamic(
   () => import('../../../components/MapContainer/MarketCompareMap'),
   { ssr: false }
 )
-
-export interface IDetailAprInfo {
-  transactiontime: string
-  completiontime: string
-  transferFloor: number
-  unitPrice: number
-  priceWithoutParking: number
-  roomNumber: number
-  hallNumber: number
-  bathNumber: number
-  buildingTransferArea: number
-  parkingSpacePrice: number
-  parkingSpaceTransferArea: number
-  price: number
-  organization: string
-}
 
 export const ZoomContext = createContext<{
   zoomId: { id: string } | null
@@ -90,14 +75,14 @@ const MarketCompare: NextPage = () => {
   const [isLandAreaFiltered, setisLandAreaFiltered] = useState<boolean>(false)
   const [isAgeFiltered, setisAgeFiltered] = useState<boolean>(false)
   const [isParkSpaceFiltered, setisParkSpaceFiltered] = useState<boolean>(false)
-  // const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
+  const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
 
   const [isTransactionTimeFosced, setisTransactionTimeFosced] = useState<boolean>(false)
   const [isBuildingAreaFosced, setisBuildingAreaFosced] = useState<boolean>(false)
   const [isLandAreaFosced, setisLandAreaFosced] = useState<boolean>(false)
   const [isAgeFosced, setisAgeFosced] = useState<boolean>(false)
   const [isParkSpaceFosced, setisParkSpaceFosced] = useState<boolean>(false)
-  // const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
+  const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
 
   const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
   const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
@@ -109,7 +94,7 @@ const MarketCompare: NextPage = () => {
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
   const [age, setage] = useState<number | null>(null)
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
-  // const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
+  const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
   const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
 
   const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
@@ -221,6 +206,9 @@ const MarketCompare: NextPage = () => {
       }
       if (isParkSpaceFiltered && parkSpaceType) {
         params.parkingSpaceType = parkSpaceType
+      }
+      if (isUrbanUsageFiltered && urbanLandUse) {
+        params.urbanLandUse = urbanLandUse
       }
       const { statusCode, responseContent } = await api.prod.marketCompare(params)
       if (statusCode === 200) {
@@ -347,11 +335,13 @@ const MarketCompare: NextPage = () => {
                 isLandAreaFiltered={isLandAreaFiltered}
                 isAgeFiltered={isAgeFiltered}
                 isParkSpaceFiltered={isParkSpaceFiltered}
+                isUrbanUsageFiltered={isUrbanUsageFiltered}
                 isTransactionTimeFosced={isTransactionTimeFosced}
                 isBuildingAreaFosced={isBuildingAreaFosced}
                 isLandAreaFosced={isLandAreaFosced}
                 isAgeFosced={isAgeFosced}
                 isParkSpaceFosced={isParkSpaceFosced}
+                isUrbanUsageFosced={isUrbanUsageFosced}
                 isBuildingAreaCheckable={isBuildingAreaCheckable}
                 isLandAreaCheckable={isLandAreaCheckable}
                 assetTypeCode={assetTypeCode}
@@ -361,6 +351,7 @@ const MarketCompare: NextPage = () => {
                 landTransferArea={landTransferArea!}
                 age={age!}
                 parkSpaceType={parkSpaceType!}
+                urbanLandUse={urbanLandUse!}
                 polygonGoejson={polygonGoejson!}
                 filteredResults={filteredResults!}
                 spatialQueryType={spatialQueryType}
@@ -411,6 +402,14 @@ const MarketCompare: NextPage = () => {
                 onParkSpaceTypeSelect={(value) => {
                   setparkSpaceType(value)
                   setisParkSpaceFosced(true)
+                }}
+                onUrbanLaudUseFilteredChange={() => {
+                  setisUrbanUsageFiltered(prev => !prev)
+                  seturbanLandUse(0)
+                }}
+                onUrbanLaudUseSelect={(value) => {
+                  seturbanLandUse(value)
+                  setisUrbanUsageFosced(true)
                 }}
                 onCustomizeParamBtnClick={() => {
                   setmsgOpen(true)

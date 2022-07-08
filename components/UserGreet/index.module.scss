@@ -1,4 +1,6 @@
+@import '../../styles//TextNonSelect.module.scss';
 .lawBtn{
+    @include textNoneSelectable;
     @apply text-black rounded-md  bg-main-second 
     flex items-center mx-1  cursor-pointer p-1 border border-border;
 
