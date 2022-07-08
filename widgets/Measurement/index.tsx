@@ -13,7 +13,7 @@ import { widgetContext } from '../WidgetExpand'
 
 const Measurement = () => {
   // const [widgetShow, setwidgetShow] = useState<boolean>(false)
-  const { mapView, measurement, show, onShowChange } = useContext(widgetContext)
+  const { mapView, measurement, show } = useContext(widgetContext)
 
   const distanceMeasurement = () => {
     if (measurement)

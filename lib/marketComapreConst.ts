@@ -78,8 +78,8 @@ export const parkSpaceSet: { [key: number]: string } = {
 export const urbanUsageSet: { [key: number]: string } = {
   0: '住宅區',
   1: '商業區',
-  3: '其他',
-  4: '無',
-  5: '工業區',
-  6: '農業區'
+  2: '其他',
+  3: '無',
+  4: '工業區',
+  5: '農業區'
 }

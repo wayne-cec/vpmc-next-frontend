@@ -21,11 +21,13 @@ export interface IQueryPanel {
   isLandAreaFiltered: boolean
   isAgeFiltered: boolean
   isParkSpaceFiltered: boolean
+  isUrbanUsageFiltered: boolean
   isTransactionTimeFosced: boolean
   isBuildingAreaFosced: boolean
   isLandAreaFosced: boolean
   isAgeFosced: boolean
   isParkSpaceFosced: boolean
+  isUrbanUsageFosced: boolean
   isBuildingAreaCheckable: boolean
   isLandAreaCheckable: boolean
   assetTypeCode: number
@@ -35,6 +37,7 @@ export interface IQueryPanel {
   landTransferArea?: number
   age?: number
   parkSpaceType?: number
+  urbanLandUse?: number
   polygonGoejson?: string
   filteredResults: IMarketCompareResult[]
   spatialQueryType: SpatialQueryType
@@ -56,6 +59,10 @@ export interface IQueryPanel {
   onAgeSelect: (value: number) => void //(value) => {setage(value)setisAgeFosced(true)}
   onParkSpaceTypeFilteredChange: () => void
   onParkSpaceTypeSelect: (value: number) => void
+
+  onUrbanLaudUseFilteredChange: () => void
+  onUrbanLaudUseSelect: (value: number) => void
+
   onCustomizeParamBtnClick: () => void //() => {setmsgOpen(true)seterrorTitle('訊息')seterrorContent('自定義參數功能尚未開發')}
   handleFormSubmit: () => void
 }
@@ -92,11 +99,13 @@ const QueryPanel = (props: IQueryPanel) => {
           isLandAreaFiltered={props.isLandAreaFiltered}
           isAgeFiltered={props.isAgeFiltered}
           isParkSpaceFiltered={props.isParkSpaceFiltered}
+          isUrbanUsageFiltered={props.isUrbanUsageFiltered}
           isTransactionTimeFosced={props.isTransactionTimeFosced}
           isBuildingAreaFosced={props.isBuildingAreaFosced}
           isLandAreaFosced={props.isLandAreaFosced}
           isAgeFosced={props.isAgeFosced}
           isParkSpaceFosced={props.isParkSpaceFosced}
+          isUrbanUsageFosced={props.isUrbanUsageFosced}
           isBuildingAreaCheckable={props.isBuildingAreaCheckable}
           isLandAreaCheckable={props.isLandAreaCheckable}
           transactiontime={props.transactiontime}
@@ -104,6 +113,7 @@ const QueryPanel = (props: IQueryPanel) => {
           landTransferArea={props.landTransferArea}
           age={props.age}
           parkSpaceType={props.parkSpaceType}
+          urbanLandUse={props.urbanLandUse}
           onAssetTypeChange={props.onAssetTypeChange}
           onTransactionTimeFilteredChange={props.onTransactionTimeFilteredChange}
           onTransactionTimeSelect={props.onTransactionTimeSelect}
@@ -115,6 +125,8 @@ const QueryPanel = (props: IQueryPanel) => {
           onAgeSelect={props.onAgeSelect}
           onParkSpaceTypeFilteredChange={props.onParkSpaceTypeFilteredChange}
           onParkSpaceTypeSelect={props.onParkSpaceTypeSelect}
+          onUrbanLaudUseFilteredChange={props.onUrbanLaudUseFilteredChange}
+          onUrbanLaudUseSelect={props.onUrbanLaudUseSelect}
         />
         <Action
           onCustomizeParamBtnClick={props.onCustomizeParamBtnClick}

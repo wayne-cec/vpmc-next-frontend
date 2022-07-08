@@ -1,6 +1,8 @@
 @import '../../styles/Animate.module.scss';
+@import '../../styles/TextNonSelect.module.scss';
 .widgetContainer{
-    @apply flex flex-row-reverse relative;
+    @include textNoneSelectable;
+    @apply flex flex-row-reverse relative my-2;
     .widgetExpand{
         @apply w-[36px] h-[36px] p-1 bg-white shadow-md 
         cursor-pointer border border-border m-0 flex items-center;

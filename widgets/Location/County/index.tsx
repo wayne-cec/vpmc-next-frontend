@@ -1,22 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
 import style from './index.module.scss'
-import classNames from 'classnames'
-import { Tooltip } from '@mui/material'
 import { widgetContext } from '../../WidgetExpand'
-import Box from '@mui/material/Box'
-import Tab from '@mui/material/Tab'
-import TabContext from '@mui/lab/TabContext'
-import TabList from '@mui/lab/TabList'
-import TabPanel from '@mui/lab/TabPanel'
 import CountySelector from '../../../components/CountySelector'
 import TownSelector from '../../../components/TownSelector'
 import { ICountyData } from '../../../api/prod'
 import { ITownData } from '../../../api/prod'
 import api from '../../../api'
-import Point from "@arcgis/core/geometry/Point";
+import Point from '@arcgis/core/geometry/Point'
 
 const County = () => {
-  const { mapView, onShowChange } = useContext(widgetContext)
+  const { mapView } = useContext(widgetContext)
   const [county, setcounty] = useState<string | null>(null)
   const [town, settown] = useState<string | null>(null)
   const [countyData, setcountyData] = useState<ICountyData | null>(null)

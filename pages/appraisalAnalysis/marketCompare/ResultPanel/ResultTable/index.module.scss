@@ -44,3 +44,17 @@
         100% { transform: rotate(360deg); }
     }
 }
+
+.age{
+    @apply bg-gray-400 rounded-md py-1 px-2 text-white 
+    bg-opacity-80;
+    &.green{
+        @apply bg-green-500 bg-opacity-80;
+    }
+    &.yellow{
+        @apply bg-yellow-500 bg-opacity-80;
+    }
+    &.red{
+        @apply bg-red-500 bg-opacity-80;
+    }
+}

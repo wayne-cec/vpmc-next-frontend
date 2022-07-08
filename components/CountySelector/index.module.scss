@@ -32,10 +32,10 @@
     }
     &.show{
         @apply flex flex-col;
-        @include animate-css(bounceInDown, 0.5s);
+        // @include animate-css(bounceInDown, 0.5s);
     }
     &.hide{
-        @include animate-css(bounceOutUp, 0.5s);
+        // @include animate-css(bounceOutUp, 0.5s);
     }
     @mixin textNoneSelectable {
         -webkit-touch-callout: none; 
