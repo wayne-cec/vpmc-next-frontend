@@ -21,6 +21,7 @@ const BasemapOption = (props: IBasemapOption) => {
       <div className={style.mapImg}>
         <Image
           src={props.icon}
+          className={style.img}
           width='60px' height='60px'
         />
       </div>
