@@ -1,7 +1,7 @@
 @import '../../styles/Animate.module.scss';
 .basemapWidget{
     @apply p-0 bg-white flex shadow-md absolute right-[44px]
-    w-fit min-h-fit max-h-[400px] flex-col overflow-y-auto;
+    w-fit min-h-fit max-h-[500px] flex-col overflow-y-auto;
     &.show{ 
         @include animate-css(bounceInRight, 0.6s);
     }
