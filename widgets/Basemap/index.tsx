@@ -78,6 +78,12 @@ const Basemap = () => {
     map?.removeMany(tileLayers)
   }
 
+  useEffect(() => {
+    let tileLayers = basemapDataList.filter(a => a.id === activeBasemap).map(a => a.tileLayer)
+    map?.addMany(tileLayers)
+    map?.reorder(tileLayers[0], 0)
+  }, [])
+
   return (
     <div className={classNames({
       [style.basemapWidget]: true,
@@ -97,6 +103,7 @@ const Basemap = () => {
                 onShowChange('none')
                 if (basemap.id === 'DEFAULT') return
                 map.add(basemap.tileLayer)
+                map.reorder(basemap.tileLayer, 0)
               }
             }}
           />

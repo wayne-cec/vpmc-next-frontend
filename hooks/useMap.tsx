@@ -18,7 +18,7 @@ import { WidgetWrapper } from '../widgets/WidgetExpand'
 //   alert('aaa')
 //   esriConfig.request.trustedServers.push('https://wmts.nlsc.gov.tw/')
 // }
-esriConfig.apiKey = 'AAPK7a564af3e78b413c89adcae13354e42bJ-ZHdv19-sspveCwprkRppRmExhV6qAdgOiUBh9ztWvrxfNfG-0w_1VKW7IthPGZ'
+// esriConfig.apiKey = 'AAPK7a564af3e78b413c89adcae13354e42bJ-ZHdv19-sspveCwprkRppRmExhV6qAdgOiUBh9ztWvrxfNfG-0w_1VKW7IthPGZ'
 
 export type UseMapParams = {
   mapOption?: __esri.MapProperties
