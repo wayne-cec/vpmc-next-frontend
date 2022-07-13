@@ -1,23 +1,27 @@
 
 .basemapOption{
-    @apply w-[300px] h-fit flex p-2 items-center
-    justify-start cursor-pointer rounded-md mb-2 gap-2;
-    .mapImg{
-        @apply flex border border-border rounded-md;
-        .img{
-            @apply rounded-md;
+    @apply w-[300px] h-fit p-2 cursor-pointer rounded-md mb-2 
+    gap-2;
+
+    .mainContainer{
+        @apply w-full flex items-center justify-between;
+        .infoContainer{
+            @apply flex items-center justify-start gap-2 w-fit;
+            .mapImg{
+                @apply flex border border-border rounded-md;
+                .img{
+                    @apply rounded-md;
+                }
+            }
+            span{
+                @apply text-black;
+            }
         }
-    }
-    span{
-        @apply text-black;
     }
     @mixin highlighted {
         @apply bg-gray-200;
         .mapImg{
             @apply border-black;
-        }
-        span{
-            @apply text-black;
         }
     }
     &:hover{

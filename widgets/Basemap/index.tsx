@@ -85,6 +85,17 @@ const Basemap = () => {
   const [activeBasemap, setactiveBasemap] = useState<string>('DEFAULT')
   const [basemapTypeExpanded, setbasemapTypeExpanded] = useState<BasemapCategory | false>(false)
 
+  const handleChangeBasemap = (basemap: IBasemapData) => {
+    if (map) {
+      setactiveBasemap(basemap.id)
+      handleRemoveAllBasemaps()
+      onShowChange('none')
+      if (basemap.id === 'DEFAULT') return
+      map.add(basemap.tileLayer)
+      map.reorder(basemap.tileLayer, 0)
+    }
+  }
+
   const handleRemoveAllBasemaps = () => {
     let baseLayers = basemapDataList.map(a => a.tileLayer)
     map?.removeMany(baseLayers)
@@ -122,18 +133,13 @@ const Basemap = () => {
           {
             basemapDataList.map((basemap, index) => {
               return <BasemapOption key={index}
+                id={basemap.id}
                 icon={basemap.icon}
                 title={basemap.title}
+                layer={basemap.tileLayer}
                 active={basemap.id === activeBasemap}
                 onClick={() => {
-                  if (map) {
-                    setactiveBasemap(basemap.id)
-                    handleRemoveAllBasemaps()
-                    onShowChange('none')
-                    if (basemap.id === 'DEFAULT') return
-                    map.add(basemap.tileLayer)
-                    map.reorder(basemap.tileLayer, 0)
-                  }
+                  handleChangeBasemap(basemap)
                 }}
               />
             })
@@ -153,8 +159,10 @@ const Basemap = () => {
           {
             geographicDataList.map((basemap, index) => {
               return <BasemapOption key={index}
+                id={basemap.id}
                 icon={basemap.icon}
                 title={basemap.title}
+                layer={basemap.tileLayer}
                 active={basemap.id === activeBasemap}
                 onClick={() => {
                   if (map) {
