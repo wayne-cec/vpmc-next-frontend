@@ -16,6 +16,7 @@ const Address = () => {
   const { map } = useContext(widgetContext)
   const [address, setaddress] = useState<string>('')
   const [pending, setpending] = useState<boolean>(false)
+  const [selectedAddress, setselectedAddress] = useState<string>('none')
   const [addressList, setaddressList] = useState<IAddressInfo[]>([])
 
   const handleSubmit = async () => {
@@ -33,6 +34,7 @@ const Address = () => {
     return () => {
       if (!map) return
       map.remove(AddressPointLayer)
+      setselectedAddress('none')
     }
   }, [])
 
@@ -75,7 +77,12 @@ const Address = () => {
           : <div className={style.addressList}>
             {
               addressList.map((addressInfo, index) => {
-                return <AddressResult key={index} {...addressInfo} />
+                return <AddressResult
+                  key={index}
+                  {...addressInfo}
+                  selectedAddress={selectedAddress}
+                  onClick={(value) => { setselectedAddress(value) }}
+                />
               })
             }
           </div>

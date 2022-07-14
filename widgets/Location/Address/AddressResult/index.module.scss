@@ -1,7 +1,15 @@
 
 .addressResult{
-    @apply py-4 cursor-pointer flex items-center border-t border-border;
+    @apply py-4 px-2 cursor-pointer flex items-center
+    rounded-md my-2;
+    
+    @mixin highlighted {
+        @apply bg-gray-200;
+    }
     &:hover{
-        @apply bg-gray-200 border-black;
+        @include highlighted;
+    }
+    &.selected{
+        @include highlighted;
     }
 }
