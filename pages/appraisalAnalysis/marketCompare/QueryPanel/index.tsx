@@ -37,7 +37,7 @@ export interface IQueryPanel {
   landTransferArea?: number
   age?: number
   parkSpaceType?: number
-  urbanLandUse?: number
+  urbanLandUse?: number[]
   polygonGoejson?: string
   filteredResults: IMarketCompareResult[]
   spatialQueryType: SpatialQueryType
@@ -61,7 +61,7 @@ export interface IQueryPanel {
   onParkSpaceTypeSelect: (value: number) => void
 
   onUrbanLaudUseFilteredChange: () => void
-  onUrbanLaudUseSelect: (value: number) => void
+  onUrbanLaudUseSelect: (value: number[]) => void
 
   onCustomizeParamBtnClick: () => void //() => {setmsgOpen(true)seterrorTitle('訊息')seterrorContent('自定義參數功能尚未開發')}
   handleFormSubmit: () => void

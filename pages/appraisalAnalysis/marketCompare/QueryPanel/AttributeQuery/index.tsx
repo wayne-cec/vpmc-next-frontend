@@ -10,6 +10,7 @@ import {
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../../../lib/marketComapreConst'
 import { assetTypeMapping } from '../../../../../api/prod'
+import MultiChipSelect from '../../../../../components/MultiChipSelect'
 
 
 export interface IAttributeQuery {
@@ -33,7 +34,7 @@ export interface IAttributeQuery {
   landTransferArea?: number
   age?: number
   parkSpaceType?: number
-  urbanLandUse?: number
+  urbanLandUse?: number[]
   onAssetTypeChange: (value: number) => void
   onTransactionTimeFilteredChange: () => void
   onTransactionTimeSelect: (value: number) => void
@@ -47,7 +48,7 @@ export interface IAttributeQuery {
   onParkSpaceTypeSelect: (value: number) => void
 
   onUrbanLaudUseFilteredChange: () => void
-  onUrbanLaudUseSelect: (value: number) => void
+  onUrbanLaudUseSelect: (value: number[]) => void
 }
 
 const AttributeQuery = (props: IAttributeQuery) => {
@@ -311,7 +312,7 @@ const AttributeQuery = (props: IAttributeQuery) => {
         }
 
         {/* 使用分區 */}
-        {
+        {/* {
           assetTypeMapping[props.assetTypeCode] !== 200
             ? <>
 
@@ -352,6 +353,33 @@ const AttributeQuery = (props: IAttributeQuery) => {
                   </Select>
                 </FormControl>
 
+              </Grid>
+            </>
+            : null
+        } */}
+
+        {/* 使用分區 */}
+        {
+          assetTypeMapping[props.assetTypeCode] !== 200
+            ? <>
+
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={props.isUrbanUsageFiltered}
+                  onClick={props.onUrbanLaudUseFilteredChange}
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <MultiChipSelect
+                  placeholder='使用分區'
+                  urbanLandUse={props.urbanLandUse}
+                  urbanUsageSet={urbanUsageSet}
+                  isUrbanUsageFiltered={props.isUrbanUsageFiltered}
+                  isUrbanUsageFosced={props.isUrbanUsageFosced}
+                  onChange={(value) => {
+                    props.onUrbanLaudUseSelect(value)
+                  }}
+                />
               </Grid>
             </>
             : null

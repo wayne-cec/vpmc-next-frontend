@@ -48,7 +48,7 @@ export interface IMarketCompare {
   ageStart?: number
   ageEnd?: number
   parkingSpaceType?: number
-  urbanLandUse?: number
+  urbanLandUse?: number[]
 }
 
 export interface IGraphData {
@@ -98,7 +98,7 @@ export const marketCompare = async (params: IMarketCompare) => {
     url += `&parkingSpaceType=${params.parkingSpaceType}`
   }
   if (params.urbanLandUse) {
-    url += `&urbanLandUse=${params.urbanLandUse}`
+    url += `&urbanLandUse=${params.urbanLandUse.join(',')}`
   }
 
   const response = await fetch(url, {
@@ -134,7 +134,7 @@ export const marketCompareStatistic = async (params: IMarketCompare) => {
     url += `&parkingSpaceType=${params.parkingSpaceType}`
   }
   if (params.urbanLandUse) {
-    url += `&urbanLandUse=${params.urbanLandUse}`
+    url += `&urbanLandUse=${params.urbanLandUse.join(',')}`
   }
 
   const response = await fetch(url, {
