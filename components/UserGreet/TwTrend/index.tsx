@@ -10,6 +10,165 @@ import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
 import trendData from './trendData'
+import ReactEcharts from 'echarts-for-react'
+import { EChartsOption } from 'echarts'
+
+const economicGrowOption: EChartsOption = {
+  xAxis: {
+    type: 'category',
+    data: trendData[0].xdata
+  },
+  yAxis: {
+    type: 'value',
+    name: "",
+    axisLabel: {
+      formatter: (function (value: string) {
+        return value
+      }),
+      align: 'center'
+    }
+  },
+  series: [
+    {
+      data: trendData[0].ydata[0],
+      type: 'line',
+      smooth: true
+    }
+  ],
+  tooltip: {
+    trigger: 'axis',
+    formatter: function (param: any, value) {
+      return value
+    }
+  }
+}
+
+const ratioOption: EChartsOption = {
+  xAxis: {
+    type: 'category',
+    data: trendData[1].xdata
+  },
+  yAxis: {
+    type: 'value',
+    name: "",
+    axisLabel: {
+      formatter: (function (value: string) {
+        return value
+      }),
+      align: 'center'
+    }
+  },
+  series: [
+    {
+      data: trendData[1].ydata[0],
+      type: 'line',
+      smooth: true
+    }
+  ],
+  tooltip: {
+    trigger: 'axis',
+    formatter: function (param: any, value) {
+      return value
+    }
+  }
+}
+
+const confidenceOption: EChartsOption = {
+  xAxis: {
+    type: 'category',
+    data: trendData[2].xdata
+  },
+  yAxis: {
+    type: 'value',
+    name: "",
+    axisLabel: {
+      formatter: (function (value: string) {
+        return value
+      }),
+      align: 'center'
+    }
+  },
+  series: [
+    {
+      data: trendData[2].ydata[0],
+      type: 'line',
+      smooth: true
+    }
+  ],
+  tooltip: {
+    trigger: 'axis',
+    formatter: function (param: any, value) {
+      return value
+    }
+  }
+}
+
+const salesOption: EChartsOption = {
+  xAxis: {
+    type: 'category',
+    data: trendData[3].xdata
+  },
+  yAxis: {
+    type: 'value',
+    name: "",
+    axisLabel: {
+      formatter: (function (value: string) {
+        return value
+      }),
+      align: 'center'
+    }
+  },
+  series: [
+    {
+      name: '批發(億)',
+      data: trendData[3].ydata[0],
+      type: 'line',
+      smooth: true
+    },
+    {
+      name: '零售(億)',
+      data: trendData[3].ydata[1],
+      type: 'line',
+      smooth: true
+    },
+    {
+      name: '餐飲業(億)',
+      data: trendData[3].ydata[2],
+      type: 'line',
+      smooth: true
+    }
+  ],
+  tooltip: {
+    trigger: 'axis'
+  }
+}
+
+const industryOption: EChartsOption = {
+  xAxis: {
+    type: 'category',
+    data: trendData[4].xdata
+  },
+  yAxis: {
+    type: 'value',
+    name: "",
+    axisLabel: {
+      formatter: (function (value: string) {
+        return value
+      }),
+      align: 'center'
+    }
+  },
+  series: [
+    {
+      data: trendData[4].ydata[0],
+      type: 'line',
+      smooth: true
+    }
+  ],
+  tooltip: {
+    trigger: 'axis'
+  }
+}
 
 const TwTrend = () => {
   const [value, setValue] = useState('0')
@@ -39,9 +198,10 @@ const TwTrend = () => {
         onClose={() => { settwStatisticDialogOpen(false) }}
         aria-labelledby="responsive-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">臺灣總經概覽</DialogTitle>
+        <DialogTitle id="responsive-dialog-title"
+        >臺灣總經概覽</DialogTitle>
 
-        <DialogContent>
+        <DialogContent sx={{ width: '900px' }}>
 
           <TabContext value={value}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -50,26 +210,42 @@ const TwTrend = () => {
                 aria-label="lab API tabs example"
                 variant='scrollable'
               >
-                <Tab label={0} value={'0'} />
-                <Tab label={1} value={'1'} />
-                <Tab label={2} value={'2'} />
+                <Tab label={'經濟成長（yoy）'} value={'0'} />
+                <Tab label={'中央銀行利率'} value={'1'} />
+                <Tab label={'消費者信心指數'} value={'2'} />
+                <Tab label={'批發、零售及餐飲業營業額'} value={'3'} />
+                <Tab label={'工業生產指數'} value={'4'} />
               </TabList>
             </Box>
 
             <TabPanel
               value={'0'}
             >
-              0
+              <ReactEcharts option={economicGrowOption} />
             </TabPanel>
+
             <TabPanel
               value={'1'}
             >
-              1
+              <ReactEcharts option={ratioOption} />
             </TabPanel>
+
             <TabPanel
               value={'2'}
             >
-              2
+              <ReactEcharts option={confidenceOption} />
+            </TabPanel>
+
+            <TabPanel
+              value={'3'}
+            >
+              <ReactEcharts option={salesOption} />
+            </TabPanel>
+
+            <TabPanel
+              value={'4'}
+            >
+              <ReactEcharts option={industryOption} />
             </TabPanel>
 
             {/* {
