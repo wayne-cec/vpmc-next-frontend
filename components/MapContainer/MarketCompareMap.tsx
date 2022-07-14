@@ -22,10 +22,10 @@ import * as projection from '@arcgis/core/geometry/projection'
 import SpatialReference from '@arcgis/core/geometry/SpatialReference'
 
 const mapOptions = {
-  mapOption: { basemap: 'arcgis-community' },
+  mapOption: { basemap: 'topo-vector' },
   mapViewOption: {
     center: [121.4640139307843, 25.013838580240503],
-    zoom: 13,
+    zoom: 14,
     ui: new DefaultUI(),
     constraints: { minZoom: 12, maxZoom: 20 }
   }

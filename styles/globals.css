@@ -94,7 +94,7 @@ background-image: linear-gradient(315deg, #f8f9d2 0%, #e8dbfc 74%); */
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow) !important;
 }
 .MuiDialog-paper{
-  max-width: 800px !important;
+  max-width: 900px !important;
 }
 .esri-component{
   box-shadow: none !important;
