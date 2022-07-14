@@ -82,7 +82,7 @@ const geographicDataList: IBasemapData[] = [
 
 const Basemap = () => {
   const { map, show, onShowChange } = useContext(widgetContext)
-  const [activeBasemap, setactiveBasemap] = useState<string>('DEFAULT')
+  const [activeBasemap, setactiveBasemap] = useState<string>('EMAP5')
   const [basemapTypeExpanded, setbasemapTypeExpanded] = useState<BasemapCategory | false>(false)
 
   const handleChangeBasemap = (basemap: IBasemapData) => {

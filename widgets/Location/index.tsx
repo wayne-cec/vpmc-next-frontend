@@ -17,6 +17,12 @@ const Location = () => {
   const { show } = useContext(widgetContext)
   const [tabPage, settabPage] = useState<string>('1')
 
+  useEffect(() => {
+    if (!show) {
+      settabPage('1')
+    }
+  }, [show])
+
   return (
     <div className={classNames({
       [style.locationWidget]: true,
