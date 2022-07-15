@@ -338,7 +338,6 @@ const ResultTable = (props: IResultTable) => {
         <Grid container spacing={0}>
           <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
             <Switch
-              size='small'
               value={dense}
               onChange={() => {
                 setDense(prev => !prev)
