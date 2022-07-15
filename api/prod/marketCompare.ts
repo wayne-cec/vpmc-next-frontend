@@ -1,10 +1,5 @@
 import { IResult, IResultStatistics } from "./aprRegion"
 
-// 缺交易標的數量 example: 1建物1土地1車位
-// 缺少交易資產類型
-// 缺少土地使用分區
-// 缺少總樓層
-
 export interface IMarketCompareResult {
   id: string
   transactiontime: string
@@ -29,6 +24,7 @@ export interface IMarketCompareResult {
   subBuildingArea: number
   belconyArea: number
   landTransferArea: number
+  parkingSpaceType: number
   longitude: number
   latitude: number
 }
@@ -75,7 +71,7 @@ export const assetTypeMapping: { [key: number]: number } = {
 }
 
 export const marketCompare = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
+  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
   if (params.longitude && params.latitude && params.bufferRadius) {
     url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
   }
@@ -111,7 +107,7 @@ export const marketCompare = async (params: IMarketCompare) => {
 }
 
 export const marketCompareStatistic = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
   if (params.longitude && params.latitude && params.bufferRadius) {
     url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
   }
