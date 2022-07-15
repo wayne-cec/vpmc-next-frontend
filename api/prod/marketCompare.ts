@@ -1,10 +1,5 @@
 import { IResult, IResultStatistics } from "./aprRegion"
 
-// 缺交易標的數量 example: 1建物1土地1車位
-// 缺少交易資產類型
-// 缺少土地使用分區
-// 缺少總樓層
-
 export interface IMarketCompareResult {
   id: string
   transactiontime: string
@@ -29,6 +24,7 @@ export interface IMarketCompareResult {
   subBuildingArea: number
   belconyArea: number
   landTransferArea: number
+  parkingSpaceType: number
   longitude: number
   latitude: number
 }
@@ -48,7 +44,7 @@ export interface IMarketCompare {
   ageStart?: number
   ageEnd?: number
   parkingSpaceType?: number
-  urbanLandUse?: number
+  urbanLandUse?: number[]
 }
 
 export interface IGraphData {
@@ -98,7 +94,7 @@ export const marketCompare = async (params: IMarketCompare) => {
     url += `&parkingSpaceType=${params.parkingSpaceType}`
   }
   if (params.urbanLandUse) {
-    url += `&urbanLandUse=${params.urbanLandUse}`
+    url += `&urbanLandUse=${params.urbanLandUse.join(',')}`
   }
 
   const response = await fetch(url, {
@@ -134,7 +130,7 @@ export const marketCompareStatistic = async (params: IMarketCompare) => {
     url += `&parkingSpaceType=${params.parkingSpaceType}`
   }
   if (params.urbanLandUse) {
-    url += `&urbanLandUse=${params.urbanLandUse}`
+    url += `&urbanLandUse=${params.urbanLandUse.join(',')}`
   }
 
   const response = await fetch(url, {

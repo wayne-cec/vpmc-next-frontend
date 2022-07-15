@@ -94,7 +94,7 @@ const MarketCompare: NextPage = () => {
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
   const [age, setage] = useState<number | null>(null)
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
-  const [urbanLandUse, seturbanLandUse] = useState<number | null>(null)
+  const [urbanLandUse, seturbanLandUse] = useState<number[] | null>(null)
   const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
 
   const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
@@ -405,7 +405,7 @@ const MarketCompare: NextPage = () => {
                 }}
                 onUrbanLaudUseFilteredChange={() => {
                   setisUrbanUsageFiltered(prev => !prev)
-                  seturbanLandUse(0)
+                  seturbanLandUse([0])
                 }}
                 onUrbanLaudUseSelect={(value) => {
                   seturbanLandUse(value)

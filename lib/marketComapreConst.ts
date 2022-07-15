@@ -65,7 +65,6 @@ export const ageSet: { [key: number]: string } = {
 }
 
 export const parkSpaceSet: { [key: number]: string } = {
-  0: '無車位',
   1: '塔式車位',
   2: '坡道平面',
   3: '升降平面',
@@ -79,7 +78,6 @@ export const urbanUsageSet: { [key: number]: string } = {
   0: '住宅區',
   1: '商業區',
   2: '其他',
-  3: '無',
   4: '工業區',
   5: '農業區'
 }
