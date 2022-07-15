@@ -139,12 +139,12 @@ export const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: '總價(萬)'
   },
-  {
-    id: 'id',
-    numeric: false,
-    disablePadding: true,
-    label: ''
-  },
+  // {
+  //   id: 'id',
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: ''
+  // },
   {
     id: 'id',
     numeric: false,
@@ -274,12 +274,8 @@ const ResultTable = (props: IResultTable) => {
   }
 
   const handleRowClick = (event: React.MouseEvent<unknown>, id: string) => {
-    alert(id)
-    if (event.type === 'click') {
-      handleSelect(id)
-    } else if (event.type === 'contextmenu') {
-      console.log('Right click');
-    }
+    // alert(id)
+    handleSelect(id)
   }
 
   const isSelected = (name: string) => selected.indexOf(name) !== -1
@@ -287,13 +283,6 @@ const ResultTable = (props: IResultTable) => {
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const menuOpen = Boolean(anchorEl)
-  const handleMenuClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget)
-  }
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
 
   const handleGetCommiteeByAprId = async (id: string) => {
     const { statusCode, responseContent } = await api.prod.getCommiteeByAprId(id)
@@ -376,6 +365,10 @@ const ResultTable = (props: IResultTable) => {
                       tabIndex={-1}
                       key={row.id}
                       selected={isItemSelected}
+                      className={style.tableRow}
+                      onClick={() => {
+                        onZoomIdChange({ id: row.id })
+                      }}
                     >
 
                       <TableCell padding="checkbox">
@@ -385,7 +378,10 @@ const ResultTable = (props: IResultTable) => {
                           inputProps={{
                             'aria-labelledby': labelId,
                           }}
-                          onClick={(event) => handleRowClick(event, row.id)}
+                          onClick={(event) => {
+                            handleRowClick(event, row.id)
+                            event.stopPropagation()
+                          }}
                         />
                       </TableCell>
 
@@ -464,7 +460,7 @@ const ResultTable = (props: IResultTable) => {
                         </p>
                       </TableCell>
 
-                      <TableCell align="right">
+                      {/* <TableCell align="right">
                         <IconButton size="small"
                           onClick={() => {
                             onZoomIdChange({ id: row.id })
@@ -472,7 +468,7 @@ const ResultTable = (props: IResultTable) => {
                         >
                           <ZoomInIcon fontSize="small" />
                         </IconButton>
-                      </TableCell>
+                      </TableCell> */}
 
                       <TableCell align="right">
                         <IconButton size="small"

@@ -64,4 +64,6 @@
     @apply bg-green-500 rounded-full py-1 px-2 text-white 
     bg-opacity-80;
 }
-
+.tableRow{
+    @apply cursor-pointer;
+}
