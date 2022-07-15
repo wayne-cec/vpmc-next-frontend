@@ -2,23 +2,24 @@ import React, { useState, useEffect, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import style from './index.module.scss'
+import moment from 'moment'
+import ZoomInIcon from '@mui/icons-material/ZoomIn'
+import api from '../../../../../api'
+import classNames from 'classnames'
+import ArticleIcon from '@mui/icons-material/Article'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
+import { visuallyHidden } from '@mui/utils'
+import { IMarketCompareResult } from '../../../../../api/prod'
+import { DetailContext, ZoomContext } from '../..'
+import { parseCommitee } from '../../../../../lib/parseCommitee'
+import { getAge } from '../../../../../lib/calculateAge'
+import { parkSpaceSet } from '../../../../../lib/marketComapreConst'
 import {
   IconButton, Checkbox, Paper, TableSortLabel,
   TableRow, TablePagination, TableHead, TableContainer,
   TableCell, TableBody, Menu, MenuItem, ListItemIcon,
   ListItemText, Tooltip
 } from '@mui/material'
-import { visuallyHidden } from '@mui/utils'
-import { IMarketCompareResult } from '../../../../../api/prod'
-import moment from 'moment'
-import ZoomInIcon from '@mui/icons-material/ZoomIn'
-import { DetailContext, ZoomContext } from '../..'
-import api from '../../../../../api'
-import { parseCommitee } from '../../../../../lib/parseCommitee'
-import classNames from 'classnames'
-import { getAge } from '../../../../../lib/calculateAge'
-import ArticleIcon from '@mui/icons-material/Article'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 export interface Data {
   id: string
@@ -41,6 +42,7 @@ export interface Data {
   subBuildingArea: number
   landTransferArea: number
   belconyArea: number
+  parkingSpaceType: number
 }
 
 export interface HeadCell {
@@ -425,7 +427,7 @@ const ResultTable = (props: IResultTable) => {
                       </TableCell>
 
                       <TableCell align="right">
-                        {row.transferFloor}樓
+                        {row.transferFloor}/{row.floor}樓
                       </TableCell>
 
                       <TableCell align="right">
@@ -447,7 +449,10 @@ const ResultTable = (props: IResultTable) => {
                             ? '無車位'
                             : <>
                               <p>{`${Math.round(row.parkingSpacePrice / 10000)}萬`}</p>
-                              <p>{row.parkAmount}個車位</p>
+                              <div>
+                                <span className={style.parkCount}>{row.parkAmount}</span>
+                                {parkSpaceSet[row.parkingSpaceType]}
+                              </div>
                             </>
                         }
                       </TableCell>
@@ -523,7 +528,7 @@ const ResultTable = (props: IResultTable) => {
         />
       </Paper>
     </Box>
-  );
+  )
 }
 
 export default ResultTable
