@@ -16,7 +16,7 @@ import {
   descendingComparator,
   getComparator,
   stableSort
-} from './Helper'
+} from '../../../../../lib/tableHelper'
 import {
   IconButton, Checkbox, Paper, TableRow,
   TablePagination, TableContainer, TableCell,
