@@ -24,7 +24,7 @@ export const headCells: readonly HeadCell[] = [
     id: 'organization',
     numeric: true,
     disablePadding: false,
-    label: '管委會'
+    label: '社區名稱'
   },
   {
     id: 'completiontime',
