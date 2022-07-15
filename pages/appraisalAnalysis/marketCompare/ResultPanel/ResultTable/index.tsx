@@ -3,23 +3,27 @@ import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import style from './index.module.scss'
 import moment from 'moment'
-import ZoomInIcon from '@mui/icons-material/ZoomIn'
 import api from '../../../../../api'
 import classNames from 'classnames'
 import ArticleIcon from '@mui/icons-material/Article'
-import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
-import { visuallyHidden } from '@mui/utils'
+import EnhancedTableHead from './EnhancedTableHead'
 import { IMarketCompareResult } from '../../../../../api/prod'
 import { DetailContext, ZoomContext } from '../..'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import { getAge } from '../../../../../lib/calculateAge'
 import { parkSpaceSet } from '../../../../../lib/marketComapreConst'
 import {
-  IconButton, Checkbox, Paper, TableSortLabel,
-  TableRow, TablePagination, TableHead, TableContainer,
-  TableCell, TableBody, Menu, MenuItem, ListItemIcon,
-  ListItemText, Tooltip
+  descendingComparator,
+  getComparator,
+  stableSort
+} from './Helper'
+import {
+  IconButton, Checkbox, Paper, TableRow,
+  TablePagination, TableContainer, TableCell,
+  TableBody, Switch, Grid
 } from '@mui/material'
+
+export type Order = 'asc' | 'desc'
 
 export interface Data {
   id: string
@@ -45,178 +49,6 @@ export interface Data {
   parkingSpaceType: number
 }
 
-export interface HeadCell {
-  disablePadding: boolean;
-  id: keyof Data;
-  label: string;
-  numeric: boolean;
-}
-
-export function descendingComparator<T> (a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-export type Order = 'asc' | 'desc';
-
-export function getComparator<Key extends keyof any> (
-  order: Order,
-  orderBy: Key,
-): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string },
-) => number {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-// This method is created for cross-browser compatibility, if you don't
-// need to support IE11, you can use Array.prototype.sort() directly
-export function stableSort<T> (array: readonly T[], comparator: (a: T, b: T) => number) {
-  const stabilizedThis = array.map((el, index) => [el, index] as [T, number]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-export const headCells: readonly HeadCell[] = [
-  {
-    id: 'transactiontime',
-    numeric: false,
-    disablePadding: true,
-    label: '交易日期'
-  },
-  {
-    id: 'organization',
-    numeric: true,
-    disablePadding: false,
-    label: '管委會'
-  },
-  {
-    id: 'completiontime',
-    numeric: true,
-    disablePadding: true,
-    label: '屋齡'
-  },
-  {
-    id: 'transferFloor',
-    numeric: true,
-    disablePadding: false,
-    label: '樓層'
-  },
-  {
-    id: 'buildingTransferArea',
-    numeric: true,
-    disablePadding: false,
-    label: '坪數'
-  },
-  {
-    id: 'unitPrice',
-    numeric: true,
-    disablePadding: false,
-    label: '單價(萬/坪)'
-  },
-  {
-    id: 'parkingSpacePrice',
-    numeric: true,
-    disablePadding: false,
-    label: '車位價格'
-  },
-  {
-    id: 'price',
-    numeric: true,
-    disablePadding: false,
-    label: '總價(萬)'
-  },
-  // {
-  //   id: 'id',
-  //   numeric: false,
-  //   disablePadding: true,
-  //   label: ''
-  // },
-  {
-    id: 'id',
-    numeric: false,
-    disablePadding: true,
-    label: ''
-  }
-]
-
-interface EnhancedTableProps {
-  numSelected: number
-  onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void
-  onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
-  order: Order
-  orderBy: string
-  rowCount: number
-}
-
-const EnhancedTableHead = (props: EnhancedTableProps) => {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
-    props;
-  const createSortHandler =
-    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
-      onRequestSort(event, property);
-    };
-
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell padding="checkbox">
-          <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          />
-        </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
-            {
-              headCell.id === 'buildingTransferArea'
-                ? <Tooltip title='已扣車位'>
-                  <HelpOutlineIcon sx={{ fontSize: 20 }} />
-                </Tooltip>
-                : null
-            }
-          </TableCell>
-        ))}
-      </TableRow>
-    </TableHead>
-  );
-}
-
 export interface IResultTable {
   data: IMarketCompareResult[]
 }
@@ -228,13 +60,15 @@ const ResultTable = (props: IResultTable) => {
   const [orderBy, setOrderBy] = useState<keyof Data>('price')
   const [selected, setSelected] = useState<readonly string[]>([])
   const [page, setPage] = useState(0)
-  const [dense, setDense] = useState(false)
+  const [dense, setDense] = useState(true)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [rows, setrows] = useState<Data[]>([])
   const { onZoomIdChange } = useContext(ZoomContext)
   const [pending, setpending] = useState<boolean>(false)
   const [renderRows, setrenderRows] = useState<Data[]>([])
   const { onDetailAprChange, onShow } = useContext(DetailContext)
+  const isSelected = (name: string) => selected.indexOf(name) !== -1
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -274,15 +108,8 @@ const ResultTable = (props: IResultTable) => {
   }
 
   const handleRowClick = (event: React.MouseEvent<unknown>, id: string) => {
-    // alert(id)
     handleSelect(id)
   }
-
-  const isSelected = (name: string) => selected.indexOf(name) !== -1
-
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
   const handleGetCommiteeByAprId = async (id: string) => {
     const { statusCode, responseContent } = await api.prod.getCommiteeByAprId(id)
@@ -508,20 +335,36 @@ const ResultTable = (props: IResultTable) => {
           </Table>
         </TableContainer>
 
-        <TablePagination
-          rowsPerPageOptions={[5]}
-          component="div"
-          count={rows.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={(event: unknown, newPage: number) => {
-            setPage(newPage)
-          }}
-          onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-            setRowsPerPage(parseInt(event.target.value, 10))
-            setPage(0)
-          }}
-        />
+        <Grid container spacing={0}>
+          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
+            <Switch
+              size='small'
+              value={dense}
+              onChange={() => {
+                setDense(prev => !prev)
+              }}
+              defaultChecked
+            />
+            <span>縮小模式</span>
+          </Grid>
+          <Grid item xs={6}>
+            <TablePagination
+              rowsPerPageOptions={[5]}
+              component="div"
+              count={rows.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={(event: unknown, newPage: number) => {
+                setPage(newPage)
+              }}
+              onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                setRowsPerPage(parseInt(event.target.value, 10))
+                setPage(0)
+              }}
+            />
+          </Grid>
+        </Grid>
+
       </Paper>
     </Box>
   )
