@@ -9,12 +9,14 @@ export interface IAction {
   handleFormSubmit: () => void
 }
 
-const Action = (props: IAction) => {
+const Action = () => {
+  const marketCompareContext = useContext(MarketCompareContext)
   const { pending } = useContext(MarketCompareContext)
+
   return (
     <div className={style.action}>
       <div className={style.settingBtn}
-        onClick={props.onCustomizeParamBtnClick}
+        onClick={marketCompareContext.onCustomizeParamBtnClick}
       >
         <Image src={'/aprRegion/setting.png'} width='30px' height='30px' />
         <p>自定義參數</p>
@@ -26,7 +28,7 @@ const Action = (props: IAction) => {
       })}
         onClick={() => {
           if (!pending) {
-            props.handleFormSubmit()
+            marketCompareContext.handleFormSubmit()
           }
         }}
       >

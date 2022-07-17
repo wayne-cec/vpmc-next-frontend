@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import CoordinateSelector from '../../../../../components/CoordinateSelector'
@@ -8,6 +8,7 @@ import PolygonSketch from '../../../../../components/PolygonSketch'
 import { PolygonSketchMode } from '../../../../../components/PolygonSketch'
 import CountySelector from '../../../../../components/CountySelector'
 import TownSelector from '../../../../../components/TownSelector'
+import MarketCompareContext from '../../MarketCompareContext'
 
 export interface ISpatialQuery {
   longitude?: number
@@ -26,7 +27,8 @@ export interface ISpatialQuery {
   onClear: () => void
 }
 
-const SpatialQuery = (props: ISpatialQuery) => {
+const SpatialQuery = () => {
+  const marketCompareContext = useContext(MarketCompareContext)
 
   return (
     <div className={classNames({
@@ -38,10 +40,10 @@ const SpatialQuery = (props: ISpatialQuery) => {
         {/* 搜索範圍 */}
         <Grid item xs={2}>
           <Radio
-            checked={props.sketchMode === 'inactive'}
+            checked={marketCompareContext.sketchMode === 'inactive'}
             onChange={() => {
-              props.onSpatialQueryTypeChange('buffer')
-              props.onSketchModeChange('inactive')
+              marketCompareContext.onSpatialQueryTypeChange('buffer')
+              marketCompareContext.onSketchModeChange('inactive')
             }}
             value="a"
             name="radio-buttons"
@@ -50,14 +52,14 @@ const SpatialQuery = (props: ISpatialQuery) => {
         </Grid>
         <Grid item xs={7}>
           <CoordinateSelector
-            longitude={props.longitude!}
-            latitude={props.latitude!}
-            locatedCounty={props.locatedCounty!}
-            locatedTown={props.locatedTown!}
-            active={props.isSelectorActive!}
-            enabled={props.sketchMode === 'inactive'}
+            longitude={marketCompareContext.longitude!}
+            latitude={marketCompareContext.latitude!}
+            locatedCounty={marketCompareContext.locatedCounty!}
+            locatedTown={marketCompareContext.locatedTown!}
+            active={marketCompareContext.isSelectorActive!}
+            enabled={marketCompareContext.sketchMode === 'inactive'}
             onClick={() => {
-              props.onCoordinatorSelectorClick(!props.isSelectorActive)
+              marketCompareContext.onCoordinatorSelectorClick(!marketCompareContext.isSelectorActive)
             }}
           />
         </Grid>
@@ -67,26 +69,26 @@ const SpatialQuery = (props: ISpatialQuery) => {
             label="距離(m)"
             size='small'
             InputProps={{ inputProps: { min: 0 } }}
-            value={props.bufferRadius}
+            value={marketCompareContext.bufferRadius}
             onChange={(event) => {
-              props.onBufferRadiusChange(
+              marketCompareContext.onBufferRadiusChange(
                 Number(event.target.value)
               )
             }}
-            disabled={props.sketchMode !== 'inactive'}
+            disabled={marketCompareContext.sketchMode !== 'inactive'}
             fullWidth
           ></TextField>
         </Grid>
         <Grid item xs={2}>
           <Radio
             checked={
-              props.sketchMode === 'draw'
+              marketCompareContext.sketchMode === 'draw'
             }
             onChange={() => {
-              // props.onSpatialQueryTypeChange('rectangle')
-              props.onSpatialQueryTypeChange('none')
-              props.onSketchModeChange('draw')
-              props.onCoordinatorSelectorClick(false)
+              // marketCompareContext.onSpatialQueryTypeChange('rectangle')
+              marketCompareContext.onSpatialQueryTypeChange('none')
+              marketCompareContext.onSketchModeChange('draw')
+              marketCompareContext.onCoordinatorSelectorClick(false)
             }}
             value="a"
             name="radio-buttons"
@@ -98,17 +100,17 @@ const SpatialQuery = (props: ISpatialQuery) => {
         >
           <PolygonSketch
             active={
-              // props.spatialQueryType === 'polygon' ||
-              // props.spatialQueryType === 'circle' ||
-              // props.spatialQueryType === 'rectangle' || 
-              props.sketchMode === 'draw'
+              // marketCompareContext.spatialQueryType === 'polygon' ||
+              // marketCompareContext.spatialQueryType === 'circle' ||
+              // marketCompareContext.spatialQueryType === 'rectangle' || 
+              marketCompareContext.sketchMode === 'draw'
             }
-            mode={props.sketchMode}
-            spatialQueryType={props.spatialQueryType}
-            onModeChange={props.onSketchModeChange}
-            onSpatialQueryTypeChange={props.onSpatialQueryTypeChange}
-            onDraw={props.onDraw}
-            onClear={props.onDraw}
+            mode={marketCompareContext.sketchMode}
+            spatialQueryType={marketCompareContext.spatialQueryType}
+            onModeChange={marketCompareContext.onSketchModeChange}
+            onSpatialQueryTypeChange={marketCompareContext.onSpatialQueryTypeChange}
+            onDraw={marketCompareContext.onDraw}
+            onClear={marketCompareContext.onDraw}
           />
         </Grid>
 
@@ -116,12 +118,12 @@ const SpatialQuery = (props: ISpatialQuery) => {
         {/* <Grid item xs={2}>
           <Radio
             checked={
-              props.sketchMode === 'county'
+              marketCompareContext.sketchMode === 'county'
             }
             onChange={() => {
-              props.onSpatialQueryTypeChange('none')
-              props.onSketchModeChange('county')
-              props.onCoordinatorSelectorClick(false)
+              marketCompareContext.onSpatialQueryTypeChange('none')
+              marketCompareContext.onSketchModeChange('county')
+              marketCompareContext.onCoordinatorSelectorClick(false)
             }}
             value="a"
             name="radio-buttons"

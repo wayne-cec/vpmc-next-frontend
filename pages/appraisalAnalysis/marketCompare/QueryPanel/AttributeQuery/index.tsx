@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import {
@@ -11,6 +11,7 @@ import {
 } from '../../../../../lib/marketComapreConst'
 import { assetTypeMapping } from '../../../../../api/prod'
 import MultiChipSelect from '../../../../../components/MultiChipSelect'
+import MarketCompareContext from '../../MarketCompareContext'
 
 
 export interface IAttributeQuery {
@@ -51,7 +52,8 @@ export interface IAttributeQuery {
   onUrbanLaudUseSelect: (value: number[]) => void
 }
 
-const AttributeQuery = (props: IAttributeQuery) => {
+const AttributeQuery = () => {
+  const marketCompareContext = useContext(MarketCompareContext)
   return (
     <div className={classNames({
       [style.attributeQuery]: true,
@@ -67,9 +69,9 @@ const AttributeQuery = (props: IAttributeQuery) => {
               labelId="asset-type"
               label="資產類型"
               id="asset-type-select"
-              value={props.assetTypeCode}
+              value={marketCompareContext.assetTypeCode}
               onChange={(event) => {
-                props.onAssetTypeChange(Number(event.target.value))
+                marketCompareContext.onAssetTypeChange(Number(event.target.value))
               }}
               size='small'
               fullWidth
@@ -89,14 +91,14 @@ const AttributeQuery = (props: IAttributeQuery) => {
         {/* 交易時間 */}
         <Grid item xs={2}>
           <Checkbox
-            checked={props.isTransactionTimeFiltered}
-            onClick={props.onTransactionTimeFilteredChange}
+            checked={marketCompareContext.isTransactionTimeFiltered}
+            onClick={marketCompareContext.onTransactionTimeFilteredChange}
           />
         </Grid>
         <Grid item xs={10}>
           <FormControl size='small' fullWidth>
             {
-              props.isTransactionTimeFiltered && !props.isTransactionTimeFosced
+              marketCompareContext.isTransactionTimeFiltered && !marketCompareContext.isTransactionTimeFosced
                 ? <></>
                 : <InputLabel id="transaction-time">交易時間</InputLabel>
             }
@@ -105,11 +107,11 @@ const AttributeQuery = (props: IAttributeQuery) => {
               label="交易時間"
               id="transaction-time-select"
               size='small'
-              value={props.isTransactionTimeFiltered ? props.transactiontime : ''}
-              disabled={!props.isTransactionTimeFiltered}
+              value={marketCompareContext.isTransactionTimeFiltered ? marketCompareContext.transactiontime : ''}
+              disabled={!marketCompareContext.isTransactionTimeFiltered}
               // autoFocus={isTransactionTimeFiltered}
               onChange={(event) => {
-                props.onTransactionTimeSelect(Number(event.target.value))
+                marketCompareContext.onTransactionTimeSelect(Number(event.target.value))
               }}
               fullWidth
             >
@@ -127,19 +129,19 @@ const AttributeQuery = (props: IAttributeQuery) => {
 
         {/* 建坪面積 */}
         {
-          assetTypeMapping[props.assetTypeCode] !== 100 && assetTypeMapping[props.assetTypeCode] !== 200
+          assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
             ? <>
               <Grid item xs={2}>
                 <Checkbox
-                  checked={props.isBuildingAreaFiltered}
-                  onClick={props.onBuildingAreaFilteredChange}
-                  disabled={!props.isBuildingAreaCheckable}
+                  checked={marketCompareContext.isBuildingAreaFiltered}
+                  onClick={marketCompareContext.onBuildingAreaFilteredChange}
+                  disabled={!marketCompareContext.isBuildingAreaCheckable}
                 />
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
                   {
-                    props.isBuildingAreaFiltered && !props.isBuildingAreaFosced
+                    marketCompareContext.isBuildingAreaFiltered && !marketCompareContext.isBuildingAreaFosced
                       ? <></>
                       : <InputLabel id="building-transfer-area">建坪面積</InputLabel>
                   }
@@ -148,11 +150,11 @@ const AttributeQuery = (props: IAttributeQuery) => {
                     label="建坪面積"
                     id="building-transfer-area-select"
                     size='small'
-                    value={props.isBuildingAreaFiltered ? props.buildingTransferArea : ''}
+                    value={marketCompareContext.isBuildingAreaFiltered ? marketCompareContext.buildingTransferArea : ''}
                     onChange={(event) => {
-                      props.onBuildingAreaSelect(Number(event.target.value))
+                      marketCompareContext.onBuildingAreaSelect(Number(event.target.value))
                     }}
-                    disabled={!props.isBuildingAreaFiltered}
+                    disabled={!marketCompareContext.isBuildingAreaFiltered}
                     // autoFocus={isBuildingAreaFiltered}
                     fullWidth
                   >
@@ -174,19 +176,19 @@ const AttributeQuery = (props: IAttributeQuery) => {
 
         {/* 地坪面積 */}
         {
-          assetTypeMapping[props.assetTypeCode] === 100
+          assetTypeMapping[marketCompareContext.assetTypeCode] === 100
             ? <>
               <Grid item xs={2}>
                 <Checkbox
-                  checked={props.isLandAreaFiltered}
-                  onClick={props.onLandAreaFilteredChange}
-                  disabled={!props.isLandAreaCheckable}
+                  checked={marketCompareContext.isLandAreaFiltered}
+                  onClick={marketCompareContext.onLandAreaFilteredChange}
+                  disabled={!marketCompareContext.isLandAreaCheckable}
                 />
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
                   {
-                    props.isLandAreaFiltered && !props.isLandAreaFosced
+                    marketCompareContext.isLandAreaFiltered && !marketCompareContext.isLandAreaFosced
                       ? <></>
                       : <InputLabel id="land-transfer-area">地坪面積</InputLabel>
                   }
@@ -196,12 +198,12 @@ const AttributeQuery = (props: IAttributeQuery) => {
                     id="land-transfer-area-select"
                     size='small'
                     fullWidth
-                    value={props.isLandAreaFiltered ? props.landTransferArea : ''}
+                    value={marketCompareContext.isLandAreaFiltered ? marketCompareContext.landTransferArea : ''}
                     onChange={(event) => {
-                      props.onLandAreaSelect(Number(event.target.value))
+                      marketCompareContext.onLandAreaSelect(Number(event.target.value))
                     }}
                     // autoFocus={isLandAreaFiltered}
-                    disabled={!props.isLandAreaFiltered}
+                    disabled={!marketCompareContext.isLandAreaFiltered}
                   >
                     {
                       Object.keys(landTransactionAreaSet).map((assetCode, index) => {
@@ -221,18 +223,18 @@ const AttributeQuery = (props: IAttributeQuery) => {
 
         {/* 屋齡 */}
         {
-          assetTypeMapping[props.assetTypeCode] !== 100 && assetTypeMapping[props.assetTypeCode] !== 200
+          assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
             ? <>
               <Grid item xs={2}>
                 <Checkbox
-                  checked={props.isAgeFiltered}
-                  onClick={props.onAgeFilteredChange}
+                  checked={marketCompareContext.isAgeFiltered}
+                  onClick={marketCompareContext.onAgeFilteredChange}
                 />
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
                   {
-                    props.isAgeFiltered && !props.isAgeFosced
+                    marketCompareContext.isAgeFiltered && !marketCompareContext.isAgeFosced
                       ? <></>
                       : <InputLabel id="age">屋齡</InputLabel>
                   }
@@ -241,11 +243,11 @@ const AttributeQuery = (props: IAttributeQuery) => {
                     label="屋齡"
                     id="age-select"
                     size='small'
-                    value={props.isAgeFiltered ? props.age : ''}
+                    value={marketCompareContext.isAgeFiltered ? marketCompareContext.age : ''}
                     onChange={(event) => {
-                      props.onAgeSelect(Number(event.target.value))
+                      marketCompareContext.onAgeSelect(Number(event.target.value))
                     }}
-                    disabled={!props.isAgeFiltered}
+                    disabled={!marketCompareContext.isAgeFiltered}
                     // autoFocus={isAgeFiltered}
                     fullWidth
                   >
@@ -267,18 +269,18 @@ const AttributeQuery = (props: IAttributeQuery) => {
 
         {/* 車位類型 */}
         {
-          assetTypeMapping[props.assetTypeCode] === 200
+          assetTypeMapping[marketCompareContext.assetTypeCode] === 200
             ? <>
               <Grid item xs={2}>
                 <Checkbox
-                  checked={props.isParkSpaceFiltered}
-                  onClick={props.onParkSpaceTypeFilteredChange}
+                  checked={marketCompareContext.isParkSpaceFiltered}
+                  onClick={marketCompareContext.onParkSpaceTypeFilteredChange}
                 />
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
                   {
-                    props.isParkSpaceFiltered && !props.isParkSpaceFosced
+                    marketCompareContext.isParkSpaceFiltered && !marketCompareContext.isParkSpaceFosced
                       ? <></>
                       : <InputLabel id="park-space">車位類型</InputLabel>
                   }
@@ -288,12 +290,12 @@ const AttributeQuery = (props: IAttributeQuery) => {
                     id="park-space-select"
                     size='small'
                     fullWidth
-                    value={props.isParkSpaceFiltered ? props.parkSpaceType : ''}
+                    value={marketCompareContext.isParkSpaceFiltered ? marketCompareContext.parkSpaceType : ''}
                     onChange={(event) => {
-                      props.onParkSpaceTypeSelect(Number(event.target.value))
+                      marketCompareContext.onParkSpaceTypeSelect(Number(event.target.value))
                     }}
                     // autoFocus={isParkSpaceFiltered}
-                    disabled={!props.isParkSpaceFiltered}
+                    disabled={!marketCompareContext.isParkSpaceFiltered}
                   >
                     {
                       Object.keys(parkSpaceSet).map((assetCode, index) => {
@@ -313,19 +315,19 @@ const AttributeQuery = (props: IAttributeQuery) => {
 
         {/* 使用分區 */}
         {/* {
-          assetTypeMapping[props.assetTypeCode] !== 200
+          assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
             ? <>
 
               <Grid item xs={2}>
                 <Checkbox
-                  checked={props.isUrbanUsageFiltered}
-                  onClick={props.onUrbanLaudUseFilteredChange}
+                  checked={marketCompareContext.isUrbanUsageFiltered}
+                  onClick={marketCompareContext.onUrbanLaudUseFilteredChange}
                 />
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
                   {
-                    props.isUrbanUsageFiltered && !props.isUrbanUsageFosced
+                    marketCompareContext.isUrbanUsageFiltered && !marketCompareContext.isUrbanUsageFosced
                       ? <></>
                       : <InputLabel id="land-use">使用分區</InputLabel>
                   }
@@ -335,12 +337,12 @@ const AttributeQuery = (props: IAttributeQuery) => {
                     id="land-use-select"
                     size='small'
                     fullWidth
-                    value={props.isUrbanUsageFiltered ? props.urbanLandUse : null}
+                    value={marketCompareContext.isUrbanUsageFiltered ? marketCompareContext.urbanLandUse : null}
                     onChange={(event) => {
-                      props.onUrbanLaudUseSelect(Number(event.target.value))
+                      marketCompareContext.onUrbanLaudUseSelect(Number(event.target.value))
                     }}
                     // autoFocus={isUrbanUsageFiltered}
-                    disabled={!props.isUrbanUsageFiltered}
+                    disabled={!marketCompareContext.isUrbanUsageFiltered}
                   >
                     {
                       Object.keys(urbanUsageSet).map((assetCode, index) => {
@@ -360,24 +362,24 @@ const AttributeQuery = (props: IAttributeQuery) => {
 
         {/* 使用分區 */}
         {
-          assetTypeMapping[props.assetTypeCode] !== 200
+          assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
             ? <>
 
               <Grid item xs={2}>
                 <Checkbox
-                  checked={props.isUrbanUsageFiltered}
-                  onClick={props.onUrbanLaudUseFilteredChange}
+                  checked={marketCompareContext.isUrbanUsageFiltered}
+                  onClick={marketCompareContext.onUrbanLaudUseFilteredChange}
                 />
               </Grid>
               <Grid item xs={10}>
                 <MultiChipSelect
                   placeholder='使用分區'
-                  urbanLandUse={props.urbanLandUse}
+                  urbanLandUse={marketCompareContext.urbanLandUse}
                   urbanUsageSet={urbanUsageSet}
-                  isUrbanUsageFiltered={props.isUrbanUsageFiltered}
-                  isUrbanUsageFosced={props.isUrbanUsageFosced}
+                  isUrbanUsageFiltered={marketCompareContext.isUrbanUsageFiltered}
+                  isUrbanUsageFosced={marketCompareContext.isUrbanUsageFosced}
                   onChange={(value) => {
-                    props.onUrbanLaudUseSelect(value)
+                    marketCompareContext.onUrbanLaudUseSelect(value)
                   }}
                 />
               </Grid>

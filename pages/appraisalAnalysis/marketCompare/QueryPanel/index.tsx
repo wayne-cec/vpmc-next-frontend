@@ -78,62 +78,9 @@ const QueryPanel = () => {
       [style.hide]: !marketCompareContext.queryPanelShow,
     })}>
       <div className={style.filterGroup}>
-        <SpatialQuery
-          longitude={marketCompareContext.longitude}
-          latitude={marketCompareContext.latitude}
-          locatedCounty={marketCompareContext.locatedCounty}
-          locatedTown={marketCompareContext.locatedTown}
-          isSelectorActive={marketCompareContext.isSelectorActive}
-          bufferRadius={marketCompareContext.bufferRadius}
-          spatialQueryType={marketCompareContext.spatialQueryType}
-          sketchMode={marketCompareContext.sketchMode}
-          onCoordinatorSelectorClick={marketCompareContext.onCoordinatorSelectorClick}
-          onSpatialQueryTypeChange={marketCompareContext.onSpatialQueryTypeChange}
-          onBufferRadiusChange={marketCompareContext.onBufferRadiusChange}
-          onSketchModeChange={marketCompareContext.onSketchModeChange}
-          onDraw={marketCompareContext.onDraw}
-          onClear={marketCompareContext.onClear}
-        />
-        <AttributeQuery
-          assetTypeCode={marketCompareContext.assetTypeCode}
-          isTransactionTimeFiltered={marketCompareContext.isTransactionTimeFiltered}
-          isBuildingAreaFiltered={marketCompareContext.isBuildingAreaFiltered}
-          isLandAreaFiltered={marketCompareContext.isLandAreaFiltered}
-          isAgeFiltered={marketCompareContext.isAgeFiltered}
-          isParkSpaceFiltered={marketCompareContext.isParkSpaceFiltered}
-          isUrbanUsageFiltered={marketCompareContext.isUrbanUsageFiltered}
-          isTransactionTimeFosced={marketCompareContext.isTransactionTimeFosced}
-          isBuildingAreaFosced={marketCompareContext.isBuildingAreaFosced}
-          isLandAreaFosced={marketCompareContext.isLandAreaFosced}
-          isAgeFosced={marketCompareContext.isAgeFosced}
-          isParkSpaceFosced={marketCompareContext.isParkSpaceFosced}
-          isUrbanUsageFosced={marketCompareContext.isUrbanUsageFosced}
-          isBuildingAreaCheckable={marketCompareContext.isBuildingAreaCheckable}
-          isLandAreaCheckable={marketCompareContext.isLandAreaCheckable}
-          transactiontime={marketCompareContext.transactiontime}
-          buildingTransferArea={marketCompareContext.buildingTransferArea}
-          landTransferArea={marketCompareContext.landTransferArea}
-          age={marketCompareContext.age}
-          parkSpaceType={marketCompareContext.parkSpaceType}
-          urbanLandUse={marketCompareContext.urbanLandUse}
-          onAssetTypeChange={marketCompareContext.onAssetTypeChange}
-          onTransactionTimeFilteredChange={marketCompareContext.onTransactionTimeFilteredChange}
-          onTransactionTimeSelect={marketCompareContext.onTransactionTimeSelect}
-          onBuildingAreaFilteredChange={marketCompareContext.onBuildingAreaFilteredChange}
-          onBuildingAreaSelect={marketCompareContext.onBuildingAreaSelect}
-          onLandAreaFilteredChange={marketCompareContext.onLandAreaFilteredChange}
-          onLandAreaSelect={marketCompareContext.onLandAreaSelect}
-          onAgeFilteredChange={marketCompareContext.onAgeFilteredChange}
-          onAgeSelect={marketCompareContext.onAgeSelect}
-          onParkSpaceTypeFilteredChange={marketCompareContext.onParkSpaceTypeFilteredChange}
-          onParkSpaceTypeSelect={marketCompareContext.onParkSpaceTypeSelect}
-          onUrbanLaudUseFilteredChange={marketCompareContext.onUrbanLaudUseFilteredChange}
-          onUrbanLaudUseSelect={marketCompareContext.onUrbanLaudUseSelect}
-        />
-        <Action
-          onCustomizeParamBtnClick={marketCompareContext.onCustomizeParamBtnClick}
-          handleFormSubmit={marketCompareContext.handleFormSubmit}
-        />
+        <SpatialQuery />
+        <AttributeQuery />
+        <Action />
       </div>
 
       {/* 用手機瀏覽時才會渲染 */}
