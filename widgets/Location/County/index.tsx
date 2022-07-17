@@ -7,6 +7,7 @@ import { ICountyData } from '../../../api/prod'
 import { ITownData } from '../../../api/prod'
 import api from '../../../api'
 import Point from '@arcgis/core/geometry/Point'
+import { Grid } from '@mui/material'
 
 const County = () => {
   const { mapView } = useContext(widgetContext)
@@ -51,28 +52,36 @@ const County = () => {
 
   return (
     <div className={style.countyQuery}>
-      <CountySelector
-        countyData={countyData!}
-        selectedCounty={county}
-        offset={true}
-        onCountyChange={(county) => {
-          setcounty(county)
-          reFetchTownData(county)
-        }}
-      />
-      <TownSelector
-        townData={townData!}
-        selectedTown={town}
-        offset={true}
-        onTownChange={(town) => {
-          settown(town)
-        }}
-      />
-      <div className={style.queryBtn}
-        onClick={handleSubmit}
-      >
-        查詢
-      </div>
+      <Grid container spacing={1}>
+        <Grid item xs={5}>
+          <CountySelector
+            countyData={countyData!}
+            selectedCounty={county}
+            offset={true}
+            onCountyChange={(county) => {
+              setcounty(county)
+              reFetchTownData(county)
+            }}
+          />
+        </Grid>
+        <Grid item xs={5}>
+          <TownSelector
+            townData={townData!}
+            selectedTown={town}
+            offset={true}
+            onTownChange={(town) => {
+              settown(town)
+            }}
+          />
+        </Grid>
+        <Grid item xs={2}>
+          <div className={style.queryBtn}
+            onClick={handleSubmit}
+          >
+            查詢
+          </div>
+        </Grid>
+      </Grid>
     </div>
   )
 }

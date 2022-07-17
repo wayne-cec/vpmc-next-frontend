@@ -9,10 +9,17 @@ export interface ITownSelector {
   townData: { [key: string]: { name: string, marked: boolean }[] }
   selectedTown: string | null
   offset?: boolean
+  disabled?: boolean
   onTownChange: (town: string) => void
 }
 
-const TownSelector = (props: ITownSelector) => {
+const TownSelector = ({
+  townData,
+  selectedTown,
+  offset,
+  disabled = false,
+  onTownChange
+}: ITownSelector) => {
   const ref = useRef<HTMLDivElement>(null)
   const refPanel = useRef<HTMLDivElement>(null)
   const [open, setopen] = useState<boolean>(false)
@@ -29,7 +36,7 @@ const TownSelector = (props: ITownSelector) => {
     if (!ref.current.firstElementChild) return
     const { x, y, height } = ref.current.firstElementChild.getBoundingClientRect()
     setcoordinate({
-      x: `${props.offset === true ? x - 500 + 130 : x}px`,
+      x: `${offset === true ? x - 500 + 130 : x}px`,
       y: `${y + height + 10}px`
     })
   }
@@ -47,15 +54,19 @@ const TownSelector = (props: ITownSelector) => {
     >
       <div className={classNames({
         [style.townSelector]: true,
-        [style.show]: open
+        [style.show]: open,
+        [style.disabled]: disabled
       })}
-        onClick={handleClick}
+        onClick={() => {
+          if (!disabled)
+            handleClick()
+        }}
       >
         <div className={style.titleContainer}>
-          <Image src={'/aprRegion/town.png'} width='25px' height='25px' />
+          <Image src={disabled ? '/aprRegion/town-disabled.png' : '/aprRegion/town.png'} width='25px' height='25px' />
           <p>
             {
-              props.selectedTown
+              selectedTown
             }
           </p>
         </div>
@@ -63,7 +74,7 @@ const TownSelector = (props: ITownSelector) => {
       </div>
 
       {
-        props.townData
+        townData
           ? createPortal(
             <div className={classNames({
               [style.popPanel]: true,
@@ -74,12 +85,12 @@ const TownSelector = (props: ITownSelector) => {
               ref={refPanel}
             >
               {
-                Object.keys(props.townData).map((section, index) => {
+                Object.keys(townData).map((section, index) => {
                   return <div className={style.countySection} key={index}>
                     <p className={style.sectionTitle}>{section}</p>
                     <div className={style.chipContainer}>
                       {
-                        props.townData[section].map((town, indexj) => {
+                        townData[section].map((town, indexj) => {
                           return <span
                             key={indexj}
                             className={classNames({
@@ -87,7 +98,7 @@ const TownSelector = (props: ITownSelector) => {
                               [style.marked]: town.marked
                             })}
                             onClick={() => {
-                              props.onTownChange(town.name)
+                              onTownChange(town.name)
                               setopen(false)
                             }}
                           >{town.name}</span>

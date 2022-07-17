@@ -20,6 +20,7 @@ import CountySelector from '../../../components/CountySelector'
 import TownSelector from '../../../components/TownSelector'
 import classNames from 'classnames'
 import TabsPanel from '../../../components/TabsPanel'
+import { Grid } from '@mui/material'
 
 const MapContainer = dynamic(
   () => import('../../../components/MapContainer/AprV2Map'),
@@ -118,38 +119,44 @@ const AprV2: NextPage = () => {
 
             <div className={style.filterGroup}>
 
-              <CountySelector
-                countyData={countyData!}
-                selectedCounty={county}
-                onCountyChange={(county) => {
-                  setcounty(county)
-                  reFetchTownData(county)
-                }}
-              />
+              <Grid container spacing={1}>
+                <Grid item xs={5}>
+                  <CountySelector
+                    countyData={countyData!}
+                    selectedCounty={county}
+                    onCountyChange={(county) => {
+                      setcounty(county)
+                      reFetchTownData(county)
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={5}>
+                  <TownSelector
+                    townData={townData!}
+                    selectedTown={town}
+                    onTownChange={(town) => {
+                      settown(town)
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={2}>
+                  <div className={classNames({
+                    [style.searchBtn]: true,
+                    [style.loading]: countyGraphPending
+                  })}
+                    onClick={() => {
+                      handleSearch()
+                    }}
+                  >
+                    {
+                      countyGraphPending
+                        ? <div className={style.loader}></div>
+                        : <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
+                    }
+                  </div>
+                </Grid>
+              </Grid>
 
-              <TownSelector
-                townData={townData!}
-                selectedTown={town}
-                onTownChange={(town) => {
-                  settown(town)
-                }}
-              />
-
-              <div className={classNames({
-                [style.searchBtn]: true,
-                [style.loading]: countyGraphPending
-              })}
-                onClick={() => {
-                  handleSearch()
-                }}
-              >
-                {
-                  countyGraphPending
-                    ? <div className={style.loader}></div>
-                    : <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
-                }
-                <p>查詢</p>
-              </div>
             </div>
 
             <div className={style.graphGroup}>

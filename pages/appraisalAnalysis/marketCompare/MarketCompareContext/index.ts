@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { IGraphData, IMarketCompareResult } from '../../../../api/prod'
+import { ICountyData, IGraphData, IMarketCompareResult, ITownData } from '../../../../api/prod'
 import { SpatialQueryType } from '..'
 import { PolygonSketchMode } from '../../../../components/PolygonSketch'
 
@@ -38,6 +38,10 @@ export interface IMarketCompareContext {
   spatialQueryType: SpatialQueryType
   sketchMode: PolygonSketchMode
   graphData?: IGraphData
+  county: string | null
+  town: string | null
+  countyData: ICountyData | null
+  townData: ITownData | null
   onCoordinatorSelectorClick: (value: boolean) => void // (value) => {setisCoordinateSelectorActive(value)}
   onSpatialQueryTypeChange: (value: SpatialQueryType) => void // setspatialQueryType
   onBufferRadiusChange: (value: number) => void // (value) => { setbufferRadius(value) }
@@ -67,6 +71,9 @@ export interface IMarketCompareContext {
   setpending: (value: boolean) => void
   onDetailAprChange: (id: string) => void
   onShow: (value: boolean) => void
+  onCountyRadioClick: () => void
+  onCountyChange: (county: string) => void
+  onTownChange: (town: string) => void
 }
 
 const MarketCompareContext = createContext<IMarketCompareContext>({
@@ -104,6 +111,10 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   spatialQueryType: 'buffer',
   sketchMode: 'inactive',
   graphData: undefined,
+  county: null,
+  town: null,
+  countyData: null,
+  townData: null,
   onCoordinatorSelectorClick: (value: boolean) => { }, // (value) => {setisCoordinateSelectorActive(value)}
   onSpatialQueryTypeChange: (value: SpatialQueryType) => { }, // setspatialQueryType
   onBufferRadiusChange: (value: number) => { }, // (value) => { setbufferRadius(value) }
@@ -132,7 +143,10 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   onZoomIdChange: (value) => { },
   setpending: (value) => { },
   onDetailAprChange: (id) => { },
-  onShow: (value) => { }
+  onShow: (value) => { },
+  onCountyRadioClick: () => { },
+  onCountyChange: (county) => { },
+  onTownChange: (town) => { }
 })
 
 export default MarketCompareContext

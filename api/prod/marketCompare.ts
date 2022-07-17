@@ -45,6 +45,8 @@ export interface IMarketCompare {
   ageEnd?: number
   parkingSpaceType?: number
   urbanLandUse?: number[]
+  county?: string
+  town?: string
 }
 
 export interface IGraphData {
@@ -71,12 +73,15 @@ export const assetTypeMapping: { [key: number]: number } = {
 }
 
 export const marketCompare = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
+  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
   if (params.longitude && params.latitude && params.bufferRadius) {
     url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
   }
   if (params.geojson) {
     url += `&geojson=${params.geojson}`
+  }
+  if (params.county && params.town) {
+    url += `&county=${params.county}&town=${params.town}`
   }
   if (params.transactionTimeStart && params.transactionTimeEnd) {
     url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
@@ -107,12 +112,15 @@ export const marketCompare = async (params: IMarketCompare) => {
 }
 
 export const marketCompareStatistic = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
   if (params.longitude && params.latitude && params.bufferRadius) {
     url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
   }
   if (params.geojson) {
     url += `&geojson=${params.geojson}`
+  }
+  if (params.county && params.town) {
+    url += `&county=${params.county}&town=${params.town}`
   }
   if (params.transactionTimeStart && params.transactionTimeEnd) {
     url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`

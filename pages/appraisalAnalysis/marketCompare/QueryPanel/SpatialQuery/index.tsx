@@ -115,7 +115,7 @@ const SpatialQuery = () => {
         </Grid>
 
 
-        {/* <Grid item xs={2}>
+        <Grid item xs={2}>
           <Radio
             checked={
               marketCompareContext.sketchMode === 'county'
@@ -124,22 +124,34 @@ const SpatialQuery = () => {
               marketCompareContext.onSpatialQueryTypeChange('none')
               marketCompareContext.onSketchModeChange('county')
               marketCompareContext.onCoordinatorSelectorClick(false)
+              marketCompareContext.onCountyRadioClick()
             }}
             value="a"
             name="radio-buttons"
             inputProps={{ 'aria-label': 'A' }}
+            sx={{ marginTop: '8px' }}
           />
         </Grid>
         <Grid item xs={5}
-          className={style.polygonSketchContainer}
+          className={style.selectorContainer}
         >
-          <CountySelector />
+          <CountySelector
+            disabled={marketCompareContext.sketchMode !== 'county'}
+            countyData={marketCompareContext.countyData!}
+            selectedCounty={marketCompareContext.county}
+            onCountyChange={marketCompareContext.onCountyChange}
+          />
         </Grid>
         <Grid item xs={5}
-          className={style.polygonSketchContainer}
+          className={style.selectorContainer}
         >
-          <TownSelector />
-        </Grid> */}
+          <TownSelector
+            disabled={marketCompareContext.sketchMode !== 'county'}
+            townData={marketCompareContext.townData!}
+            selectedTown={marketCompareContext.town}
+            onTownChange={marketCompareContext.onTownChange}
+          />
+        </Grid>
 
       </Grid>
     </div>

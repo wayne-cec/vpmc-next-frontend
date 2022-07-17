@@ -1,7 +1,7 @@
 @import '../../styles/Animate.module.scss';
-.townSelector{
-    @apply w-[130px] h-[40px] rounded-md border
-    border-border m-2 cursor-pointer flex items-center justify-between px-2;
+.townSelector{ // [130px]
+    @apply w-full h-[40px] rounded-md border
+    border-border my-2 cursor-pointer flex items-center justify-between px-2;
     .titleContainer{
         @apply flex items-center;
         p{
@@ -17,7 +17,10 @@
     &.show{
         @apply border-main-primary;
     }
-    &:hover{
+    &.disabled{
+        @apply text-border cursor-default;
+    }
+    &:hover:not(.disabled){
         @apply border-black;
     }
 }

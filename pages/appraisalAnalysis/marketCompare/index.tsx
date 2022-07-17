@@ -92,10 +92,10 @@ const MarketCompare: NextPage = () => {
   const [detailAprId, setdetailAprId] = useState<{ id: string }>({ id: '' })
   const [detailAprInfo, setdetailAprInfo] = useState<IDetailAprInfo | null>(null)
 
-  // const [county, setcounty] = useState<string | null>(null)
-  // const [town, settown] = useState<string | null>(null)
-  // const [countyData, setcountyData] = useState<ICountyData | null>(null)
-  // const [townData, settownData] = useState<ITownData | null>(null)
+  const [county, setcounty] = useState<string | null>(null)
+  const [town, settown] = useState<string | null>(null)
+  const [countyData, setcountyData] = useState<ICountyData | null>(null)
+  const [townData, settownData] = useState<ITownData | null>(null)
 
   const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
     setlongitude(longitude)
@@ -125,10 +125,13 @@ const MarketCompare: NextPage = () => {
         params.bufferRadius = bufferRadius
       } else if (polygonGoejson !== null && spatialQueryType !== 'clear' && spatialQueryType !== 'buffer') {
         params.geojson = polygonGoejson
+      } else if (sketchMode === 'county') {
+        params.county = county!
+        params.town = town!
       } else {
         setmsgOpen(true)
         seterrorTitle('警告')
-        seterrorContent('至少選擇一種空間查詢方法')
+        seterrorContent('至少選擇一種空間查詢方法，並輸入參數。')
         setpending(false)
         return
       }
@@ -189,6 +192,7 @@ const MarketCompare: NextPage = () => {
       if (isUrbanUsageFiltered && urbanLandUse) {
         params.urbanLandUse = urbanLandUse
       }
+
       const { statusCode, responseContent } = await api.prod.marketCompare(params)
       if (statusCode === 200) {
         console.log(responseContent)
@@ -244,6 +248,14 @@ const MarketCompare: NextPage = () => {
     seterrorContent('')
   }
 
+  const reFetchTownData = async (county: string) => {
+    const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
+    if (statusCode === 200) {
+      settown(responseContent2['鄉鎮市區'][0].name)
+      settownData(responseContent2)
+    }
+  }
+
   useEffect(() => {
     if (filteredResults?.length === 0) {
       setmsgOpen(true)
@@ -269,6 +281,22 @@ const MarketCompare: NextPage = () => {
       setdetailAprInfo({ ...detailApr[0], organization: commiteeName ? commiteeName : '無管委會' })
     })()
   }, [detailAprId])
+
+  useEffect(() => {
+    const fetchDefaultCountyData = async () => {
+      const { statusCode, responseContent } = await api.prod.listCountiesByRegion()
+      if (statusCode === 200) {
+        setcountyData(responseContent)
+        setcounty(responseContent['北部'][0].name)
+        const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(responseContent['北部'][0].name)
+        if (statusCode === 200) {
+          settownData(responseContent2)
+          settown(responseContent2['鄉鎮市區'][0].name)
+        }
+      }
+    }
+    fetchDefaultCountyData()
+  }, [])
 
   return (
     <>
@@ -313,6 +341,10 @@ const MarketCompare: NextPage = () => {
           spatialQueryType: spatialQueryType,
           sketchMode: sketchMode,
           graphData: graphData,
+          county: county,
+          town: town,
+          countyData: countyData,
+          townData: townData,
           onCoordinatorSelectorClick: (value) => { setisCoordinateSelectorActive(value) },
           onSpatialQueryTypeChange: setspatialQueryType,
           onBufferRadiusChange: (value) => { setbufferRadius(value) },
@@ -380,7 +412,19 @@ const MarketCompare: NextPage = () => {
           setpending: (value) => { setpending(value) },
           onDetailAprChange: (id) => { setdetailAprId({ id: id }) },
           onShow: (value) => { setdetailPanelShow(value) },
-          onResultPanelClose: () => { setfilteredResults(null) }
+          onResultPanelClose: () => { setfilteredResults(null) },
+          onCountyRadioClick: () => {
+            setmsgOpen(true)
+            seterrorTitle('警告')
+            seterrorContent('此方法會調出大量資料，請謹慎使用。')
+          },
+          onCountyChange: (county) => {
+            setcounty(county)
+            reFetchTownData(county)
+          },
+          onTownChange: (town) => {
+            settown(town)
+          }
         }}>
         <div className={style.main}>
           <PanelContainer>
