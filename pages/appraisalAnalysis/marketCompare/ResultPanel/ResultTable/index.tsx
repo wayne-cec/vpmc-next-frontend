@@ -8,7 +8,6 @@ import classNames from 'classnames'
 import ArticleIcon from '@mui/icons-material/Article'
 import EnhancedTableHead from './EnhancedTableHead'
 import { IMarketCompareResult } from '../../../../../api/prod'
-import { DetailContext, ZoomContext } from '../..'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import { getAge } from '../../../../../lib/calculateAge'
 import { parkSpaceSet } from '../../../../../lib/marketComapreConst'
@@ -22,6 +21,7 @@ import {
   TablePagination, TableContainer, TableCell,
   TableBody, Switch, Grid
 } from '@mui/material'
+import MarketCompareContext from '../../MarketCompareContext'
 
 export type Order = 'asc' | 'desc'
 
@@ -63,10 +63,10 @@ const ResultTable = (props: IResultTable) => {
   const [dense, setDense] = useState(true)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [rows, setrows] = useState<Data[]>([])
-  const { onZoomIdChange } = useContext(ZoomContext)
+  const { onZoomIdChange } = useContext(MarketCompareContext)
   const [pending, setpending] = useState<boolean>(false)
   const [renderRows, setrenderRows] = useState<Data[]>([])
-  const { onDetailAprChange, onShow } = useContext(DetailContext)
+  const { onDetailAprChange, onShow } = useContext(MarketCompareContext)
   const isSelected = (name: string) => selected.indexOf(name) !== -1
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 

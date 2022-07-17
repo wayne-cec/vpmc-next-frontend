@@ -6,6 +6,8 @@ import { SpatialQueryType } from '../..'
 import { Grid, Radio, TextField } from '@mui/material'
 import PolygonSketch from '../../../../../components/PolygonSketch'
 import { PolygonSketchMode } from '../../../../../components/PolygonSketch'
+import CountySelector from '../../../../../components/CountySelector'
+import TownSelector from '../../../../../components/TownSelector'
 
 export interface ISpatialQuery {
   longitude?: number
@@ -78,9 +80,6 @@ const SpatialQuery = (props: ISpatialQuery) => {
         <Grid item xs={2}>
           <Radio
             checked={
-              // props.spatialQueryType === 'polygon' ||
-              // props.spatialQueryType === 'circle' ||
-              // props.spatialQueryType === 'rectangle'
               props.sketchMode === 'draw'
             }
             onChange={() => {
@@ -112,6 +111,34 @@ const SpatialQuery = (props: ISpatialQuery) => {
             onClear={props.onDraw}
           />
         </Grid>
+
+
+        {/* <Grid item xs={2}>
+          <Radio
+            checked={
+              props.sketchMode === 'county'
+            }
+            onChange={() => {
+              props.onSpatialQueryTypeChange('none')
+              props.onSketchModeChange('county')
+              props.onCoordinatorSelectorClick(false)
+            }}
+            value="a"
+            name="radio-buttons"
+            inputProps={{ 'aria-label': 'A' }}
+          />
+        </Grid>
+        <Grid item xs={5}
+          className={style.polygonSketchContainer}
+        >
+          <CountySelector />
+        </Grid>
+        <Grid item xs={5}
+          className={style.polygonSketchContainer}
+        >
+          <TownSelector />
+        </Grid> */}
+
       </Grid>
     </div>
   )
