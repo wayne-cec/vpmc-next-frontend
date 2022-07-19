@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import style from './index.module.scss'
 import Map from '@arcgis/core/Map'
 import Graphic from '@arcgis/core/Graphic'
@@ -21,6 +21,7 @@ import { createGeoJSONURL } from '../../lib/calculateAge'
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer'
 import SimpleFillSymbol from '@arcgis/core/symbols/SimpleFillSymbol'
 import { useCountyGraphPendingStatus } from '../../pages/aprV2/commitee'
+import MapPopup from '../MapPopup'
 
 export const square = 3.305785
 
@@ -102,6 +103,8 @@ const AprV2Map = (props: IEsriMap) => {
   const { setpending } = useCountyGraphPendingStatus()
   const mapRef = useRef<HTMLDivElement>(null)
   const { asyncMap, asyncMapView } = useMap(mapRef, mapOptions)
+  const [popupPoint, setPopupPoint] = useState<Point>()
+  const [openPopup, setOpenPopup] = useState(false)
 
   const renderTownGeojsonToMap = async () => {
     if (props.townGeojson) {
@@ -356,7 +359,22 @@ const AprV2Map = (props: IEsriMap) => {
     })
   }
 
+  const handleViewClick = async (event: any) => {
+    const view = await asyncMapView
+    const response = await view.hitTest(event)
+    const [{ graphic }] = response.results
+    if (!graphic) return
+    const { latitude, longitude } = new Point(graphic.geometry)
+    setPopupPoint(new Point(graphic.geometry))
+    setOpenPopup(true)
+  }
+
   useEffect(() => {
+    (async () => {
+      const map = await asyncMap
+      const view = await asyncMapView
+      view.on('click', handleViewClick)
+    })()
     addWatchUtilToMapView()
   }, [])
 
@@ -366,8 +384,8 @@ const AprV2Map = (props: IEsriMap) => {
 
   return (
     <>
-      <div className={style.esriMap} ref={mapRef}>
-      </div>
+      <div className={style.esriMap} ref={mapRef}></div>
+      <MapPopup point={popupPoint} open={openPopup} view={asyncMapView} />
     </>
   )
 }
