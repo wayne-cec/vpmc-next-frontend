@@ -64,6 +64,7 @@ export interface IMapPopupProps {
   view: Promise<MapView> | MapView
   point?: Point
   open: boolean
+  children?: React.ReactNode
   onClose?: () => void
 }
 
@@ -73,6 +74,7 @@ const MapPopup = ({
   view: _view,
   point,
   open,
+  children,
   onClose
 }: IMapPopupProps) => {
   const cancelAnimationFrame = useRef<() => void>()
@@ -86,7 +88,7 @@ const MapPopup = ({
     if (!elemRef.current) return
     if (!transform) return ''
     const { width } = elemRef.current.getBoundingClientRect()
-    return `translate(${transform.x - (width / 2)}px, ${transform.y}px)`
+    return `translate(${transform.x - (width / 2)}px, ${transform.y - 100 - 50}px)`
   })()
 
   const handlePopupPositionTransformation = async () => {
@@ -105,28 +107,40 @@ const MapPopup = ({
   }
 
   const unsubscribeWatchPosition = () => {
-    cancelAnimationFrame.current && cancelAnimationFrame.current()
+    if (cancelAnimationFrame.current) {
+      cancelAnimationFrame.current()
+      cancelAnimationFrame.current = undefined
+    }
+    // cancelAnimationFrame.current && cancelAnimationFrame.current();
+    // cancelAnimationFrame.current && cancelAnimationFrame = undefined;
   }
 
   useEffect(() => {
-    if (!point) return
+    if (!point) {
+      return
+    }
     subscribeWatchPosition()
+
     return () => {
       unsubscribeWatchPosition()
     }
   }, [point, open])
+
   useEffect(() => {
     (async function () {
       const viewer = await asyncViewer
       mapContainer.current = viewer.container
     })()
   }, [])
+
   if (!mapContainer.current) return null
   return (
     createPortal((
       (
         open
-          ? <div ref={elemRef} style={{ transform: transformStyle, position: 'absolute', left: '0px', top: '0px' }}>{transformStyle}</div>
+          ? <div ref={elemRef} style={{ transform: transformStyle, position: 'absolute', left: '0px', top: '0px' }}>
+            {children ? children : transformStyle}
+          </div>
           : null
       )
     ), mapContainer.current)
