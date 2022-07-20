@@ -102,7 +102,7 @@ const MapPopup = ({
     if (!cancelAnimationFrame.current) {
       const remover = animation.addTask(handlePopupPositionTransformation)
       cancelAnimationFrame.current = remover
-      console.log(animation)
+      // console.log(animation)
     }
   }
 

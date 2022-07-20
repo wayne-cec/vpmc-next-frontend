@@ -24,6 +24,7 @@ import { useCountyGraphPendingStatus } from '../../pages/aprV2/commitee'
 import MapPopup from '../MapPopup'
 import CommiteePopupTemplate from '../MapPopup/CommiteePopupTemplate'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
+import { ICommiteePopupTemplate } from '../MapPopup/CommiteePopupTemplate'
 
 export const square = 3.305785
 
@@ -112,6 +113,15 @@ const AprV2Map = (props: IEsriMap) => {
     graphics: [],
     visible: false
   }))
+  const [commiteeIconLayer] = useState(new GraphicsLayer({
+    id: 'commiteeIconLayer',
+    graphics: [],
+    visible: false
+  }))
+  const [popupData, setpopupData] = useState<ICommiteePopupTemplate>({
+    unitPrice: 0,
+    commiteeName: ''
+  })
 
   const renderTownGeojsonToMap = async () => {
     if (props.townGeojson) {
@@ -244,6 +254,7 @@ const AprV2Map = (props: IEsriMap) => {
     )
     const commiteeData: ICommitee[] = await response.json()
     const infoGraphics: Graphic[] = []
+    const iconGraphics: Graphic[] = []
     const promises: any[] = []
     for (let i = 0; i < commiteeData.length; i++) {
       promises.push(
@@ -269,18 +280,22 @@ const AprV2Map = (props: IEsriMap) => {
           }
           if (unitPrice !== 0 && commiteeData[i].value) {
 
-            const bgGraphic = new Graphic({
+            const iconGraphic = new Graphic({
               geometry: new Point({
                 x: commiteeData[i].longitude,
                 y: commiteeData[i].latitude
               }),
+              attributes: {
+                unitPrice: unitPrice,
+                commiteeName: parseCommitee(commiteeData[i].organization)
+              },
               symbol: new PictureMarkerSymbol({
                 url: '/commitee/commitee.png',
                 width: '60px',
                 height: '60px'
               })
             })
-            infoGraphics.push(bgGraphic)
+            iconGraphics.push(iconGraphic)
             const unitPriceGraphic = new Graphic({
               geometry: new Point({
                 x: commiteeData[i].longitude,
@@ -294,7 +309,8 @@ const AprV2Map = (props: IEsriMap) => {
                 xoffset: 0,
                 yoffset: -30,
                 font: {
-                  size: 18
+                  size: 18,
+                  weight: 'lighter'
                 }
               })
             })
@@ -311,7 +327,8 @@ const AprV2Map = (props: IEsriMap) => {
                 xoffset: 0,
                 yoffset: -45,
                 font: {
-                  size: 14
+                  size: 14,
+                  weight: 'lighter'
                 }
               })
             })
@@ -321,21 +338,19 @@ const AprV2Map = (props: IEsriMap) => {
         }
       }
       const layer = map.findLayerById('commiteeInfoLayer') as GraphicsLayer | undefined
-      // const bgLayer = map.findLayerById('commiteeBgLayer') as GraphicsLayer | undefined
-      if (layer) {
+      const iconLayer = map.findLayerById('commiteeIconLayer') as GraphicsLayer | undefined
+      if (layer && iconLayer) {
         // @ts-ignore
         layer.graphics = infoGraphics
+        // @ts-ignore
+        iconLayer.graphics = iconGraphics
         props.onExtentChange(commiteeData)
       }
     })
   }
 
   const loadCommiteeLayer = (map: Map) => {
-    // const infoLayer = new GraphicsLayer({
-    //   id: 'commiteeInfoLayer',
-    //   graphics: [],
-    //   visible: false
-    // })
+    map.add(commiteeIconLayer)
     map.add(commiteeInfoLayer)
   }
 
@@ -348,20 +363,49 @@ const AprV2Map = (props: IEsriMap) => {
           (await asyncMap).findLayerById('townBgLayer').visible = true;
           (await asyncMap).findLayerById('townInfoLayer').visible = true;
           (await asyncMap).findLayerById('commiteeInfoLayer').visible = false;
+          (await asyncMap).findLayerById('commiteeIconLayer').visible = false;
           props.onExtentChange([])
         }
       } else {
         (await asyncMap).findLayerById('townBgLayer').visible = false;
         (await asyncMap).findLayerById('townInfoLayer').visible = false;
         (await asyncMap).findLayerById('commiteeInfoLayer').visible = true;
+        (await asyncMap).findLayerById('commiteeIconLayer').visible = true;
         fetchCommiteeByExtent((await asyncMap), (await asyncMapView).extent, new SpatialReference({ wkid: 4326 }))
       }
     })
   }
 
+  const handleCommiteeHover = async (event: any) => {
+    const opts = {
+      include: commiteeIconLayer
+    }
+    const view = await asyncMapView
+    view.hitTest(event, opts).then(async (response) => {
+      if (response.results.length === 0) {
+        ((await asyncMap).findLayerById('commiteeIconLayer') as GraphicsLayer).graphics.forEach((graphic) => {
+          graphic.symbol = new PictureMarkerSymbol({
+            url: '/commitee/commitee.png',
+            width: '60px',
+            height: '60px'
+          })
+        })
+        document.body.style.cursor = 'default';
+        return
+      }
+      document.body.style.cursor = 'pointer';
+
+      response.results[0].graphic.symbol = new PictureMarkerSymbol({
+        url: '/commitee/commitee.png',
+        width: '80px',
+        height: '80px'
+      })
+    })
+  }
+
   const handleViewClick = async (event: any) => {
     const opts = {
-      include: commiteeInfoLayer
+      include: commiteeIconLayer
     }
     const view = await asyncMapView
     view.hitTest(event, opts).then((response) => {
@@ -372,6 +416,10 @@ const AprV2Map = (props: IEsriMap) => {
       }
       if (!openPopup) {
         const graphic = response.results[0].graphic
+        // graphic.attributes.unitPrice
+        setpopupData(graphic.attributes)
+        // unitPrice: unitPrice,
+        //         commiteeName: parseCommitee(commiteeData[i].organization)
         setPopupPoint(new Point(graphic.geometry))
         setOpenPopup(true)
       }
@@ -382,7 +430,8 @@ const AprV2Map = (props: IEsriMap) => {
     (async () => {
       const map = await asyncMap
       const view = await asyncMapView
-      view.on('pointer-move', handleViewClick) // 
+      view.on('click', handleViewClick) // 
+      view.on('pointer-move', handleCommiteeHover) // 
     })()
     addWatchUtilToMapView()
   }, [])
@@ -395,7 +444,7 @@ const AprV2Map = (props: IEsriMap) => {
     <>
       <div className={style.esriMap} ref={mapRef}></div>
       <MapPopup point={popupPoint} open={openPopup} view={asyncMapView}>
-        <CommiteePopupTemplate />
+        <CommiteePopupTemplate {...popupData} />
       </MapPopup>
     </>
   )

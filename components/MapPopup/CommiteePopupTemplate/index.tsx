@@ -1,7 +1,9 @@
 import React from 'react'
 import style from './index.module.scss'
 
-interface ICommiteePopupTemplate {
+export interface ICommiteePopupTemplate {
+  unitPrice: number
+  commiteeName: string
 
 }
 
@@ -9,7 +11,7 @@ const CommiteePopupTemplate = (props: ICommiteePopupTemplate) => {
 
   return (
     <div className={style.CommiteePopupTemplate}>
-
+      {props.commiteeName}
     </div>
   )
 }
