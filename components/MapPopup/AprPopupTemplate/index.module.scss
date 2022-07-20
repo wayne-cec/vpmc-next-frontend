@@ -1,15 +1,17 @@
 .AprPopupTemplate{
-    @apply w-[300px] h-[100px] bg-white shadow-md rounded-md border border-main-primary;
-    &:after {
-        @apply shadow-md;
-        content: "";
-        position:absolute;
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-bottom: 15px solid #ff8000;
-        left: 50%;
-        top: 100%;
-        transform: translate(-50% ,0%) rotate(-180deg);
-        // transform:;
-      }
+  @apply w-[300px] h-[100px] bg-white shadow-md 
+  rounded-md border border-main-primary flex
+  items-center justify-center;
+  &:after {
+    @apply shadow-md;
+    content: "";
+    position:absolute;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-bottom: 15px solid #ff8000;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50% ,0%) rotate(-180deg);
+    // transform:;
+  }
 }
