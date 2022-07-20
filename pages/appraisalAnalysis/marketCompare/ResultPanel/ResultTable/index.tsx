@@ -22,6 +22,7 @@ import {
   TableBody, Switch, Grid
 } from '@mui/material'
 import MarketCompareContext from '../../MarketCompareContext'
+import calculateArea from '../../../../../lib/calculateArea'
 
 export type Order = 'asc' | 'desc'
 
@@ -224,6 +225,14 @@ const ResultTable = (props: IResultTable) => {
                       <TableCell
                         align="right"
                       >
+                        <span>
+                          {'暫無資料'}
+                        </span>
+                      </TableCell>
+
+                      <TableCell
+                        align="right"
+                      >
                         <span
                           className={classNames({
                             [style.organization]: true,
@@ -255,7 +264,23 @@ const ResultTable = (props: IResultTable) => {
 
                       <TableCell align="right">
                         <span>
-                          {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪
+                          {calculateArea(row.landTransferArea)}坪
+                          {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
+                        </span>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <span>
+                          {calculateArea(row.buildingTransferArea - row.parkingSpaceTransferArea)}坪
+                          {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
+                        </span>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <span>
+                          {
+                            Math.round(row.buildingArea / row.buildingTransferArea * 1000) / 10
+                          }%
                         </span>
                       </TableCell>
 
