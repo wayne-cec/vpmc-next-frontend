@@ -8,7 +8,7 @@ import { visuallyHidden } from '@mui/utils'
 
 export interface HeadCell {
   disablePadding: boolean
-  id: keyof Data
+  id: keyof Data | string
   label: string
   numeric: boolean
 }
@@ -19,6 +19,12 @@ export const headCells: readonly HeadCell[] = [
     numeric: false,
     disablePadding: true,
     label: '交易日期'
+  },
+  {
+    id: 'address',
+    numeric: true,
+    disablePadding: false,
+    label: '門牌道路'
   },
   {
     id: 'organization',
@@ -39,10 +45,22 @@ export const headCells: readonly HeadCell[] = [
     label: '樓層'
   },
   {
+    id: 'landTransferArea',
+    numeric: true,
+    disablePadding: false,
+    label: '土地'
+  },
+  {
     id: 'buildingTransferArea',
     numeric: true,
     disablePadding: false,
-    label: '坪數'
+    label: '建物'
+  },
+  {
+    id: 'areaRatio',
+    numeric: true,
+    disablePadding: false,
+    label: '主建比'
   },
   {
     id: 'unitPrice',
@@ -111,7 +129,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             <TableSortLabel
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
+              onClick={createSortHandler((headCell.id as keyof Data))}
             >
               {headCell.label}
               {orderBy === headCell.id ? (

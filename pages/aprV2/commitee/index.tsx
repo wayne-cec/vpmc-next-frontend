@@ -1,7 +1,14 @@
+
+import { useState, useEffect, createContext, useContext } from 'react'
+import { ICommitee } from '../../../components/MapContainer/AprV2Map'
+import { ICommiteeAprDetail } from '../../../store/slice/commitee'
+import { WithNavProtected } from '../../../layout/BaseLayout'
+import { IAprRegionGraphDisplayData } from '../../../api/prod'
+import { ICountyData, ITownData } from '../../../api/prod'
+import { Grid } from '@mui/material'
 import type { NextPage } from 'next'
 import style from './index.module.scss'
 import Drawer from '../../../components/Drawer'
-import { useState, useEffect, createContext, useContext } from 'react'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 import CommiteeCard from '../../../components/CommiteeCard'
@@ -10,17 +17,12 @@ import doubleRight from '../../../public/aprV2/doubleRight.png'
 import doubleLeft from '../../../public/aprV2/doubleLeft.png'
 import doubleRightHover from '../../../public/aprV2/doubleRight-hover.png'
 import doubleLeftHover from '../../../public/aprV2/doubleLeft-hover.png'
-import { ICommitee } from '../../../components/MapContainer/AprV2Map'
-import { ICommiteeAprDetail } from '../../../store/slice/commitee'
-import { WithNavProtected } from '../../../layout/BaseLayout'
-import { IAprRegionGraphDisplayData } from '../../../api/prod'
-import { ICountyData, ITownData } from '../../../api/prod'
 import api from '../../../api'
 import CountySelector from '../../../components/CountySelector'
 import TownSelector from '../../../components/TownSelector'
 import classNames from 'classnames'
 import TabsPanel from '../../../components/TabsPanel'
-import { Grid } from '@mui/material'
+import MapPopup from '../../../components/MapPopup'
 
 const MapContainer = dynamic(
   () => import('../../../components/MapContainer/AprV2Map'),
@@ -52,6 +54,7 @@ const AprV2: NextPage = () => {
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
   const [countyGraphPending, setcountyGraphPending] = useState<boolean>(false)
+
 
   const handleFetchTownGeography = async () => {
     const { statusCode, responseContent } = await api.prod.getVillageGeographyByTown(
@@ -191,7 +194,6 @@ const AprV2: NextPage = () => {
           </Drawer>
 
           <div className={style.content}>
-
             <div className={style.mapContainer}>
               <MapContainer
                 basemap='gray'
@@ -199,7 +201,6 @@ const AprV2: NextPage = () => {
                 onExtentChange={setcommiteeInExtent}
               />
             </div>
-
             <div className={style.footer}>
               <Image
                 className={style.drawerBtn}
