@@ -22,7 +22,7 @@ import * as projection from '@arcgis/core/geometry/projection'
 import SpatialReference from '@arcgis/core/geometry/SpatialReference'
 import MarketCompareContext from '../../pages/appraisalAnalysis/marketCompare/MarketCompareContext'
 import MapPopup from '../MapPopup'
-import AprPopupTemplate from '../MapPopup/AprPopupTemplate'
+import AprPopupTemplate, { IAprPopupTemplate } from '../MapPopup/AprPopupTemplate'
 
 const mapOptions = {
   mapOption: { basemap: 'topo-vector' },
@@ -55,6 +55,9 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   const [latitude, setlatitude] = useState<number | undefined>(undefined)
   const [popupPoint, setPopupPoint] = useState<Point>()
   const [openPopup, setOpenPopup] = useState(false)
+  const [popupData, setpopupData] = useState<IAprPopupTemplate>({
+    count: 0
+  })
   // const [basemapGallery, setbasemapGallery] = useState<BasemapGallery | undefined>(undefined)
   // const [basemapGalleryExpand, setbasemapGalleryExpand] = useState<Expand | undefined>(undefined)
 
@@ -117,6 +120,9 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
         setOpenPopup(false)
         return
       }
+      setpopupData({
+        count: response.results.length
+      })
       if (!openPopup) {
         const graphic = response.results[0].graphic
         setPopupPoint(new Point(graphic.geometry))
@@ -328,7 +334,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       })} ref={mapRef}>
       </div>
       <MapPopup point={popupPoint} open={openPopup} view={asyncMapView}>
-        <AprPopupTemplate />
+        <AprPopupTemplate {...popupData} />
       </MapPopup>
     </>
   )
