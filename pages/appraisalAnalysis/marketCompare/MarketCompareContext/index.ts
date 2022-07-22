@@ -39,7 +39,7 @@ export interface IMarketCompareContext {
   sketchMode: PolygonSketchMode
   graphData?: IGraphData
   county: string | null
-  town: string | null
+  towns: string[]
   countyData: ICountyData | null
   townData: ITownData | null
   onCoordinatorSelectorClick: (value: boolean) => void // (value) => {setisCoordinateSelectorActive(value)}
@@ -73,7 +73,7 @@ export interface IMarketCompareContext {
   onShow: (value: boolean) => void
   onCountyRadioClick: () => void
   onCountyChange: (county: string) => void
-  onTownChange: (town: string) => void
+  onTownChange: (town: string[]) => void
 }
 
 const MarketCompareContext = createContext<IMarketCompareContext>({
@@ -112,7 +112,7 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   sketchMode: 'inactive',
   graphData: undefined,
   county: null,
-  town: null,
+  towns: [],
   countyData: null,
   townData: null,
   onCoordinatorSelectorClick: (value: boolean) => { }, // (value) => {setisCoordinateSelectorActive(value)}
