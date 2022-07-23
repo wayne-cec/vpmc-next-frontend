@@ -49,7 +49,7 @@ const AprV2: NextPage = () => {
   const [currentCommiteeAprDetail, setcurrentCommiteeAprDetail] = useState<ICommiteeAprDetail | undefined>(undefined)
   const [townGeojson, settownGeojson] = useState<any | null>(null)
   const [county, setcounty] = useState<string | null>(null)
-  const [town, settown] = useState<string | null>(null)
+  const [town, settown] = useState<string | undefined>(undefined)
   const [displayData, setdisplayData] = useState<IAprRegionGraphDisplayData | null>(null)
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
