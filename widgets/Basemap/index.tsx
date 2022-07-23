@@ -24,12 +24,12 @@ export interface IBasemapData {
 }
 
 const basemapDataList: IBasemapData[] = [
-  {
-    id: 'DEFAULT',
-    title: '預設底圖',
-    icon: '/basemaps/default.png',
-    tileLayer: new WebTileLayer()
-  },
+  // {
+  //   id: 'DEFAULT',
+  //   title: '預設底圖',
+  //   icon: '/basemaps/default.png',
+  //   tileLayer: new WebTileLayer()
+  // },
   {
     id: 'EMAP5',
     title: '臺灣通用電子地圖',
@@ -82,26 +82,42 @@ const geographicDataList: IBasemapData[] = [
 
 const Basemap = () => {
   const { map, show, onShowChange } = useContext(widgetContext)
-  const [activeBasemap, setactiveBasemap] = useState<string>('EMAP5')
+  const [activeBasemaps, setactiveBasemaps] = useState<string[]>(['EMAP5'])
   const [basemapTypeExpanded, setbasemapTypeExpanded] = useState<BasemapCategory | false>(false)
 
   const handleChangeBasemap = (basemap: IBasemapData) => {
-    if (map) {
-      setactiveBasemap(basemap.id)
-      handleRemoveAllBasemaps()
-      onShowChange('none')
-      if (basemap.id === 'DEFAULT') return
-      map.add(basemap.tileLayer)
-      map.reorder(basemap.tileLayer, 0)
+    if (!map) return
+    if (activeBasemaps.includes(basemap.id)) {
+      let newActiveBasemaps = [...activeBasemaps]
+      newActiveBasemaps = newActiveBasemaps.filter((item) => {
+        return item !== basemap.id
+      })
+      setactiveBasemaps([...newActiveBasemaps])
+      const layers = basemapDataList.concat(geographicDataList).filter((layer) => {
+        return layer.id === basemap.id
+      }).map(a => a.tileLayer)
+      map.removeMany(layers)
+
+    } else {
+      setactiveBasemaps([...activeBasemaps, basemap.id])
+      const layers = basemapDataList.concat(geographicDataList).filter((layer) => {
+        return layer.id === basemap.id
+      }).map(a => a.tileLayer)
+      map.addMany(layers)
     }
+    // handleRemoveAllBasemaps()
+    // onShowChange('none')
+    // if (basemap.id === 'DEFAULT') return
+    // map.add(basemap.tileLayer)
+    // map.reorder(basemap.tileLayer, 0)
   }
 
   const handleRemoveAllBasemaps = () => {
+    if (!map) return
     let baseLayers = basemapDataList.map(a => a.tileLayer)
-    map?.removeMany(baseLayers)
-
+    map.removeMany(baseLayers)
     let geographicLayers = geographicDataList.map(a => a.tileLayer)
-    map?.removeMany(geographicLayers)
+    map.removeMany(geographicLayers)
   }
 
   const handleAccordionClick =
@@ -109,10 +125,22 @@ const Basemap = () => {
       setbasemapTypeExpanded(isExpanded ? panel : false);
     }
 
+  // useEffect(() => {
+  //   if (!map) return
+  //   let tileLayers = basemapDataList.filter(a => activeBasemaps.includes(a.id)).map(a => a.tileLayer)
+  //   map.addMany(tileLayers)
+  //   tileLayers.forEach((layer) => {
+  //     map.reorder(layer, 0)
+  //   })
+
+
+  // }, [activeBasemaps])
+
   useEffect(() => {
-    let tileLayers = basemapDataList.filter(a => a.id === activeBasemap).map(a => a.tileLayer)
-    map?.addMany(tileLayers)
-    map?.reorder(tileLayers[0], 0)
+    if (!map) return
+    let tileLayers = basemapDataList.filter(a => activeBasemaps.includes(a.id)).map(a => a.tileLayer)
+    map.addMany(tileLayers)
+    map.reorder(tileLayers[0], 0)
   }, [])
 
   return (
@@ -137,7 +165,7 @@ const Basemap = () => {
                 icon={basemap.icon}
                 title={basemap.title}
                 layer={basemap.tileLayer}
-                active={basemap.id === activeBasemap}
+                active={activeBasemaps.includes(basemap.id)}
                 onClick={() => {
                   handleChangeBasemap(basemap)
                 }}
@@ -163,16 +191,9 @@ const Basemap = () => {
                 icon={basemap.icon}
                 title={basemap.title}
                 layer={basemap.tileLayer}
-                active={basemap.id === activeBasemap}
+                active={activeBasemaps.includes(basemap.id)}
                 onClick={() => {
-                  if (map) {
-                    setactiveBasemap(basemap.id)
-                    handleRemoveAllBasemaps()
-                    onShowChange('none')
-                    if (basemap.id === 'DEFAULT') return
-                    map.add(basemap.tileLayer)
-                    map.reorder(basemap.tileLayer, 0)
-                  }
+                  handleChangeBasemap(basemap)
                 }}
               />
             })
