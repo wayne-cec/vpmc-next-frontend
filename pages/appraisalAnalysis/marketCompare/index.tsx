@@ -46,6 +46,8 @@ const MarketCompare: NextPage = () => {
   const [isAgeFiltered, setisAgeFiltered] = useState<boolean>(false)
   const [isParkSpaceFiltered, setisParkSpaceFiltered] = useState<boolean>(false)
   const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
+  const [isPriceFiltered, setisPriceFiltered] = useState<boolean>(false)
+  const [isUnitPriceFiltered, setisUnitPriceFiltered] = useState<boolean>(false)
 
   const [isTransactionTimeFosced, setisTransactionTimeFosced] = useState<boolean>(false)
   const [isBuildingAreaFosced, setisBuildingAreaFosced] = useState<boolean>(false)
@@ -53,6 +55,8 @@ const MarketCompare: NextPage = () => {
   const [isAgeFosced, setisAgeFosced] = useState<boolean>(false)
   const [isParkSpaceFosced, setisParkSpaceFosced] = useState<boolean>(false)
   const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
+  const [isPriceFocused, setisPriceFocused] = useState<boolean>(false)
+  const [isUnitPriceFocused, setisUnitPriceFocused] = useState<boolean>(false)
 
   const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
   const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
@@ -66,6 +70,11 @@ const MarketCompare: NextPage = () => {
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
   const [urbanLandUse, seturbanLandUse] = useState<number[] | null>(null)
   const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
+
+  const [minPrice, setminPrice] = useState<number | undefined>(0)
+  const [maxPrice, setmaxPrice] = useState<number | undefined>(2000)
+  const [minUnitPrice, setminUnitPrice] = useState<number | undefined>(0)
+  const [maxUnitPrice, setmaxUnitPrice] = useState<number | undefined>(100)
 
   const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
 
@@ -188,6 +197,15 @@ const MarketCompare: NextPage = () => {
       if (isUrbanUsageFiltered && urbanLandUse) {
         params.urbanLandUse = urbanLandUse
       }
+      if (isPriceFiltered) {
+        params.minPrice = minPrice
+        params.maxPrice = maxPrice
+      }
+      if (isUnitPriceFiltered) {
+        params.minUnitPrice = minUnitPrice
+        params.maxUnitPrice = maxUnitPrice
+      }
+
 
       const { statusCode, responseContent } = await api.prod.marketCompare(params)
       if (statusCode === 200) {
@@ -316,12 +334,16 @@ const MarketCompare: NextPage = () => {
           isAgeFiltered: isAgeFiltered,
           isParkSpaceFiltered: isParkSpaceFiltered,
           isUrbanUsageFiltered: isUrbanUsageFiltered,
+          isPriceFiltered: isPriceFiltered,
+          isUnitPriceFiltered: isUnitPriceFiltered,
           isTransactionTimeFosced: isTransactionTimeFosced,
           isBuildingAreaFosced: isBuildingAreaFosced,
           isLandAreaFosced: isLandAreaFosced,
           isAgeFosced: isAgeFosced,
           isParkSpaceFosced: isParkSpaceFosced,
           isUrbanUsageFosced: isUrbanUsageFosced,
+          isPriceFocused: isPriceFocused,
+          isUnitPriceFocused: isUnitPriceFocused,
           isBuildingAreaCheckable: isBuildingAreaCheckable,
           isLandAreaCheckable: isLandAreaCheckable,
           assetTypeCode: assetTypeCode,
@@ -333,6 +355,10 @@ const MarketCompare: NextPage = () => {
           parkSpaceType: parkSpaceType!,
           urbanLandUse: urbanLandUse!,
           polygonGoejson: polygonGoejson!,
+          minPrice: minPrice,
+          maxPrice: maxPrice,
+          minUnitPrice: minUnitPrice,
+          maxUnitPrice: maxUnitPrice,
           filteredResults: filteredResults!,
           spatialQueryType: spatialQueryType,
           sketchMode: sketchMode,
@@ -395,6 +421,25 @@ const MarketCompare: NextPage = () => {
           onUrbanLaudUseSelect: (value) => {
             seturbanLandUse(value)
             setisUrbanUsageFosced(true)
+          },
+          onPriceFilteredChange: () => {
+            setisPriceFiltered(prev => !prev)
+          },
+          onMinPriceChange: (value) => {
+            setminPrice(value)
+          },
+          onMaxPriceChange: (value) => {
+            setmaxPrice(value)
+          },
+
+          onUnitPriceFilteredChange: () => {
+            setisUnitPriceFiltered(prev => !prev)
+          },
+          onMinUnitPriceChange: (value) => {
+            setminUnitPrice(value)
+          },
+          onMaxUnitPriceChange: (value) => {
+            setmaxUnitPrice(value)
           },
           onCustomizeParamBtnClick: () => {
             setmsgOpen(true)

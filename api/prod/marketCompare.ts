@@ -47,6 +47,10 @@ export interface IMarketCompare {
   urbanLandUse?: number[]
   county?: string
   town?: string
+  minPrice?: number
+  maxPrice?: number
+  minUnitPrice?: number
+  maxUnitPrice?: number
 }
 
 export interface IGraphData {
@@ -72,8 +76,7 @@ export const assetTypeMapping: { [key: number]: number } = {
   13: 2
 }
 
-export const marketCompare = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
+const buildMarketCompareUrl = (url: string, params: IMarketCompare): string => {
   if (params.longitude && params.latitude && params.bufferRadius) {
     url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
   }
@@ -101,7 +104,18 @@ export const marketCompare = async (params: IMarketCompare) => {
   if (params.urbanLandUse) {
     url += `&urbanLandUse=${params.urbanLandUse.join(',')}`
   }
+  if (params.minPrice && params.maxPrice) {
+    url += `&minPrice=${params.minPrice}&maxPrice=${params.maxPrice}`
+  }
+  if (params.minUnitPrice && params.maxUnitPrice) {
+    url += `&minUnitPrice=${params.minUnitPrice}&maxUnitPrice=${params.maxUnitPrice}`
+  }
+  return url
+}
 
+export const marketCompare = async (params: IMarketCompare) => {
+  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
+  url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',
     redirect: 'follow'
@@ -113,34 +127,7 @@ export const marketCompare = async (params: IMarketCompare) => {
 
 export const marketCompareStatistic = async (params: IMarketCompare) => {
   let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
-  if (params.longitude && params.latitude && params.bufferRadius) {
-    url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
-  }
-  if (params.geojson) {
-    url += `&geojson=${params.geojson}`
-  }
-  if (params.county && params.town) {
-    url += `&county=${params.county}&town=${params.town}`
-  }
-  if (params.transactionTimeStart && params.transactionTimeEnd) {
-    url += `&transactionTimeStart=${params.transactionTimeStart}&transactionTimeEnd=${params.transactionTimeEnd}`
-  }
-  if (params.buildingAreaStart !== undefined && params.buildingAreaEnd) {
-    url += `&buildingAreaStart=${params.buildingAreaStart}&buildingAreaEnd=${params.buildingAreaEnd}`
-  }
-  if (params.landAreaStart !== undefined && params.landAreaEnd) {
-    url += `&landAreaStart=${params.landAreaStart}&landAreaEnd=${params.landAreaEnd}`
-  }
-  if (params.ageStart !== undefined && params.ageEnd) {
-    url += `&ageStart=${params.ageStart}&ageEnd=${params.ageEnd}`
-  }
-  if (params.parkingSpaceType) {
-    url += `&parkingSpaceType=${params.parkingSpaceType}`
-  }
-  if (params.urbanLandUse) {
-    url += `&urbanLandUse=${params.urbanLandUse.join(',')}`
-  }
-
+  url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',
     redirect: 'follow'
