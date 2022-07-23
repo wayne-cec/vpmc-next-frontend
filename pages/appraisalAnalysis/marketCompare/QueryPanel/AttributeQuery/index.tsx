@@ -1,17 +1,32 @@
 import React, { useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
-import {
-  Grid, FormControl, InputLabel, Select,
-  Checkbox, MenuItem
-} from '@mui/material'
+import MultiChipSelect from '../../../../../components/MultiChipSelect'
+import MarketCompareContext, { IMarketCompareContext } from '../../MarketCompareContext'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
 } from '../../../../../lib/marketComapreConst'
+import {
+  Grid, FormControl, InputLabel, Select,
+  Checkbox, MenuItem
+} from '@mui/material'
 import { assetTypeMapping } from '../../../../../api/prod'
-import MultiChipSelect from '../../../../../components/MultiChipSelect'
-import MarketCompareContext from '../../MarketCompareContext'
+
+export type AttributeQueryType = 'building' | 'parking' | 'land'
+
+const getAttributeQueryType = (
+  assetTypeMapping: { [key: number]: number },
+  marketCompareContext: IMarketCompareContext
+) => {
+  if (assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200) {
+    return 'building'
+  } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 100) {
+    return 'land'
+  } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 200) {
+    return 'parking'
+  }
+}
 
 const AttributeQuery = () => {
   const marketCompareContext = useContext(MarketCompareContext)
@@ -90,7 +105,7 @@ const AttributeQuery = () => {
 
         {/* 建坪面積 */}
         {
-          assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -137,7 +152,7 @@ const AttributeQuery = () => {
 
         {/* 地坪面積 */}
         {
-          assetTypeMapping[marketCompareContext.assetTypeCode] === 100
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'land'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -184,7 +199,7 @@ const AttributeQuery = () => {
 
         {/* 屋齡 */}
         {
-          assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -230,7 +245,7 @@ const AttributeQuery = () => {
 
         {/* 車位類型 */}
         {
-          assetTypeMapping[marketCompareContext.assetTypeCode] === 200
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'parking'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -275,55 +290,8 @@ const AttributeQuery = () => {
         }
 
         {/* 使用分區 */}
-        {/* {
-          assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
-            ? <>
-
-              <Grid item xs={2}>
-                <Checkbox
-                  checked={marketCompareContext.isUrbanUsageFiltered}
-                  onClick={marketCompareContext.onUrbanLaudUseFilteredChange}
-                />
-              </Grid>
-              <Grid item xs={10}>
-                <FormControl size='small' fullWidth>
-                  {
-                    marketCompareContext.isUrbanUsageFiltered && !marketCompareContext.isUrbanUsageFosced
-                      ? <></>
-                      : <InputLabel id="land-use">使用分區</InputLabel>
-                  }
-                  <Select
-                    labelId="land-use"
-                    label="使用分區"
-                    id="land-use-select"
-                    size='small'
-                    fullWidth
-                    value={marketCompareContext.isUrbanUsageFiltered ? marketCompareContext.urbanLandUse : null}
-                    onChange={(event) => {
-                      marketCompareContext.onUrbanLaudUseSelect(Number(event.target.value))
-                    }}
-                    // autoFocus={isUrbanUsageFiltered}
-                    disabled={!marketCompareContext.isUrbanUsageFiltered}
-                  >
-                    {
-                      Object.keys(urbanUsageSet).map((assetCode, index) => {
-                        return <MenuItem
-                          key={index}
-                          value={assetCode}
-                        >{urbanUsageSet[Number(assetCode)]}</MenuItem>
-                      })
-                    }
-                  </Select>
-                </FormControl>
-
-              </Grid>
-            </>
-            : null
-        } */}
-
-        {/* 使用分區 */}
         {
-          assetTypeMapping[marketCompareContext.assetTypeCode] !== 200
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) !== 'parking'
             ? <>
 
               <Grid item xs={2}>
