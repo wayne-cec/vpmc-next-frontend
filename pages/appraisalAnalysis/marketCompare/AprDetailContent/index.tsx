@@ -5,7 +5,7 @@ import { getAge } from '../../../../lib/calculateAge'
 import { Grid } from '@mui/material'
 import { buildingTypeDecode } from '../../../../components/CommiteeCard'
 import { urbanUsageSet } from '../../../../lib/marketComapreConst'
-import { calculateArea } from '../../../../lib/calculateArea'
+import calculateArea from '../../../../lib/calculateArea'
 
 const square = 3.305785
 

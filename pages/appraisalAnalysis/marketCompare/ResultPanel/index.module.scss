@@ -8,11 +8,11 @@
     }
     &.slideIn{
         @apply flex;
-        @include animate-css(slideInLeft, 0.6s); // fadeInRight
+        @include animate-css(bounceInLeft, 0.6s); // fadeInRight
     }
     &.slideOut{
         @apply flex;
-        @include animate-css(slideOutLeft, 0.6s); // fadeOutRight
+        @include animate-css(bounceOutLeft, 0.6s); // fadeOutRight
     }
     
     .resultHeader{

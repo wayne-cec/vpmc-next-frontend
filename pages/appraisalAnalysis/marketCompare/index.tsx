@@ -4,7 +4,7 @@ import style from './index.module.scss'
 import dynamic from 'next/dynamic'
 import api from '../../../api'
 import Head from 'next/head'
-import moment from 'moment'
+import moment, { max } from 'moment'
 import QueryPanel from './QueryPanel'
 import ResultPanel from './ResultPanel'
 import AprDetailContent from './AprDetailContent'
@@ -119,121 +119,135 @@ const MarketCompare: NextPage = () => {
   const handleFormSubmit = async () => {
     setpending(true)
     setfilteredResults(null)
-    if (assetTypeCode !== null) {
-      // alert(spatialQueryType)
-      const params: IMarketCompare = {
-        buildingType: assetTypeCode
-      }
-      if (longitude !== null && latitude !== null && bufferRadius !== null && spatialQueryType === 'buffer') {
-        params.longitude = longitude
-        params.latitude = latitude
-        params.bufferRadius = bufferRadius
-      } else if (polygonGoejson !== null && spatialQueryType !== 'clear' && spatialQueryType !== 'buffer') {
-        params.geojson = polygonGoejson
-      } else if (sketchMode === 'county') {
-        params.county = county!
-        params.town = towns.join(',')
-      } else {
-        setmsgOpen(true)
-        seterrorTitle('警告')
-        seterrorContent('至少選擇一種空間查詢方法，並輸入參數。')
-        setpending(false)
-        return
-      }
-
-      if (isTransactionTimeFiltered && transactiontime) {
-        const dateNow = new Date()
-        params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
-        params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
-      }
-      if (isBuildingAreaFiltered && buildingTransferArea !== null) {
-        if (buildingTransferArea === 0) {
-          params.buildingAreaStart = 0
-          params.buildingAreaEnd = 25 * square
-        } else if (buildingTransferArea === 1) {
-          params.buildingAreaStart = 25 * square
-          params.buildingAreaEnd = 50 * square
-        } else if (buildingTransferArea === 2) {
-          params.buildingAreaStart = 50 * square
-          params.buildingAreaEnd = 80 * square
-        } else if (buildingTransferArea === 3) {
-          params.buildingAreaStart = 80 * square
-          params.buildingAreaEnd = 10000 * square
-        }
-      }
-      if (isLandAreaFiltered && landTransferArea !== null) {
-        if (landTransferArea === 0) {
-          params.landAreaStart = 0
-          params.landAreaEnd = 50 * square
-        } else if (landTransferArea === 1) {
-          params.landAreaStart = 50 * square
-          params.landAreaEnd = 200 * square
-        } else if (landTransferArea === 2) {
-          params.landAreaStart = 200 * square
-          params.landAreaEnd = 100000 * square
-        }
-      }
-      if (isAgeFiltered && age !== null) {
-        if (age === 0) {
-          params.ageStart = 0
-          params.ageEnd = 5
-        } else if (age === 1) {
-          params.ageStart = 5
-          params.ageEnd = 10
-        } else if (age === 2) {
-          params.ageStart = 10
-          params.ageEnd = 20
-        } else if (age === 3) {
-          params.ageStart = 20
-          params.ageEnd = 30
-        } else if (age === 4) {
-          params.ageStart = 30
-          params.ageEnd = 500
-        }
-      }
-      if (isParkSpaceFiltered && parkSpaceType) {
-        params.parkingSpaceType = parkSpaceType
-      }
-      if (isUrbanUsageFiltered && urbanLandUse) {
-        params.urbanLandUse = urbanLandUse
-      }
-      if (isPriceFiltered) {
-        params.minPrice = minPrice
-        params.maxPrice = maxPrice
-      }
-      if (isUnitPriceFiltered) {
-        params.minUnitPrice = minUnitPrice
-        params.maxUnitPrice = maxUnitPrice
-      }
-
-
-      const { statusCode, responseContent } = await api.prod.marketCompare(params)
-      if (statusCode === 200) {
-        console.log(responseContent)
-        setfilteredResults(responseContent)
-        const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params)
-        if (statusCode === 200) {
-          setgraphData(responseContent2)
-          setpending(false)
-          setqueryPanelShow(false)
-          setresultPanelShow(true)
-        } else {
-          setmsgOpen(true)
-          seterrorTitle('錯誤')
-          seterrorContent('伺服器錯誤，統計圖表資料請求失敗，請聯繫開發人員')
-          setpending(false)
-        }
-      } else {
-        setfilteredResults(null)
-        setmsgOpen(true)
-        seterrorTitle('錯誤')
-        seterrorContent('伺服器錯誤，查詢失敗，請聯繫開發人員')
-        setpending(false)
-      }
-    } else {
+    if (assetTypeCode === null) {
       setmsgOpen(true)
       seterrorTitle('警告')
       seterrorContent('請輸入資產類別')
+      setpending(false)
+      return
+    }
+    if (minPrice && maxPrice && minPrice > maxPrice) {
+      setmsgOpen(true)
+      seterrorTitle('錯誤')
+      seterrorContent('價格上限不能低於下限')
+      setpending(false)
+      return
+    }
+    if (minUnitPrice && maxUnitPrice && minUnitPrice > maxUnitPrice) {
+      setmsgOpen(true)
+      seterrorTitle('錯誤')
+      seterrorContent('價格上限不能低於下限')
+      setpending(false)
+      return
+    }
+    // alert(spatialQueryType)
+    const params: IMarketCompare = {
+      buildingType: assetTypeCode
+    }
+    if (longitude !== null && latitude !== null && bufferRadius !== null && spatialQueryType === 'buffer') {
+      params.longitude = longitude
+      params.latitude = latitude
+      params.bufferRadius = bufferRadius
+    } else if (polygonGoejson !== null && spatialQueryType !== 'clear' && spatialQueryType !== 'buffer') {
+      params.geojson = polygonGoejson
+    } else if (sketchMode === 'county') {
+      params.county = county!
+      params.town = towns.join(',')
+    } else {
+      setmsgOpen(true)
+      seterrorTitle('警告')
+      seterrorContent('至少選擇一種空間查詢方法，並輸入參數。')
+      setpending(false)
+      return
+    }
+
+    if (isTransactionTimeFiltered && transactiontime) {
+      const dateNow = new Date()
+      params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
+      params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
+    }
+    if (isBuildingAreaFiltered && buildingTransferArea !== null) {
+      if (buildingTransferArea === 0) {
+        params.buildingAreaStart = 0
+        params.buildingAreaEnd = 25 * square
+      } else if (buildingTransferArea === 1) {
+        params.buildingAreaStart = 25 * square
+        params.buildingAreaEnd = 50 * square
+      } else if (buildingTransferArea === 2) {
+        params.buildingAreaStart = 50 * square
+        params.buildingAreaEnd = 80 * square
+      } else if (buildingTransferArea === 3) {
+        params.buildingAreaStart = 80 * square
+        params.buildingAreaEnd = 10000 * square
+      }
+    }
+    if (isLandAreaFiltered && landTransferArea !== null) {
+      if (landTransferArea === 0) {
+        params.landAreaStart = 0
+        params.landAreaEnd = 50 * square
+      } else if (landTransferArea === 1) {
+        params.landAreaStart = 50 * square
+        params.landAreaEnd = 200 * square
+      } else if (landTransferArea === 2) {
+        params.landAreaStart = 200 * square
+        params.landAreaEnd = 100000 * square
+      }
+    }
+    if (isAgeFiltered && age !== null) {
+      if (age === 0) {
+        params.ageStart = 0
+        params.ageEnd = 5
+      } else if (age === 1) {
+        params.ageStart = 5
+        params.ageEnd = 10
+      } else if (age === 2) {
+        params.ageStart = 10
+        params.ageEnd = 20
+      } else if (age === 3) {
+        params.ageStart = 20
+        params.ageEnd = 30
+      } else if (age === 4) {
+        params.ageStart = 30
+        params.ageEnd = 500
+      }
+    }
+    if (isParkSpaceFiltered && parkSpaceType) {
+      params.parkingSpaceType = parkSpaceType
+    }
+    if (isUrbanUsageFiltered && urbanLandUse) {
+      params.urbanLandUse = urbanLandUse
+    }
+    if (isPriceFiltered) {
+      params.minPrice = minPrice
+      params.maxPrice = maxPrice
+    }
+    if (isUnitPriceFiltered) {
+      params.minUnitPrice = minUnitPrice
+      params.maxUnitPrice = maxUnitPrice
+    }
+
+
+    const { statusCode, responseContent } = await api.prod.marketCompare(params)
+    if (statusCode === 200) {
+      console.log(responseContent)
+      setfilteredResults(responseContent)
+      const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params)
+      if (statusCode === 200) {
+        setgraphData(responseContent2)
+        setpending(false)
+        setqueryPanelShow(false)
+        setresultPanelShow(true)
+      } else {
+        setmsgOpen(true)
+        seterrorTitle('錯誤')
+        seterrorContent('伺服器錯誤，統計圖表資料請求失敗，請聯繫開發人員')
+        setpending(false)
+      }
+    } else {
+      setfilteredResults(null)
+      setmsgOpen(true)
+      seterrorTitle('錯誤')
+      seterrorContent('伺服器錯誤，查詢失敗，請聯繫開發人員')
       setpending(false)
     }
   }
