@@ -1,12 +1,18 @@
+import React, { useState, useEffect } from 'react'
 import type { NextPage } from 'next'
 import style from './index.module.scss'
 import dynamic from 'next/dynamic'
 import api from '../../../api'
 import Head from 'next/head'
 import moment from 'moment'
+import QueryPanel from './QueryPanel'
+import ResultPanel from './ResultPanel'
+import AprDetailContent from './AprDetailContent'
+import MarketCompareContext from './MarketCompareContext'
+import PanelContainer from '../../../components/PanelContainer'
+import PanelButton from '../../../components/PanelContainer/PanelButton'
 import { PolygonSketchMode } from '../../../components/PolygonSketch'
 import { IGraphData } from '../../../api/prod'
-import { useState, useEffect, useContext } from 'react'
 import {
   Dialog, DialogActions,
   DialogContent, DialogContentText,
@@ -14,19 +20,9 @@ import {
 } from '@mui/material'
 import { IMarketCompare, IMarketCompareResult } from '../../../api/prod'
 import { WithNavProtected } from '../../../layout/BaseLayout'
-import QueryPanel from './QueryPanel'
-import ResultPanel from './ResultPanel'
-import React, { createContext } from 'react'
-import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
-import MapView from '@arcgis/core/views/MapView'
-import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
-import PanelContainer from '../../../components/PanelContainer'
-import PanelButton from '../../../components/PanelContainer/PanelButton'
 import { parseCommitee } from '../../../lib/parseCommitee'
-import AprDetailContent from './AprDetailContent'
 import { IDetailAprInfo } from './AprDetailContent'
 import { ICountyData, ITownData } from '../../../api/prod'
-import MarketCompareContext from './MarketCompareContext'
 
 const square = 3.305785
 
@@ -93,7 +89,7 @@ const MarketCompare: NextPage = () => {
   const [detailAprInfo, setdetailAprInfo] = useState<IDetailAprInfo | null>(null)
 
   const [county, setcounty] = useState<string | null>(null)
-  const [town, settown] = useState<string | null>(null)
+  const [towns, settowns] = useState<string[]>([])
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
 
@@ -127,7 +123,7 @@ const MarketCompare: NextPage = () => {
         params.geojson = polygonGoejson
       } else if (sketchMode === 'county') {
         params.county = county!
-        params.town = town!
+        params.town = towns.join(',')
       } else {
         setmsgOpen(true)
         seterrorTitle('警告')
@@ -251,7 +247,7 @@ const MarketCompare: NextPage = () => {
   const reFetchTownData = async (county: string) => {
     const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
     if (statusCode === 200) {
-      settown(responseContent2['鄉鎮市區'][0].name)
+      settowns([responseContent2['鄉鎮市區'][0].name])
       settownData(responseContent2)
     }
   }
@@ -291,7 +287,7 @@ const MarketCompare: NextPage = () => {
         const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(responseContent['北部'][0].name)
         if (statusCode === 200) {
           settownData(responseContent2)
-          settown(responseContent2['鄉鎮市區'][0].name)
+          settowns([responseContent2['鄉鎮市區'][0].name])
         }
       }
     }
@@ -342,7 +338,7 @@ const MarketCompare: NextPage = () => {
           sketchMode: sketchMode,
           graphData: graphData,
           county: county,
-          town: town,
+          towns: towns,
           countyData: countyData,
           townData: townData,
           onCoordinatorSelectorClick: (value) => { setisCoordinateSelectorActive(value) },
@@ -422,8 +418,8 @@ const MarketCompare: NextPage = () => {
             setcounty(county)
             reFetchTownData(county)
           },
-          onTownChange: (town) => {
-            settown(town)
+          onTownChange: (towns) => {
+            settowns(towns)
           }
         }}>
         <div className={style.main}>

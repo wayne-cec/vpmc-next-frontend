@@ -10,23 +10,6 @@ import CountySelector from '../../../../../components/CountySelector'
 import TownSelector from '../../../../../components/TownSelector'
 import MarketCompareContext from '../../MarketCompareContext'
 
-export interface ISpatialQuery {
-  longitude?: number
-  latitude?: number
-  locatedCounty?: string
-  locatedTown?: string
-  isSelectorActive: boolean
-  bufferRadius: number
-  spatialQueryType: SpatialQueryType
-  sketchMode: PolygonSketchMode
-  onCoordinatorSelectorClick: (value: boolean) => void
-  onSpatialQueryTypeChange: (value: SpatialQueryType) => void
-  onBufferRadiusChange: (value: number) => void
-  onSketchModeChange: (value: PolygonSketchMode) => void
-  onDraw: () => void
-  onClear: () => void
-}
-
 const SpatialQuery = () => {
   const marketCompareContext = useContext(MarketCompareContext)
 
@@ -148,8 +131,9 @@ const SpatialQuery = () => {
           <TownSelector
             disabled={marketCompareContext.sketchMode !== 'county'}
             townData={marketCompareContext.townData!}
-            selectedTown={marketCompareContext.town}
-            onTownChange={marketCompareContext.onTownChange}
+            selectedTowns={marketCompareContext.towns}
+            multiple={true}
+            onTownsChange={marketCompareContext.onTownChange}
           />
         </Grid>
 

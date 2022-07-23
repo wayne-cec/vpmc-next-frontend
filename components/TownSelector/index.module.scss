@@ -73,6 +73,9 @@
                         @include chipHover
                     }
                 }
+                &.selected{
+                    @include chipHover;
+                }
             }
         }
     }

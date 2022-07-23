@@ -13,45 +13,6 @@ import { assetTypeMapping } from '../../../../../api/prod'
 import MultiChipSelect from '../../../../../components/MultiChipSelect'
 import MarketCompareContext from '../../MarketCompareContext'
 
-
-export interface IAttributeQuery {
-  assetTypeCode: number
-  isTransactionTimeFiltered: boolean
-  isBuildingAreaFiltered: boolean
-  isLandAreaFiltered: boolean
-  isAgeFiltered: boolean
-  isParkSpaceFiltered: boolean
-  isUrbanUsageFiltered: boolean
-  isTransactionTimeFosced: boolean
-  isBuildingAreaFosced: boolean
-  isLandAreaFosced: boolean
-  isAgeFosced: boolean
-  isParkSpaceFosced: boolean
-  isUrbanUsageFosced: boolean
-  isBuildingAreaCheckable: boolean
-  isLandAreaCheckable: boolean
-  transactiontime?: number
-  buildingTransferArea?: number
-  landTransferArea?: number
-  age?: number
-  parkSpaceType?: number
-  urbanLandUse?: number[]
-  onAssetTypeChange: (value: number) => void
-  onTransactionTimeFilteredChange: () => void
-  onTransactionTimeSelect: (value: number) => void
-  onBuildingAreaFilteredChange: () => void
-  onBuildingAreaSelect: (value: number) => void
-  onLandAreaFilteredChange: () => void
-  onLandAreaSelect: (value: number) => void
-  onAgeFilteredChange: () => void
-  onAgeSelect: (value: number) => void
-  onParkSpaceTypeFilteredChange: () => void
-  onParkSpaceTypeSelect: (value: number) => void
-
-  onUrbanLaudUseFilteredChange: () => void
-  onUrbanLaudUseSelect: (value: number[]) => void
-}
-
 const AttributeQuery = () => {
   const marketCompareContext = useContext(MarketCompareContext)
   return (
