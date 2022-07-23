@@ -17,12 +17,20 @@ export interface IMarketCompareContext {
   isAgeFiltered: boolean
   isParkSpaceFiltered: boolean
   isUrbanUsageFiltered: boolean
+
+  isPriceFiltered: boolean
+  isUnitPriceFiltered: boolean
+
   isTransactionTimeFosced: boolean
   isBuildingAreaFosced: boolean
   isLandAreaFosced: boolean
   isAgeFosced: boolean
   isParkSpaceFosced: boolean
   isUrbanUsageFosced: boolean
+
+  isPriceFocused: boolean
+  isUnitPriceFocused: boolean
+
   isBuildingAreaCheckable: boolean
   isLandAreaCheckable: boolean
   assetTypeCode: number
@@ -34,6 +42,12 @@ export interface IMarketCompareContext {
   parkSpaceType?: number
   urbanLandUse?: number[]
   polygonGoejson?: string
+
+  minPrice?: number
+  maxPrice?: number
+  minUnitPrice?: number
+  maxUnitPrice?: number
+
   filteredResults: IMarketCompareResult[]
   spatialQueryType: SpatialQueryType
   sketchMode: PolygonSketchMode
@@ -61,6 +75,15 @@ export interface IMarketCompareContext {
   onParkSpaceTypeSelect: (value: number) => void
   onUrbanLaudUseFilteredChange: () => void
   onUrbanLaudUseSelect: (value: number[]) => void
+
+  onPriceFilteredChange: () => void
+  onMinPriceChange: (value: number) => void
+  onMaxPriceChange: (value: number) => void
+
+  onUnitPriceFilteredChange: () => void
+  onMinUnitPriceChange: (value: number) => void
+  onMaxUnitPriceChange: (value: number) => void
+
   onCustomizeParamBtnClick: () => void //() => {setmsgOpen(true)seterrorTitle('訊息')seterrorContent('自定義參數功能尚未開發')}
   handleFormSubmit: () => void
   onResultPanelClose: () => void
@@ -90,12 +113,16 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   isAgeFiltered: false,
   isParkSpaceFiltered: false,
   isUrbanUsageFiltered: false,
+  isPriceFiltered: false,
+  isUnitPriceFiltered: false,
   isTransactionTimeFosced: false,
   isBuildingAreaFosced: false,
   isLandAreaFosced: false,
   isAgeFosced: false,
   isParkSpaceFosced: false,
   isUrbanUsageFosced: false,
+  isPriceFocused: false,
+  isUnitPriceFocused: false,
   isBuildingAreaCheckable: true,
   isLandAreaCheckable: true,
   assetTypeCode: 0,
@@ -107,6 +134,10 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   parkSpaceType: undefined,
   urbanLandUse: undefined,
   polygonGoejson: undefined,
+  minPrice: undefined,
+  maxPrice: undefined,
+  minUnitPrice: undefined,
+  maxUnitPrice: undefined,
   filteredResults: [],
   spatialQueryType: 'buffer',
   sketchMode: 'inactive',
@@ -137,6 +168,14 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   onCustomizeParamBtnClick: () => { }, //() => {setmsgOpen(true)seterrorTitle('訊息')seterrorContent('自定義參數功能尚未開發')}
   handleFormSubmit: () => { },
   onResultPanelClose: () => { },
+
+  onPriceFilteredChange: () => { },
+  onMinPriceChange: (value: number) => { },
+  onMaxPriceChange: (value: number) => { },
+
+  onUnitPriceFilteredChange: () => { },
+  onMinUnitPriceChange: (value: number) => { },
+  onMaxUnitPriceChange: (value: number) => { },
 
   zoomId: null,
   pending: false,

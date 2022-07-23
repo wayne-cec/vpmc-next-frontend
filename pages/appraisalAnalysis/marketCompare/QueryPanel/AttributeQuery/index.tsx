@@ -9,7 +9,7 @@ import {
 } from '../../../../../lib/marketComapreConst'
 import {
   Grid, FormControl, InputLabel, Select,
-  Checkbox, MenuItem
+  Checkbox, MenuItem, TextField
 } from '@mui/material'
 import { assetTypeMapping } from '../../../../../api/prod'
 
@@ -144,7 +144,6 @@ const AttributeQuery = () => {
                     }
                   </Select>
                 </FormControl>
-
               </Grid>
             </>
             : null
@@ -293,7 +292,6 @@ const AttributeQuery = () => {
         {
           getAttributeQueryType(assetTypeMapping, marketCompareContext) !== 'parking'
             ? <>
-
               <Grid item xs={2}>
                 <Checkbox
                   checked={marketCompareContext.isUrbanUsageFiltered}
@@ -311,6 +309,118 @@ const AttributeQuery = () => {
                     marketCompareContext.onUrbanLaudUseSelect(value)
                   }}
                 />
+              </Grid>
+            </>
+            : null
+        }
+
+        {/* 建物總價 */}
+        {
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
+            ? <>
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={marketCompareContext.isPriceFiltered}
+                  onClick={marketCompareContext.onPriceFilteredChange}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <FormControl size='small' fullWidth>
+                  <TextField
+                    type='number'
+                    label="建物總價下限(萬)"
+                    size='small'
+                    value={marketCompareContext.minPrice}
+                    disabled={!marketCompareContext.isPriceFiltered}
+                    onChange={(event) => {
+                      marketCompareContext.onMinPriceChange(Number(event.target.value))
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        min: 0,
+                        max: marketCompareContext.maxPrice
+                      }
+                    }}
+                    fullWidth
+                  >
+                  </TextField>
+                </FormControl>
+              </Grid>
+              <Grid item xs={5}>
+                <FormControl size='small' fullWidth>
+                  <TextField
+                    type='number'
+                    label="建物總價上限(萬)"
+                    size='small'
+                    value={marketCompareContext.maxPrice}
+                    disabled={!marketCompareContext.isPriceFiltered}
+                    onChange={(event) => {
+                      marketCompareContext.onMaxPriceChange(Number(event.target.value))
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        min: marketCompareContext.minPrice
+                      }
+                    }}
+                    fullWidth
+                  ></TextField>
+                </FormControl>
+              </Grid>
+            </>
+            : null
+        }
+
+        {/* 建物單價 */}
+        {
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
+            ? <>
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={marketCompareContext.isUnitPriceFiltered}
+                  onClick={marketCompareContext.onUnitPriceFilteredChange}
+                />
+              </Grid>
+              <Grid item xs={5}>
+                <FormControl size='small' fullWidth>
+                  <TextField
+                    type='number'
+                    label="建物單價下限(萬)"
+                    size='small'
+                    value={marketCompareContext.minUnitPrice}
+                    disabled={!marketCompareContext.isUnitPriceFiltered}
+                    onChange={(event) => {
+                      marketCompareContext.onMinUnitPriceChange(Number(event.target.value))
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        min: 0,
+                        max: marketCompareContext.maxUnitPrice
+                      }
+                    }}
+                    fullWidth
+                  >
+                  </TextField>
+                </FormControl>
+              </Grid>
+              <Grid item xs={5}>
+                <FormControl size='small' fullWidth>
+                  <TextField
+                    type='number'
+                    label="建物單價上限(萬)"
+                    size='small'
+                    value={marketCompareContext.maxUnitPrice}
+                    disabled={!marketCompareContext.isUnitPriceFiltered}
+                    onChange={(event) => {
+                      marketCompareContext.onMaxUnitPriceChange(Number(event.target.value))
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        min: marketCompareContext.minUnitPrice
+                      }
+                    }}
+                    fullWidth
+                  ></TextField>
+                </FormControl>
               </Grid>
             </>
             : null
