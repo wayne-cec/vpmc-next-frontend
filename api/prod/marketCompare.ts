@@ -114,7 +114,7 @@ const buildMarketCompareUrl = (url: string, params: IMarketCompare): string => {
 }
 
 export const marketCompare = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
   url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',
@@ -126,7 +126,7 @@ export const marketCompare = async (params: IMarketCompare) => {
 }
 
 export const marketCompareStatistic = async (params: IMarketCompare) => {
-  let url = process.env.API_DOMAIN_DEV + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
   url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',
