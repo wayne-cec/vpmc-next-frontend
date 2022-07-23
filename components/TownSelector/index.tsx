@@ -55,7 +55,7 @@ const TownSelector = ({
   }
 
   const handleSingleSelect = (townname: string) => {
-    if (multiple || selectedTown || !onTownChange) return
+    if (multiple || !selectedTown || !onTownChange) return
     onTownChange(townname)
     setopen(false)
   }
@@ -132,7 +132,7 @@ const TownSelector = ({
                             className={classNames({
                               [style.chip]: true,
                               // [style.marked]: town.marked
-                              [style.selected]: selectedTowns?.includes(town.name)
+                              [style.selected]: selectedTown === town.name || selectedTowns?.includes(town.name)
                             })}
                             onClick={() => {
                               handleMultipleSelect(town.name)
