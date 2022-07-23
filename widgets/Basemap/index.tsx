@@ -81,60 +81,38 @@ const geographicDataList: IBasemapData[] = [
 ]
 
 const Basemap = () => {
-  const { map, show, onShowChange } = useContext(widgetContext)
+  const { map, show } = useContext(widgetContext)
   const [activeBasemaps, setactiveBasemaps] = useState<string[]>(['EMAP5'])
   const [basemapTypeExpanded, setbasemapTypeExpanded] = useState<BasemapCategory | false>(false)
+
+  const getTileLayersById = (id: string): WebTileLayer[] => {
+    return basemapDataList.concat(geographicDataList).filter((layer) => {
+      return layer.id === id
+    }).map(a => a.tileLayer)
+  }
 
   const handleChangeBasemap = (basemap: IBasemapData) => {
     if (!map) return
     if (activeBasemaps.includes(basemap.id)) {
-      let newActiveBasemaps = [...activeBasemaps]
-      newActiveBasemaps = newActiveBasemaps.filter((item) => {
+      let newActiveBasemaps = [...activeBasemaps.filter((item) => {
         return item !== basemap.id
-      })
+      })]
       setactiveBasemaps([...newActiveBasemaps])
-      const layers = basemapDataList.concat(geographicDataList).filter((layer) => {
-        return layer.id === basemap.id
-      }).map(a => a.tileLayer)
-      map.removeMany(layers)
-
-    } else {
-      setactiveBasemaps([...activeBasemaps, basemap.id])
-      const layers = basemapDataList.concat(geographicDataList).filter((layer) => {
-        return layer.id === basemap.id
-      }).map(a => a.tileLayer)
-      map.addMany(layers)
+      map.removeMany(
+        getTileLayersById(basemap.id)
+      )
+      return
     }
-    // handleRemoveAllBasemaps()
-    // onShowChange('none')
-    // if (basemap.id === 'DEFAULT') return
-    // map.add(basemap.tileLayer)
-    // map.reorder(basemap.tileLayer, 0)
-  }
-
-  const handleRemoveAllBasemaps = () => {
-    if (!map) return
-    let baseLayers = basemapDataList.map(a => a.tileLayer)
-    map.removeMany(baseLayers)
-    let geographicLayers = geographicDataList.map(a => a.tileLayer)
-    map.removeMany(geographicLayers)
+    setactiveBasemaps([...activeBasemaps, basemap.id])
+    map.addMany(
+      getTileLayersById(basemap.id)
+    )
   }
 
   const handleAccordionClick =
     (panel: BasemapCategory) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setbasemapTypeExpanded(isExpanded ? panel : false);
     }
-
-  // useEffect(() => {
-  //   if (!map) return
-  //   let tileLayers = basemapDataList.filter(a => activeBasemaps.includes(a.id)).map(a => a.tileLayer)
-  //   map.addMany(tileLayers)
-  //   tileLayers.forEach((layer) => {
-  //     map.reorder(layer, 0)
-  //   })
-
-
-  // }, [activeBasemaps])
 
   useEffect(() => {
     if (!map) return
