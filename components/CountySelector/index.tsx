@@ -9,10 +9,17 @@ export interface ICountySelector {
   countyData: { [key: string]: { name: string, marked: boolean }[] }
   selectedCounty: string | null
   offset?: boolean
+  disabled?: boolean
   onCountyChange: (county: string) => void
 }
 
-const CountySelector = (props: ICountySelector) => {
+const CountySelector = ({
+  countyData,
+  selectedCounty,
+  offset,
+  disabled = false,
+  onCountyChange
+}: ICountySelector) => {
   const ref = useRef<HTMLDivElement>(null)
   const refPanel = useRef<HTMLDivElement>(null)
   const [open, setopen] = useState<boolean>(false)
@@ -29,7 +36,7 @@ const CountySelector = (props: ICountySelector) => {
     if (!ref.current.firstElementChild) return
     const { x, y, height } = ref.current.firstElementChild.getBoundingClientRect()
     setcoordinate({
-      x: `${props.offset === true ? x - 500 + 130 : x}px`,
+      x: `${offset === true ? x - 500 + 130 : x}px`,
       y: `${y + height + 10}px`
     })
   }
@@ -47,15 +54,19 @@ const CountySelector = (props: ICountySelector) => {
     >
       <div className={classNames({
         [style.countySelector]: true,
-        [style.show]: open
+        [style.show]: open,
+        [style.disabled]: disabled
       })}
-        onClick={handleClick}
+        onClick={() => {
+          if (!disabled)
+            handleClick()
+        }}
       >
         <div className={style.titleContainer}>
-          <Image src={'/aprRegion/locate.png'} width='25px' height='25px' />
+          <Image src={disabled ? '/aprRegion/locate-disabled.png' : '/aprRegion/locate.png'} width='25px' height='25px' />
           <p>
             {
-              props.selectedCounty
+              selectedCounty
             }
           </p>
         </div>
@@ -63,7 +74,7 @@ const CountySelector = (props: ICountySelector) => {
       </div>
 
       {
-        props.countyData
+        countyData
           ? createPortal(
             <div className={classNames({
               [style.popPanel]: true,
@@ -74,12 +85,12 @@ const CountySelector = (props: ICountySelector) => {
               ref={refPanel}
             >
               {
-                Object.keys(props.countyData).map((section, index) => {
+                Object.keys(countyData).map((section, index) => {
                   return <div className={style.countySection} key={index}>
                     <p className={style.sectionTitle}>{section}</p>
                     <div className={style.chipContainer}>
                       {
-                        props.countyData[section].map((county, indexj) => {
+                        countyData[section].map((county, indexj) => {
                           return <span
                             key={indexj}
                             className={classNames({
@@ -87,7 +98,7 @@ const CountySelector = (props: ICountySelector) => {
                               [style.marked]: county.marked
                             })}
                             onClick={() => {
-                              props.onCountyChange(county.name)
+                              onCountyChange(county.name)
                               setopen(false)
                             }}
                           >{county.name}</span>

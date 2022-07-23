@@ -7,12 +7,25 @@ import { createPortal } from 'react-dom'
 
 export interface ITownSelector {
   townData: { [key: string]: { name: string, marked: boolean }[] }
-  selectedTown: string | null
+  selectedTown?: string
+  selectedTowns?: string[]
   offset?: boolean
-  onTownChange: (town: string) => void
+  disabled?: boolean
+  multiple?: boolean
+  onTownChange?: (town: string) => void
+  onTownsChange?: (town: string[]) => void
 }
 
-const TownSelector = (props: ITownSelector) => {
+const TownSelector = ({
+  townData,
+  selectedTown,
+  selectedTowns,
+  offset,
+  disabled = false,
+  multiple = false,
+  onTownChange,
+  onTownsChange
+}: ITownSelector) => {
   const ref = useRef<HTMLDivElement>(null)
   const refPanel = useRef<HTMLDivElement>(null)
   const [open, setopen] = useState<boolean>(false)
@@ -29,7 +42,7 @@ const TownSelector = (props: ITownSelector) => {
     if (!ref.current.firstElementChild) return
     const { x, y, height } = ref.current.firstElementChild.getBoundingClientRect()
     setcoordinate({
-      x: `${props.offset === true ? x - 500 + 130 : x}px`,
+      x: `${offset === true ? x - 500 + 130 : x}px`,
       y: `${y + height + 10}px`
     })
   }
@@ -41,21 +54,52 @@ const TownSelector = (props: ITownSelector) => {
     return {}
   }
 
+  const handleSingleSelect = (townname: string) => {
+    if (multiple || !selectedTown || !onTownChange) return
+    onTownChange(townname)
+    setopen(false)
+  }
+
+  const handleMultipleSelect = (townname: string) => {
+    if (!multiple || !selectedTowns || !onTownsChange) return
+    let newSelectedTowns = [...selectedTowns]
+    if (newSelectedTowns.includes(townname)) {
+      newSelectedTowns = newSelectedTowns.filter(t => t !== townname)
+      if (newSelectedTowns.length === 0) {
+        return
+      }
+    } else {
+      newSelectedTowns.push(townname)
+    }
+    onTownsChange([...newSelectedTowns])
+  }
+
   return (
     <div
       ref={ref}
     >
       <div className={classNames({
         [style.townSelector]: true,
-        [style.show]: open
+        [style.show]: open,
+        [style.disabled]: disabled
       })}
-        onClick={handleClick}
+        onClick={() => {
+          if (!disabled)
+            handleClick()
+        }}
       >
         <div className={style.titleContainer}>
-          <Image src={'/aprRegion/town.png'} width='25px' height='25px' />
+          <Image src={disabled ? '/aprRegion/town-disabled.png' : '/aprRegion/town.png'} width='25px' height='25px' />
           <p>
             {
-              props.selectedTown
+              selectedTowns
+                ? selectedTowns[0]
+                : selectedTown
+            }
+            {
+              selectedTowns && selectedTowns.length !== 1
+                ? `+${selectedTowns.length - 1}`
+                : null
             }
           </p>
         </div>
@@ -63,7 +107,7 @@ const TownSelector = (props: ITownSelector) => {
       </div>
 
       {
-        props.townData
+        townData
           ? createPortal(
             <div className={classNames({
               [style.popPanel]: true,
@@ -74,21 +118,25 @@ const TownSelector = (props: ITownSelector) => {
               ref={refPanel}
             >
               {
-                Object.keys(props.townData).map((section, index) => {
-                  return <div className={style.countySection} key={index}>
+                Object.keys(townData).map((section, index) => {
+                  return <div
+                    className={style.countySection}
+                    key={index}
+                  >
                     <p className={style.sectionTitle}>{section}</p>
                     <div className={style.chipContainer}>
                       {
-                        props.townData[section].map((town, indexj) => {
+                        townData[section].map((town, indexj) => {
                           return <span
                             key={indexj}
                             className={classNames({
                               [style.chip]: true,
-                              [style.marked]: town.marked
+                              // [style.marked]: town.marked
+                              [style.selected]: selectedTown === town.name || selectedTowns?.includes(town.name)
                             })}
                             onClick={() => {
-                              props.onTownChange(town.name)
-                              setopen(false)
+                              handleMultipleSelect(town.name)
+                              handleSingleSelect(town.name)
                             }}
                           >{town.name}</span>
                         })

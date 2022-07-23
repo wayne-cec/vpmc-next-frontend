@@ -3,11 +3,12 @@
 @mixin queryBtn {
     @apply bg-main-primary h-[40px] px-2 
     text-white rounded-md shadow-md flex items-center 
-    justify-center cursor-pointer m-2;
+    justify-center cursor-pointer my-2;
     @include textNoneSelectable;
 }
 .countyQuery{
-    @apply flex items-center justify-center;
+    // @apply flex items-center justify-center;
+    @apply px-2;
     .queryBtn{
         @include queryBtn;
     }

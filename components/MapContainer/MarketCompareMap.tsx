@@ -14,12 +14,15 @@ import Point from '@arcgis/core/geometry/Point'
 import Graphic from '@arcgis/core/Graphic'
 import useMap from '../../hooks/useMap'
 import classNames from 'classnames'
-import { SpatialQueryType, ZoomContext } from '../../pages/appraisalAnalysis/marketCompare'
+import { SpatialQueryType } from '../../pages/appraisalAnalysis/marketCompare'
 import { IMarketCompareResult } from '../../api/prod'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 import { PolygonSketchMode } from '../PolygonSketch'
 import * as projection from '@arcgis/core/geometry/projection'
 import SpatialReference from '@arcgis/core/geometry/SpatialReference'
+import MarketCompareContext from '../../pages/appraisalAnalysis/marketCompare/MarketCompareContext'
+import MapPopup from '../MapPopup'
+import AprPopupTemplate, { IAprPopupTemplate } from '../MapPopup/AprPopupTemplate'
 
 const mapOptions = {
   mapOption: { basemap: 'topo-vector' },
@@ -32,12 +35,6 @@ const mapOptions = {
 }
 
 export interface IMarketCompareMap {
-  active: boolean
-  bufferRadius: number
-  filteredResults: IMarketCompareResult[]
-  spatialQueryType: SpatialQueryType
-  sketchMode: PolygonSketchMode
-  zoomId: { id: string } | null
   onCoordinateSelect: (longitude: number | null, latitude: number | null) => void
   onSketchModeChange: (value: PolygonSketchMode) => void
   onGeojsonChange: (value: string | null) => void
@@ -45,7 +42,10 @@ export interface IMarketCompareMap {
 }
 
 const MarketCompareMap = (props: IMarketCompareMap) => {
+  const marketCompareContext = useContext(MarketCompareContext)
   const mapRef = useRef<HTMLDivElement>(null)
+  const { asyncMap, asyncMapView, map, mapView } = useMap(mapRef, mapOptions)
+  const { zoomId } = useContext(MarketCompareContext)
   const [removeHandle, setremoveHandle] = useState<any | null>(null)
   const [pointLayer, setpointLayer] = useState<GraphicsLayer | undefined>(undefined)
   const [bufferLayer, setbufferLayer] = useState<GraphicsLayer | undefined>(undefined)
@@ -53,8 +53,11 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   const [aprLayer, setaprLayer] = useState<GraphicsLayer | undefined>(undefined)
   const [longitude, setlongitude] = useState<number | undefined>(undefined)
   const [latitude, setlatitude] = useState<number | undefined>(undefined)
-  const { asyncMap, asyncMapView, map, mapView } = useMap(mapRef, mapOptions)
-  const { zoomId } = useContext(ZoomContext)
+  const [popupPoint, setPopupPoint] = useState<Point>()
+  const [openPopup, setOpenPopup] = useState(false)
+  const [popupData, setpopupData] = useState<IAprPopupTemplate>({
+    count: 0
+  })
   // const [basemapGallery, setbasemapGallery] = useState<BasemapGallery | undefined>(undefined)
   // const [basemapGalleryExpand, setbasemapGalleryExpand] = useState<Expand | undefined>(undefined)
 
@@ -67,7 +70,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
         center: [ilongitude, ilatitude] as any,
         geodesic: true,
         numberOfPoints: 100,
-        radius: props.bufferRadius,
+        radius: marketCompareContext.bufferRadius,
         radiusUnit: 'meters'
       }),
       symbol: new SimpleFillSymbol({
@@ -106,6 +109,28 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
 
   }
 
+  const handleAprClick = async (event: any) => {
+    const opts = {
+      include: aprLayer
+    }
+    const view = await asyncMapView
+    view.hitTest(event, opts).then((response) => {
+      if (response.results.length === 0) {
+        setPopupPoint(undefined)
+        setOpenPopup(false)
+        return
+      }
+      setpopupData({
+        count: response.results.length
+      })
+      if (!openPopup) {
+        const graphic = response.results[0].graphic
+        setPopupPoint(new Point(graphic.geometry))
+        setOpenPopup(true)
+      }
+    })
+  }
+
   useEffect(() => {
     const pLayer = new GraphicsLayer({ id: 'pointLayer' })
     const bLayer = new GraphicsLayer({ id: 'bufferLayer' })
@@ -114,7 +139,14 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     setpointLayer(pLayer)
     setbufferLayer(bLayer)
     setaprLayer(aLayer)
-    setsketchLayer(sLayer)
+    setsketchLayer(sLayer);
+
+    (async () => {
+      const map = await asyncMap
+      const view = await asyncMapView
+      view.on('click', handleAprClick)
+    })()
+
   }, [])
 
   useEffect(() => {
@@ -122,9 +154,9 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       aprLayer.graphics = new Collection()
       map.remove(aprLayer)
     }
-    if (props.filteredResults) {
+    if (marketCompareContext.filteredResults) {
       const aprResultGraphics = new Collection<Graphic>()
-      props.filteredResults.forEach((aprResult) => {
+      marketCompareContext.filteredResults.forEach((aprResult) => {
         const pointGraphic = new Graphic({
           attributes: {
             id: aprResult.id
@@ -147,16 +179,16 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
         map.add(aprLayer)
       }
     }
-  }, [props.filteredResults])
+  }, [marketCompareContext.filteredResults])
 
   useEffect(() => {
     if (longitude && latitude) {
       updateBufferCircle(longitude, latitude)
     }
-  }, [props.bufferRadius])
+  }, [marketCompareContext.bufferRadius])
 
   useEffect(() => {
-    if (props.active && mapView && pointLayer && aprLayer) {
+    if (marketCompareContext.isSelectorActive && mapView && pointLayer && aprLayer) {
       const remove = mapView.on("click", (event) => {
         props.onCoordinateSelect(event.mapPoint.longitude, event.mapPoint.latitude)
         setlongitude(event.mapPoint.longitude)
@@ -179,14 +211,14 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       })
       setremoveHandle(remove)
     }
-    if (!props.active && mapView) {
+    if (!marketCompareContext.isSelectorActive && mapView) {
       removeHandle.remove()
     }
-  }, [props.active])
+  }, [marketCompareContext.isSelectorActive])
 
   useEffect(() => {
     if (map && mapView && pointLayer && bufferLayer && aprLayer && sketchLayer) {
-      if (props.spatialQueryType === 'polygon' && props.sketchMode !== 'inactive') {
+      if (marketCompareContext.spatialQueryType === 'polygon' && marketCompareContext.sketchMode !== 'inactive') {
         map.remove(sketchLayer)
         sketchLayer.graphics = new Collection<Graphic>()
         aprLayer.graphics = new Collection<Graphic>()
@@ -214,7 +246,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
           }
         })
         sketchViewModel.create('polygon')
-      } else if (props.spatialQueryType === 'circle' && props.sketchMode !== 'inactive') {
+      } else if (marketCompareContext.spatialQueryType === 'circle' && marketCompareContext.sketchMode !== 'inactive') {
         map.remove(sketchLayer)
         sketchLayer.graphics = new Collection<Graphic>()
         aprLayer.graphics = new Collection<Graphic>()
@@ -241,7 +273,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
           }
         })
         sketchViewModel.create('circle')
-      } else if (props.spatialQueryType === 'rectangle' && props.sketchMode !== 'inactive') {
+      } else if (marketCompareContext.spatialQueryType === 'rectangle' && marketCompareContext.sketchMode !== 'inactive') {
         map.remove(sketchLayer)
         sketchLayer.graphics = new Collection<Graphic>()
         aprLayer.graphics = new Collection<Graphic>()
@@ -268,25 +300,25 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
           }
         })
         sketchViewModel.create('rectangle')
-      } else if (props.spatialQueryType === 'clear' && props.sketchMode !== 'inactive') {
+      } else if (marketCompareContext.spatialQueryType === 'clear' && marketCompareContext.sketchMode !== 'inactive') {
         map.remove(sketchLayer)
         sketchLayer.graphics = new Collection<Graphic>()
         map.add(sketchLayer)
       }
 
-      if (props.sketchMode === 'draw') {
+      if (marketCompareContext.sketchMode === 'draw') {
         map.removeMany([pointLayer, bufferLayer, aprLayer])
         aprLayer.graphics = new Collection<Graphic>()
         map.add(sketchLayer)
       }
-      if (props.sketchMode === 'inactive') {
+      if (marketCompareContext.sketchMode === 'inactive') {
         // props.onGeojsonChange(null)
         map.removeMany([sketchLayer, aprLayer])
         map.addMany([pointLayer, bufferLayer])
         aprLayer.graphics = new Collection<Graphic>()
       }
     }
-  }, [props.spatialQueryType, props.sketchMode])
+  }, [marketCompareContext.spatialQueryType, marketCompareContext.sketchMode])
 
   useEffect(() => {
     if (zoomId !== null) {
@@ -298,9 +330,12 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     <>
       <div className={classNames({
         [style.esriMapMarketCompare]: true,
-        [style.active]: props.active || (props.spatialQueryType !== 'none' && props.spatialQueryType !== 'buffer' && props.spatialQueryType !== 'clear')
+        [style.active]: marketCompareContext.isSelectorActive || (marketCompareContext.spatialQueryType !== 'none' && marketCompareContext.spatialQueryType !== 'buffer' && marketCompareContext.spatialQueryType !== 'clear')
       })} ref={mapRef}>
       </div>
+      <MapPopup point={popupPoint} open={openPopup} view={asyncMapView}>
+        <AprPopupTemplate {...popupData} />
+      </MapPopup>
     </>
   )
 }

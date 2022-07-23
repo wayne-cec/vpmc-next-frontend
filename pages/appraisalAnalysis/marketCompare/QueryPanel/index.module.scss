@@ -6,10 +6,10 @@
         @apply static m-0 w-auto;
     }
     &.show{
-        @include animate-css(slideInLeft, 0.6s);
+        @include animate-css(bounceInLeft, 0.6s);
     }
     &.hide{
-        @include animate-css(slideOutLeft, 0.6s);
+        @include animate-css(bounceOutLeft, 0.6s);
     }
     .filterGroup{
         @apply flex justify-center flex-col items-center;

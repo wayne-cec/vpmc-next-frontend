@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import MarketCompareResultCard from '../../../../components/MarketCompareResultCard'
@@ -8,6 +8,7 @@ import { SpatialQueryType } from '..'
 import SpatialQuery from './SpatialQuery'
 import AttributeQuery from './AttributeQuery'
 import Action from './Action'
+import MarketCompareContext from '../MarketCompareContext'
 
 export interface IQueryPanel {
   show: boolean
@@ -67,85 +68,33 @@ export interface IQueryPanel {
   handleFormSubmit: () => void
 }
 
-const QueryPanel = (props: IQueryPanel) => {
+const QueryPanel = () => {
+  const marketCompareContext = useContext(MarketCompareContext)
 
   return (
     <div className={classNames({
       [style.queryPanel]: true,
-      [style.show]: props.show,
-      [style.hide]: !props.show,
+      [style.show]: marketCompareContext.queryPanelShow,
+      [style.hide]: !marketCompareContext.queryPanelShow,
     })}>
       <div className={style.filterGroup}>
-        <SpatialQuery
-          longitude={props.longitude}
-          latitude={props.latitude}
-          locatedCounty={props.locatedCounty}
-          locatedTown={props.locatedTown}
-          isSelectorActive={props.isSelectorActive}
-          bufferRadius={props.bufferRadius}
-          spatialQueryType={props.spatialQueryType}
-          sketchMode={props.sketchMode}
-          onCoordinatorSelectorClick={props.onCoordinatorSelectorClick}
-          onSpatialQueryTypeChange={props.onSpatialQueryTypeChange}
-          onBufferRadiusChange={props.onBufferRadiusChange}
-          onSketchModeChange={props.onSketchModeChange}
-          onDraw={props.onDraw}
-          onClear={props.onClear}
-        />
-        <AttributeQuery
-          assetTypeCode={props.assetTypeCode}
-          isTransactionTimeFiltered={props.isTransactionTimeFiltered}
-          isBuildingAreaFiltered={props.isBuildingAreaFiltered}
-          isLandAreaFiltered={props.isLandAreaFiltered}
-          isAgeFiltered={props.isAgeFiltered}
-          isParkSpaceFiltered={props.isParkSpaceFiltered}
-          isUrbanUsageFiltered={props.isUrbanUsageFiltered}
-          isTransactionTimeFosced={props.isTransactionTimeFosced}
-          isBuildingAreaFosced={props.isBuildingAreaFosced}
-          isLandAreaFosced={props.isLandAreaFosced}
-          isAgeFosced={props.isAgeFosced}
-          isParkSpaceFosced={props.isParkSpaceFosced}
-          isUrbanUsageFosced={props.isUrbanUsageFosced}
-          isBuildingAreaCheckable={props.isBuildingAreaCheckable}
-          isLandAreaCheckable={props.isLandAreaCheckable}
-          transactiontime={props.transactiontime}
-          buildingTransferArea={props.buildingTransferArea}
-          landTransferArea={props.landTransferArea}
-          age={props.age}
-          parkSpaceType={props.parkSpaceType}
-          urbanLandUse={props.urbanLandUse}
-          onAssetTypeChange={props.onAssetTypeChange}
-          onTransactionTimeFilteredChange={props.onTransactionTimeFilteredChange}
-          onTransactionTimeSelect={props.onTransactionTimeSelect}
-          onBuildingAreaFilteredChange={props.onBuildingAreaFilteredChange}
-          onBuildingAreaSelect={props.onBuildingAreaSelect}
-          onLandAreaFilteredChange={props.onLandAreaFilteredChange}
-          onLandAreaSelect={props.onLandAreaSelect}
-          onAgeFilteredChange={props.onAgeFilteredChange}
-          onAgeSelect={props.onAgeSelect}
-          onParkSpaceTypeFilteredChange={props.onParkSpaceTypeFilteredChange}
-          onParkSpaceTypeSelect={props.onParkSpaceTypeSelect}
-          onUrbanLaudUseFilteredChange={props.onUrbanLaudUseFilteredChange}
-          onUrbanLaudUseSelect={props.onUrbanLaudUseSelect}
-        />
-        <Action
-          onCustomizeParamBtnClick={props.onCustomizeParamBtnClick}
-          handleFormSubmit={props.handleFormSubmit}
-        />
+        <SpatialQuery />
+        <AttributeQuery />
+        <Action />
       </div>
 
       {/* 用手機瀏覽時才會渲染 */}
       {
-        props.filteredResults && props.filteredResults.length !== 0
+        marketCompareContext.filteredResults && marketCompareContext.filteredResults.length !== 0
           ?
           <div className={style.resultGroup}>
             <p className={style.resultStatus}>共有
-              <span className={style.count}>{props.filteredResults.length}</span>
+              <span className={style.count}>{marketCompareContext.filteredResults.length}</span>
               筆實價登陸紀錄
             </p>
             <div className={style.graphGroup}>
               {
-                props.filteredResults.map((result, index) => {
+                marketCompareContext.filteredResults.map((result, index) => {
                   return <MarketCompareResultCard
                     key={index}
                     {...result}

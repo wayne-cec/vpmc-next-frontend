@@ -13,7 +13,7 @@
         .filterGroup{
             @apply flex justify-center;
             .searchBtn{
-                @apply w-[100px] h-[40px] bg-main-primary m-2 
+                @apply w-full h-[40px] bg-main-primary my-2 
                 rounded-md text-white cursor-pointer flex items-center
                 p-2 justify-evenly;
                 &:hover{
@@ -48,7 +48,6 @@
                     100% { transform: rotate(360deg); }
                 }
             }
-            
         }
         .graphGroup{
             @apply w-full h-fit bg-transparent;

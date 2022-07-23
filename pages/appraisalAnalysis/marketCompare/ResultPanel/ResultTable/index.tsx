@@ -8,7 +8,6 @@ import classNames from 'classnames'
 import ArticleIcon from '@mui/icons-material/Article'
 import EnhancedTableHead from './EnhancedTableHead'
 import { IMarketCompareResult } from '../../../../../api/prod'
-import { DetailContext, ZoomContext } from '../..'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import { getAge } from '../../../../../lib/calculateAge'
 import { parkSpaceSet } from '../../../../../lib/marketComapreConst'
@@ -22,6 +21,8 @@ import {
   TablePagination, TableContainer, TableCell,
   TableBody, Switch, Grid
 } from '@mui/material'
+import MarketCompareContext from '../../MarketCompareContext'
+import calculateArea from '../../../../../lib/calculateArea'
 
 export type Order = 'asc' | 'desc'
 
@@ -63,10 +64,10 @@ const ResultTable = (props: IResultTable) => {
   const [dense, setDense] = useState(true)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [rows, setrows] = useState<Data[]>([])
-  const { onZoomIdChange } = useContext(ZoomContext)
+  const { onZoomIdChange } = useContext(MarketCompareContext)
   const [pending, setpending] = useState<boolean>(false)
   const [renderRows, setrenderRows] = useState<Data[]>([])
-  const { onDetailAprChange, onShow } = useContext(DetailContext)
+  const { onDetailAprChange, onShow } = useContext(MarketCompareContext)
   const isSelected = (name: string) => selected.indexOf(name) !== -1
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
@@ -224,6 +225,14 @@ const ResultTable = (props: IResultTable) => {
                       <TableCell
                         align="right"
                       >
+                        <span>
+                          {'暫無資料'}
+                        </span>
+                      </TableCell>
+
+                      <TableCell
+                        align="right"
+                      >
                         <span
                           className={classNames({
                             [style.organization]: true,
@@ -255,7 +264,23 @@ const ResultTable = (props: IResultTable) => {
 
                       <TableCell align="right">
                         <span>
-                          {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪
+                          {calculateArea(row.landTransferArea)}坪
+                          {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
+                        </span>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <span>
+                          {calculateArea(row.buildingTransferArea - row.parkingSpaceTransferArea)}坪
+                          {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
+                        </span>
+                      </TableCell>
+
+                      <TableCell align="right">
+                        <span>
+                          {
+                            Math.round(row.buildingArea / row.buildingTransferArea * 1000) / 10
+                          }%
                         </span>
                       </TableCell>
 

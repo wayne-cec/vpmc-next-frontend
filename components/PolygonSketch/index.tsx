@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { Tooltip } from '@mui/material'
 import { SpatialQueryType } from '../../pages/appraisalAnalysis/marketCompare'
 
-export type PolygonSketchMode = 'draw' | 'inactive'
+export type PolygonSketchMode = 'draw' | 'inactive' | 'county'
 
 export interface IPolygonSketch {
   active: boolean

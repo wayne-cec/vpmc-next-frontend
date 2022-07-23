@@ -1,5 +1,5 @@
 .main{
-    @apply relative w-full bg-transparent flex;
+    @apply relative w-full bg-transparent flex overflow-y-hidden;
     height: calc(100vh - 75px);
     @media(max-width: 1100px){
         @apply flex flex-col;

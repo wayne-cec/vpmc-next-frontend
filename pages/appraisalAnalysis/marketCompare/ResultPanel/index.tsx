@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import { IMarketCompareResult } from '../../../../api/prod'
@@ -13,6 +13,7 @@ import Tab from '@mui/material/Tab'
 import TabContext from '@mui/lab/TabContext'
 import TabList from '@mui/lab/TabList'
 import TabPanel from '@mui/lab/TabPanel'
+import MarketCompareContext from '../MarketCompareContext'
 
 const square = 3.305785
 
@@ -23,26 +24,27 @@ export interface IResultPanel {
   onClose: () => void
 }
 
-const ResultPanel = (props: IResultPanel) => {
+const ResultPanel = () => {
+  const marketCompareContext = useContext(MarketCompareContext)
   const [tabPage, settabPage] = useState<string>('1')
 
   return (
     <div className={classNames({
       [style.resultPanel]: true,
-      [style.slideIn]: props.show,//props.filteredResults && props.filteredResults.length !== 0,
-      [style.slideOut]: !props.show//!(props.filteredResults && props.filteredResults.length !== 0)
+      [style.slideIn]: marketCompareContext.resultPanelShow,//marketCompareContext.filteredResults && marketCompareContext.filteredResults.length !== 0,
+      [style.slideOut]: !marketCompareContext.resultPanelShow//!(marketCompareContext.filteredResults && marketCompareContext.filteredResults.length !== 0)
     })}>
       {
-        props.filteredResults && props.filteredResults.length !== 0
+        marketCompareContext.filteredResults && marketCompareContext.filteredResults.length !== 0
           ?
           <>
             <div className={style.resultHeader}>
               <span className={style.resultStatus}>共有
-                <span className={style.count}>{props.filteredResults.length}</span>
+                <span className={style.count}>{marketCompareContext.filteredResults.length}</span>
                 筆實價登陸紀錄
               </span>
               {/* <span className={style.closeBtn}
-                onClick={props.onClose}
+                onClick={marketCompareContext.onClose}
               >✖</span> */}
             </div>
 
@@ -58,16 +60,16 @@ const ResultPanel = (props: IResultPanel) => {
               </Box>
 
               <TabPanel value="1" sx={{ padding: '0px' }}>
-                <ResultTable data={props.filteredResults} />
+                <ResultTable data={marketCompareContext.filteredResults} />
               </TabPanel>
 
               <TabPanel value="2" sx={{ padding: '0px' }}>
                 {
-                  props.graphData
+                  marketCompareContext.graphData
                     ? <div className={style.chartsGroup}>
                       {
-                        Object.keys(props.graphData!).map((buildingType, index) => {
-                          const typeData = props.graphData![buildingType]
+                        Object.keys(marketCompareContext.graphData!).map((buildingType, index) => {
+                          const typeData = marketCompareContext.graphData![buildingType]
                           const years = Object.keys(typeData)
                           const meanUnitPriceValues: number[] = []
 
