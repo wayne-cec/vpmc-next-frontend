@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import MarketCompareResultCard from '../../../../components/MarketCompareResultCard'
@@ -9,6 +9,10 @@ import SpatialQuery from './SpatialQuery'
 import AttributeQuery from './AttributeQuery'
 import Action from './Action'
 import MarketCompareContext from '../MarketCompareContext'
+import { TabContext, TabList, TabPanel } from '@mui/lab'
+import { Box, Tab } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
+import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh'
 
 export interface IQueryPanel {
   show: boolean
@@ -70,6 +74,11 @@ export interface IQueryPanel {
 
 const QueryPanel = () => {
   const marketCompareContext = useContext(MarketCompareContext)
+  const [value, setvalue] = useState('0')
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setvalue(newValue)
+  }
 
   return (
     <div className={classNames({
@@ -77,14 +86,39 @@ const QueryPanel = () => {
       [style.show]: marketCompareContext.queryPanelShow,
       [style.hide]: !marketCompareContext.queryPanelShow,
     })}>
-      <div className={style.filterGroup}>
-        <SpatialQuery />
-        <AttributeQuery />
-        <Action />
-      </div>
+
+
+      <TabContext value={value}>
+
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <TabList onChange={handleTabChange}>
+            <Tab
+              icon={<EditIcon />} iconPosition="start"
+              label="自行選取" value="0"
+            />
+            <Tab
+              icon={<AutoFixHighIcon />} iconPosition="start"
+              label="系統智選" value="1"
+            />
+          </TabList>
+        </Box>
+
+        <TabPanel value="0" sx={{ padding: '0px' }}>
+          <div className={style.filterGroup}>
+            <SpatialQuery />
+            <AttributeQuery />
+            <Action />
+          </div>
+        </TabPanel>
+
+        <TabPanel value="1">
+          Item Two
+        </TabPanel>
+
+      </TabContext>
 
       {/* 用手機瀏覽時才會渲染 */}
-      {
+      {/* {
         marketCompareContext.filteredResults && marketCompareContext.filteredResults.length !== 0
           ?
           <div className={style.resultGroup}>
@@ -104,7 +138,7 @@ const QueryPanel = () => {
             </div>
           </div>
           : <></>
-      }
+      } */}
     </div>
   )
 }
