@@ -7,12 +7,13 @@ import api from '../../../../../api'
 import classNames from 'classnames'
 import ArticleIcon from '@mui/icons-material/Article'
 import EnhancedTableHead from './EnhancedTableHead'
+import MarketCompareContext from '../../MarketCompareContext'
+import calculateArea from '../../../../../lib/calculateArea'
 import { IMarketCompareResult } from '../../../../../api/prod'
 import { parseCommitee } from '../../../../../lib/parseCommitee'
 import { getAge } from '../../../../../lib/calculateAge'
 import { parkSpaceSet } from '../../../../../lib/marketComapreConst'
 import {
-  descendingComparator,
   getComparator,
   stableSort
 } from '../../../../../lib/tableHelper'
@@ -21,8 +22,6 @@ import {
   TablePagination, TableContainer, TableCell,
   TableBody, Switch, Grid
 } from '@mui/material'
-import MarketCompareContext from '../../MarketCompareContext'
-import calculateArea from '../../../../../lib/calculateArea'
 
 export type Order = 'asc' | 'desc'
 
@@ -57,17 +56,16 @@ export interface IResultTable {
 const square = 3.305785
 
 const ResultTable = (props: IResultTable) => {
-  const [order, setOrder] = useState<Order>('desc')
-  const [orderBy, setOrderBy] = useState<keyof Data>('price')
+  const { onZoomIdChange, onDetailAprChange } = useContext(MarketCompareContext)
   const [selected, setSelected] = useState<readonly string[]>([])
-  const [page, setPage] = useState(0)
-  const [dense, setDense] = useState(true)
+  const [orderBy, setOrderBy] = useState<keyof Data>('price')
+  const [renderRows, setrenderRows] = useState<Data[]>([])
+  const [pending, setpending] = useState<boolean>(false)
+  const [order, setOrder] = useState<Order>('desc')
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [rows, setrows] = useState<Data[]>([])
-  const { onZoomIdChange } = useContext(MarketCompareContext)
-  const [pending, setpending] = useState<boolean>(false)
-  const [renderRows, setrenderRows] = useState<Data[]>([])
-  const { onDetailAprChange, onShow } = useContext(MarketCompareContext)
+  const [dense, setDense] = useState(true)
+  const [page, setPage] = useState(0)
   const isSelected = (name: string) => selected.indexOf(name) !== -1
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
 
@@ -194,8 +192,14 @@ const ResultTable = (props: IResultTable) => {
                       key={row.id}
                       selected={isItemSelected}
                       className={style.tableRow}
-                      onClick={() => {
+                      // onClick={() => {
+                      //   onZoomIdChange({ id: row.id })
+                      // }}
+                      onMouseEnter={() => {
                         onZoomIdChange({ id: row.id })
+                      }}
+                      onMouseLeave={() => {
+                        onZoomIdChange(null)
                       }}
                     >
 
