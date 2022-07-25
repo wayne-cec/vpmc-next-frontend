@@ -3,7 +3,7 @@ import { ICountyData, IGraphData, IMarketCompareResult, ITownData } from '../../
 import { SpatialQueryType } from '..'
 import { PolygonSketchMode } from '../../../../components/PolygonSketch'
 
-export interface IMarketCompareContext {
+export interface IIntelligenceContext {
   queryPanelShow: boolean
   resultPanelShow: boolean
   longitude?: number
@@ -89,7 +89,7 @@ export interface IMarketCompareContext {
   onTownChange: (town: string[]) => void
 }
 
-const MarketCompareContext = createContext<IMarketCompareContext>({
+const IntelligenceContext = createContext<IIntelligenceContext>({
   queryPanelShow: false,
   resultPanelShow: false,
   longitude: undefined,
@@ -175,4 +175,4 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   onTownChange: (town) => { }
 })
 
-export default MarketCompareContext
+export default IntelligenceContext

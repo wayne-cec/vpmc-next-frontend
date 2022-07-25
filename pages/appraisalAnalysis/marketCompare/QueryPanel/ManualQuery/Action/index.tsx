@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import style from './index.module.scss'
 import Image from 'next/image'
 import classNames from 'classnames'
-import MarketCompareContext from '../../MarketCompareContext'
+import MarketCompareContext from '../../../MarketCompareContext'
 
 export interface IAction {
   onCustomizeParamBtnClick: () => void

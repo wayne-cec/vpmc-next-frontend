@@ -10,49 +10,64 @@ export interface ICoordinateSelector {
   locatedTown: string | null
   active: boolean
   enabled: boolean
+  thirdParty?: boolean
   onClick: () => void
 }
 
-const CoordinateSelector = (props: ICoordinateSelector) => {
+const CoordinateSelector = ({
+  longitude,
+  latitude,
+  locatedCounty,
+  locatedTown,
+  active,
+  enabled,
+  thirdParty = false,
+  onClick
+}: ICoordinateSelector) => {
 
   return (
     <div className={classNames({
       [style.coordinateSelector]: true,
-      [style.active]: props.active,
-      [style.enabled]: props.enabled
+      [style.active]: active,
+      [style.enabled]: enabled
     })}
       onClick={() => {
-        if (props.enabled) {
-          props.onClick()
+        if (enabled) {
+          onClick()
         }
       }}
     >
       <div className={style.titleContainer}>
-        <Image src={props.enabled ? '/aprRegion/gps.png' : '/aprRegion/gps-disabled.png'} width='25px' height='25px' />
+        <Image src={enabled ? '/aprRegion/gps.png' : '/aprRegion/gps-disabled.png'} width='25px' height='25px' />
         <div>
           <p>
             {
-              props.longitude === null || props.latitude === null
+              longitude === null || latitude === null
                 ? '請定位座標'
-                : `經度: ${Math.round(props.longitude * 1000) / 1000}`
+                : `經度: ${Math.round(longitude * 1000) / 1000}`
             }
           </p>
           <p>
             {
-              props.longitude === null || props.latitude === null
+              longitude === null || latitude === null
                 ? ''
-                : `緯度: ${Math.round(props.latitude * 1000) / 1000}`
+                : `緯度: ${Math.round(latitude * 1000) / 1000}`
             }
           </p>
         </div>
       </div>
-      <p className={style.regionTitle}>
-        {
-          props.locatedCounty === null || props.locatedTown === null
-            ? '無區域資料'
-            : `${props.locatedCounty},\xa0 ${props.locatedTown}`
-        }
-      </p>
+      {
+        thirdParty
+          ? null
+          : <p className={style.regionTitle}>
+            {
+              locatedCounty === null || locatedTown === null
+                ? '無區域資料'
+                : `${locatedCounty},\xa0 ${locatedTown}`
+            }
+          </p>
+      }
+
       {/* <Image src={'/aprRegion/expand.png'} width='25px' height='25px' /> */}
     </div>
   )

@@ -9,6 +9,7 @@ import QueryPanel from './QueryPanel'
 import ResultPanel from './ResultPanel'
 import AprDetailContent from './AprDetailContent'
 import MarketCompareContext from './MarketCompareContext'
+import IntelligenceContext from './IntelligenceContext'
 import PanelContainer from '../../../components/PanelContainer'
 import PanelButton from '../../../components/PanelContainer/PanelButton'
 import { PolygonSketchMode } from '../../../components/PolygonSketch'
@@ -480,37 +481,188 @@ const MarketCompare: NextPage = () => {
           onTownChange: (towns) => {
             settowns(towns)
           }
-        }}>
-        <div className={style.main}>
-          <PanelContainer>
-            <PanelButton
-              content='查詢'
-              icon={queryPanelShow || queryPanelHover ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
-              focused={queryPanelShow}
-              onClick={handleShowQueryPanel}
-              onHover={(value) => { setqueryPanelHover(value) }}
-            />
-            <PanelButton
-              content='結果'
-              icon={resultPanelShow || resultPanelHover ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
-              focused={resultPanelShow}
-              onClick={handleShowResultPanel}
-              onHover={(value) => { setresultPanelHover(value) }}
-            />
-          </PanelContainer>
-          <QueryPanel />
-          <ResultPanel />
-          <div className={style.content}>
-            <div className={style.mapContainer}>
-              <MarketMapContainer
-                onCoordinateSelect={handleCoordinateSelect}
-                onSketchModeChange={setsketchMode}
-                onGeojsonChange={setpolygonGoejson}
-                onSpatialQueryTypeChange={setspatialQueryType}
+        }}
+      >
+        <IntelligenceContext.Provider
+          value={{
+            queryPanelShow: queryPanelShow,
+            resultPanelShow: resultPanelShow,
+            longitude: longitude!,
+            latitude: latitude!,
+            locatedCounty: locatedCounty!,
+            locatedTown: locatedTown!,
+            isSelectorActive: isSelectorActive,
+            isTransactionTimeFiltered: isTransactionTimeFiltered,
+            isBuildingAreaFiltered: isBuildingAreaFiltered,
+            isLandAreaFiltered: isLandAreaFiltered,
+            isAgeFiltered: isAgeFiltered,
+            isParkSpaceFiltered: isParkSpaceFiltered,
+            isUrbanUsageFiltered: isUrbanUsageFiltered,
+            isPriceFiltered: isPriceFiltered,
+            isUnitPriceFiltered: isUnitPriceFiltered,
+            isTransactionTimeFosced: isTransactionTimeFosced,
+            isBuildingAreaFosced: isBuildingAreaFosced,
+            isLandAreaFosced: isLandAreaFosced,
+            isAgeFosced: isAgeFosced,
+            isParkSpaceFosced: isParkSpaceFosced,
+            isUrbanUsageFosced: isUrbanUsageFosced,
+            isPriceFocused: isPriceFocused,
+            isUnitPriceFocused: isUnitPriceFocused,
+            isBuildingAreaCheckable: isBuildingAreaCheckable,
+            isLandAreaCheckable: isLandAreaCheckable,
+            assetTypeCode: assetTypeCode,
+            bufferRadius: bufferRadius,
+            transactiontime: transactiontime!,
+            buildingTransferArea: buildingTransferArea!,
+            landTransferArea: landTransferArea!,
+            age: age!,
+            parkSpaceType: parkSpaceType!,
+            urbanLandUse: urbanLandUse!,
+            polygonGoejson: polygonGoejson!,
+            minPrice: minPrice,
+            maxPrice: maxPrice,
+            minUnitPrice: minUnitPrice,
+            maxUnitPrice: maxUnitPrice,
+            filteredResults: filteredResults!,
+            spatialQueryType: spatialQueryType,
+            sketchMode: sketchMode,
+            graphData: graphData,
+            county: county,
+            towns: towns,
+            countyData: countyData,
+            townData: townData,
+            onCoordinatorSelectorClick: (value) => { setisCoordinateSelectorActive(value) },
+            onSpatialQueryTypeChange: setspatialQueryType,
+            onBufferRadiusChange: (value) => { setbufferRadius(value) },
+            onSketchModeChange: (value) => { setsketchMode(value) },
+            onDraw: () => { setsketchMode('draw') },
+            onClear: () => { setspatialQueryType('clear') },
+            onAssetTypeChange: (value) => { setassetTypeCode(value) },
+            onTransactionTimeFilteredChange: () => {
+              setisTransactionTimeFiltered(prev => !prev)
+              settransactionTime(1)
+            },
+            onTransactionTimeSelect: (value) => {
+              settransactionTime(value)
+              setisTransactionTimeFosced(true)
+            },
+            onBuildingAreaFilteredChange: () => {
+              setisBuildingAreaFiltered(prev => !prev)
+              setbuildingTransferArea(0)
+            },
+            onBuildingAreaSelect: (value) => {
+              setbuildingTransferArea(value)
+              setisBuildingAreaFosced(true)
+            },
+            onLandAreaFilteredChange: () => {
+              setisLandAreaFiltered(prev => !prev)
+              setlandTransferArea(0)
+            },
+            onLandAreaSelect: (value) => {
+              setlandTransferArea(value)
+              setisLandAreaFosced(true)
+            },
+            onAgeFilteredChange: () => {
+              setisAgeFiltered(prev => !prev)
+              setage(0)
+            },
+            onAgeSelect: (value) => {
+              setage(value)
+              setisAgeFosced(true)
+            },
+            onParkSpaceTypeFilteredChange: () => {
+              setisParkSpaceFiltered(prev => !prev)
+              setparkSpaceType(0)
+            },
+            onParkSpaceTypeSelect: (value) => {
+              setparkSpaceType(value)
+              setisParkSpaceFosced(true)
+            },
+            onUrbanLaudUseFilteredChange: () => {
+              setisUrbanUsageFiltered(prev => !prev)
+              seturbanLandUse([0])
+            },
+            onUrbanLaudUseSelect: (value) => {
+              seturbanLandUse(value)
+              setisUrbanUsageFosced(true)
+            },
+            onPriceFilteredChange: () => {
+              setisPriceFiltered(prev => !prev)
+            },
+            onMinPriceChange: (value) => {
+              setminPrice(value)
+            },
+            onMaxPriceChange: (value) => {
+              setmaxPrice(value)
+            },
+
+            onUnitPriceFilteredChange: () => {
+              setisUnitPriceFiltered(prev => !prev)
+            },
+            onMinUnitPriceChange: (value) => {
+              setminUnitPrice(value)
+            },
+            onMaxUnitPriceChange: (value) => {
+              setmaxUnitPrice(value)
+            },
+            onCustomizeParamBtnClick: () => {
+              setmsgOpen(true)
+              seterrorTitle('訊息')
+              seterrorContent('自定義參數功能尚未開發')
+            },
+            handleFormSubmit: handleFormSubmit,
+            zoomId: zoomId,
+            pending: pending,
+            onZoomIdChange: (value) => { setzoomId(value) },
+            setpending: (value) => { setpending(value) },
+            onDetailAprChange: (id) => { setdetailAprId({ id: id }) },
+            onShow: (value) => { setdetailPanelShow(value) },
+            onResultPanelClose: () => { setfilteredResults(null) },
+            onCountyRadioClick: () => {
+              setmsgOpen(true)
+              seterrorTitle('警告')
+              seterrorContent('此方法會調出大量資料，請謹慎使用。')
+            },
+            onCountyChange: (county) => {
+              setcounty(county)
+              reFetchTownData(county)
+            },
+            onTownChange: (towns) => {
+              settowns(towns)
+            }
+          }}
+        >
+          <div className={style.main}>
+            <PanelContainer>
+              <PanelButton
+                content='查詢'
+                icon={queryPanelShow || queryPanelHover ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
+                focused={queryPanelShow}
+                onClick={handleShowQueryPanel}
+                onHover={(value) => { setqueryPanelHover(value) }}
               />
+              <PanelButton
+                content='結果'
+                icon={resultPanelShow || resultPanelHover ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
+                focused={resultPanelShow}
+                onClick={handleShowResultPanel}
+                onHover={(value) => { setresultPanelHover(value) }}
+              />
+            </PanelContainer>
+            <QueryPanel />
+            <ResultPanel />
+            <div className={style.content}>
+              <div className={style.mapContainer}>
+                <MarketMapContainer
+                  onCoordinateSelect={handleCoordinateSelect}
+                  onSketchModeChange={setsketchMode}
+                  onGeojsonChange={setpolygonGoejson}
+                  onSpatialQueryTypeChange={setspatialQueryType}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        </IntelligenceContext.Provider>
       </MarketCompareContext.Provider>
       <Dialog
         open={msgOpen}

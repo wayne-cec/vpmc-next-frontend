@@ -1,18 +1,36 @@
 import React, { useContext, useState } from 'react'
-import style from './index.module.scss'
-import classNames from 'classnames'
-import MarketCompareResultCard from '../../../../components/MarketCompareResultCard'
 import { PolygonSketchMode } from '../../../../components/PolygonSketch'
 import { IMarketCompareResult } from '../../../../api/prod'
 import { SpatialQueryType } from '..'
-import SpatialQuery from './SpatialQuery'
-import AttributeQuery from './AttributeQuery'
-import Action from './Action'
-import MarketCompareContext from '../MarketCompareContext'
 import { TabContext, TabList, TabPanel } from '@mui/lab'
 import { Box, Tab } from '@mui/material'
+import style from './index.module.scss'
+import classNames from 'classnames'
 import EditIcon from '@mui/icons-material/Edit'
 import AutoFixHighIcon from '@mui/icons-material/AutoFixHigh'
+import MarketCompareContext from '../MarketCompareContext'
+import SpatialQuery from './ManualQuery/SpatialQuery'
+import AttributeQuery from './ManualQuery/AttributeQuery'
+import Action from './ManualQuery/Action'
+import SpatialQueryIntelligence from './IntelligenceQuery/SpatialQueryIntelligence'
+
+const ManualQuery = () => {
+  return (
+    <div className={style.filterGroup}>
+      <SpatialQuery />
+      <AttributeQuery />
+      <Action />
+    </div>
+  )
+}
+
+const IntelligenceQuery = () => {
+  return (
+    <div className={style.filterGroup}>
+      <SpatialQueryIntelligence />
+    </div>
+  )
+}
 
 export interface IQueryPanel {
   show: boolean
@@ -104,15 +122,11 @@ const QueryPanel = () => {
         </Box>
 
         <TabPanel value="0" sx={{ padding: '0px' }}>
-          <div className={style.filterGroup}>
-            <SpatialQuery />
-            <AttributeQuery />
-            <Action />
-          </div>
+          <ManualQuery />
         </TabPanel>
 
-        <TabPanel value="1">
-          Item Two
+        <TabPanel value="1" sx={{ padding: '0px' }}>
+          <IntelligenceQuery />
         </TabPanel>
 
       </TabContext>

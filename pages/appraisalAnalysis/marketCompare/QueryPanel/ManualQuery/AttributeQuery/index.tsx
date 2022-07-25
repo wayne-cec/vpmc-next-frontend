@@ -1,17 +1,17 @@
 import React, { useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
-import MultiChipSelect from '../../../../../components/MultiChipSelect'
-import MarketCompareContext, { IMarketCompareContext } from '../../MarketCompareContext'
+import MultiChipSelect from '../../../../../../components/MultiChipSelect'
+import MarketCompareContext, { IMarketCompareContext } from '../../../MarketCompareContext'
 import {
   assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
   landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
-} from '../../../../../lib/marketComapreConst'
+} from '../../../../../../lib/marketComapreConst'
 import {
   Grid, FormControl, InputLabel, Select,
   Checkbox, MenuItem, TextField
 } from '@mui/material'
-import { assetTypeMapping } from '../../../../../api/prod'
+import { assetTypeMapping } from '../../../../../../api/prod'
 
 export type AttributeQueryType = 'building' | 'parking' | 'land'
 
