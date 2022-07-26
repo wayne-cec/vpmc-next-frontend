@@ -1,13 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import style from './index.module.scss'
 import Image from 'next/image'
 import classNames from 'classnames'
-import { IconButton, Tooltip } from '@mui/material'
+import {
+  IconButton, Tooltip, Dialog,
+  DialogTitle, DialogContent, DialogActions, Button
+} from '@mui/material'
 import ExtensionIcon from '@mui/icons-material/Extension'
+import PluginPanel from './PluginPanel'
+import MarketCompareContext from '../../pages/appraisalAnalysis/marketCompare/MarketCompareContext'
 
 export interface ICoordinateSelector {
-  longitude: number | null
-  latitude: number | null
+  longitude: number | undefined
+  latitude: number | undefined
   locatedCounty: string | null
   locatedTown: string | null
   active: boolean
@@ -26,6 +31,41 @@ const CoordinateSelector = ({
   thirdParty = false,
   onClick
 }: ICoordinateSelector) => {
+  const { onCoordinateSelect } = useContext(MarketCompareContext)
+  const [pluginPanelOpen, setpluginPanelOpen] = useState<boolean>(false)
+  const [pluginLongitude, setpluginLongitude] = useState<number | undefined>(undefined)
+  const [pluginLatitude, setpluginLatitude] = useState<number | undefined>(undefined)
+
+  const renderPluginButton = () => {
+    return <Tooltip title='第三方插件'>
+      <IconButton
+        color='info'
+        aria-label="upload picture"
+        component="span"
+        onClick={(event) => {
+          setpluginPanelOpen(true)
+          event.stopPropagation()
+        }}
+      >
+        <ExtensionIcon />
+      </IconButton>
+    </Tooltip>
+  }
+
+  const renderRegionCaption = () => {
+    return <p className={style.regionTitle}>
+      {
+        locatedCounty === null || locatedTown === null
+          ? '無區域資料'
+          : `${locatedCounty},\xa0 ${locatedTown}`
+      }
+    </p>
+  }
+
+  const handlePluginPointSelect = (longitude: number, latitude: number) => {
+    setpluginLongitude(longitude)
+    setpluginLatitude(latitude)
+  }
 
   return (
     <>
@@ -45,14 +85,14 @@ const CoordinateSelector = ({
           <div>
             <p>
               {
-                longitude === null || latitude === null
+                longitude === undefined || latitude === undefined
                   ? '請定位座標'
                   : `經度: ${Math.round(longitude * 1000) / 1000}`
               }
             </p>
             <p>
               {
-                longitude === null || latitude === null
+                longitude === undefined || latitude === undefined
                   ? ''
                   : `緯度: ${Math.round(latitude * 1000) / 1000}`
               }
@@ -61,42 +101,35 @@ const CoordinateSelector = ({
         </div>
         {
           thirdParty
-            ? <Tooltip title='第三方插件'>
-              <IconButton color='info' aria-label="upload picture" component="span">
-                <ExtensionIcon />
-              </IconButton>
-            </Tooltip>
-            : <p className={style.regionTitle}>
-              {
-                locatedCounty === null || locatedTown === null
-                  ? '無區域資料'
-                  : `${locatedCounty},\xa0 ${locatedTown}`
-              }
-            </p>
+            ? renderPluginButton()
+            : renderRegionCaption()
         }
-
-        {/* <Image src={'/aprRegion/expand.png'} width='25px' height='25px' /> */}
       </div>
 
-      {/* <Dialog
-        open={msgOpen}
-        onClose={handleErrorDialogClose}
-        aria-labelledby="responsive-dialog-title"
+      <Dialog
+        open={pluginPanelOpen}
+        onClose={() => { setpluginPanelOpen(false) }}
+        aria-labelledby="plugin-dialog-title"
       >
-        <DialogTitle id="responsive-dialog-title">
-          {errorTitle}
-        </DialogTitle>
+        <DialogTitle id="plugin-dialog-title">第三方插件</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {errorContent}
-          </DialogContentText>
+          <PluginPanel
+            longitude={pluginLongitude}
+            latitude={pluginLatitude}
+            handlePluginPointSelect={handlePluginPointSelect}
+          />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleErrorDialogClose}>
-            確認
-          </Button>
+          {
+            pluginLongitude && pluginLatitude && <Button onClick={() => {
+              onCoordinateSelect(pluginLongitude, pluginLatitude)
+              setpluginPanelOpen(false)
+            }}>
+              確認
+            </Button>
+          }
         </DialogActions>
-      </Dialog> */}
+      </Dialog>
     </>
   )
 }

@@ -31,7 +31,7 @@ const mapOptions = {
 }
 
 export interface IMarketCompareMap {
-  onCoordinateSelect: (longitude: number | null, latitude: number | null) => void
+  onCoordinateSelect: (longitude: number | undefined, latitude: number | undefined) => void
   onSketchModeChange: (value: PolygonSketchMode) => void
   onGeojsonChange: (value: string | null) => void
   onSpatialQueryTypeChange: (value: SpatialQueryType) => void
@@ -213,9 +213,27 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       setremoveHandle(remove)
     }
     if (!marketCompareContext.isSelectorActive && mapView) {
-      removeHandle.remove()
+      try { removeHandle.remove() } catch { }
     }
   }, [marketCompareContext.isSelectorActive])
+
+  useEffect(() => {
+    if (!pointLayer || !marketCompareContext.longitude || !marketCompareContext.latitude || !map) return
+    const pointGraphic = new Graphic({
+      geometry: new Point({ longitude: marketCompareContext.longitude, latitude: marketCompareContext.latitude }),
+      symbol: new PictureMarkerSymbol({
+        url: '/aprRegion/mappin.png',
+        width: '30px',
+        height: '30px'
+      })
+    })
+    const collection = new Collection<Graphic>()
+    collection.add(pointGraphic)
+    pointLayer.graphics = collection
+    map.add(pointLayer)
+    updateBufferCircle(marketCompareContext.longitude, marketCompareContext.latitude)
+  }, [marketCompareContext.longitude, marketCompareContext.latitude])
+
 
   useEffect(() => {
     if (map && mapView && pointLayer && bufferLayer && aprLayer && sketchLayer) {

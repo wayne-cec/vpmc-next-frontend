@@ -41,3 +41,7 @@
     }
     @include textNoneSelectable;
 }
+
+.PluginPanel{
+    @apply w-[800px] h-[400px] bg-black;
+}
