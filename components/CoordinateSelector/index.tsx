@@ -42,7 +42,7 @@ const CoordinateSelector = ({
         color='info'
         aria-label="upload picture"
         component="span"
-        onClick={(event) => {
+        onClick={(event: React.MouseEvent<HTMLSpanElement, MouseEvent>) => {
           setpluginPanelOpen(true)
           event.stopPropagation()
         }}
