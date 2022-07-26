@@ -31,7 +31,7 @@ const mapOptions = {
 }
 
 export interface IMarketCompareMap {
-  onCoordinateSelect: (longitude: number | null, latitude: number | null) => void
+  onCoordinateSelect: (longitude: number | undefined, latitude: number | undefined) => void
   onSketchModeChange: (value: PolygonSketchMode) => void
   onGeojsonChange: (value: string | null) => void
   onSpatialQueryTypeChange: (value: SpatialQueryType) => void

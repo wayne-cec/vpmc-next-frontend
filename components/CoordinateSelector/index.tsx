@@ -31,6 +31,8 @@ const CoordinateSelector = ({
   onClick
 }: ICoordinateSelector) => {
   const [pluginPanelOpen, setpluginPanelOpen] = useState<boolean>(false)
+  const [pluginLongitude, setpluginLongitude] = useState<number | undefined>(undefined)
+  const [pluginLatitude, setpluginLatitude] = useState<number | undefined>(undefined)
 
   const renderPluginButton = () => {
     return <Tooltip title='第三方插件'>
@@ -56,6 +58,11 @@ const CoordinateSelector = ({
           : `${locatedCounty},\xa0 ${locatedTown}`
       }
     </p>
+  }
+
+  const handlePluginPointSelect = (longitude: number, latitude: number) => {
+    setpluginLongitude(longitude)
+    setpluginLatitude(latitude)
   }
 
   return (
@@ -104,7 +111,11 @@ const CoordinateSelector = ({
       >
         <DialogTitle id="plugin-dialog-title">第三方插件</DialogTitle>
         <DialogContent>
-          <PluginPanel />
+          <PluginPanel
+            longitude={pluginLongitude}
+            latitude={pluginLatitude}
+            handlePluginPointSelect={handlePluginPointSelect}
+          />
         </DialogContent>
       </Dialog>
     </>

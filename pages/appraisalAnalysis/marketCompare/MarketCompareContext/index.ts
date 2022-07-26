@@ -87,6 +87,7 @@ export interface IMarketCompareContext {
   onCountyRadioClick: () => void
   onCountyChange: (county: string) => void
   onTownChange: (town: string[]) => void
+  handleCoordinateSelect: (longitude: number | null, latitude: number | null) => void
 }
 
 const MarketCompareContext = createContext<IMarketCompareContext>({
@@ -172,7 +173,8 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   onShow: (value) => { },
   onCountyRadioClick: () => { },
   onCountyChange: (county) => { },
-  onTownChange: (town) => { }
+  onTownChange: (town) => { },
+  handleCoordinateSelect: () => { }
 })
 
 export default MarketCompareContext
