@@ -314,6 +314,33 @@ const AttributeQuery = () => {
             : null
         }
 
+        {/* 分都市土地分區 */}
+        {
+          getAttributeQueryType(assetTypeMapping, marketCompareContext) !== 'parking'
+            ? <>
+              <Grid item xs={2}>
+                <Checkbox
+                  checked={false}
+                  onClick={() => { }}
+                  disabled
+                />
+              </Grid>
+              <Grid item xs={10}>
+                <MultiChipSelect
+                  placeholder='分都市土地分區'
+                  urbanLandUse={marketCompareContext.urbanLandUse}
+                  urbanUsageSet={urbanUsageSet}
+                  isUrbanUsageFiltered={false}
+                  isUrbanUsageFosced={marketCompareContext.isUrbanUsageFosced}
+                  onChange={(value) => {
+                    marketCompareContext.onUrbanLaudUseSelect(value)
+                  }}
+                />
+              </Grid>
+            </>
+            : null
+        }
+
         {/* 建物總價 */}
         {
           getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
