@@ -1,0 +1,13 @@
+
+.PluginPanel{
+    @apply w-[800px] h-[400px] flex;
+    .Manipulate{
+        @apply bg-gray-500 h-full w-1/2;
+    }
+    .MapContainer{
+        @apply h-full w-1/2 ;
+        .Map{
+            @apply w-full h-full bg-black;
+        }
+    }
+}

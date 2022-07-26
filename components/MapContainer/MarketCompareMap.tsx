@@ -213,7 +213,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       setremoveHandle(remove)
     }
     if (!marketCompareContext.isSelectorActive && mapView) {
-      removeHandle.remove()
+      try { removeHandle.remove() } catch { }
     }
   }, [marketCompareContext.isSelectorActive])
 
