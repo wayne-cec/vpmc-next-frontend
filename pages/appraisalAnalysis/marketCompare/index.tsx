@@ -486,6 +486,9 @@ const MarketCompare: NextPage = () => {
               setlongitude(longitude)
             if (latitude)
               setlatitude(latitude)
+          },
+          onCoordinateSelect: (longitude, latitude) => {
+            handleCoordinateSelect(longitude, latitude)
           }
         }}
       >

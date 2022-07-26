@@ -1,17 +1,18 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import style from './index.module.scss'
 import Image from 'next/image'
 import classNames from 'classnames'
 import {
   IconButton, Tooltip, Dialog,
-  DialogTitle, DialogContent
+  DialogTitle, DialogContent, DialogActions, Button
 } from '@mui/material'
 import ExtensionIcon from '@mui/icons-material/Extension'
 import PluginPanel from './PluginPanel'
+import MarketCompareContext from '../../pages/appraisalAnalysis/marketCompare/MarketCompareContext'
 
 export interface ICoordinateSelector {
-  longitude: number | null
-  latitude: number | null
+  longitude: number | undefined
+  latitude: number | undefined
   locatedCounty: string | null
   locatedTown: string | null
   active: boolean
@@ -30,6 +31,7 @@ const CoordinateSelector = ({
   thirdParty = false,
   onClick
 }: ICoordinateSelector) => {
+  const { onCoordinateSelect } = useContext(MarketCompareContext)
   const [pluginPanelOpen, setpluginPanelOpen] = useState<boolean>(false)
   const [pluginLongitude, setpluginLongitude] = useState<number | undefined>(undefined)
   const [pluginLatitude, setpluginLatitude] = useState<number | undefined>(undefined)
@@ -83,14 +85,14 @@ const CoordinateSelector = ({
           <div>
             <p>
               {
-                longitude === null || latitude === null
+                longitude === undefined || latitude === undefined
                   ? '請定位座標'
                   : `經度: ${Math.round(longitude * 1000) / 1000}`
               }
             </p>
             <p>
               {
-                longitude === null || latitude === null
+                longitude === undefined || latitude === undefined
                   ? ''
                   : `緯度: ${Math.round(latitude * 1000) / 1000}`
               }
@@ -117,6 +119,16 @@ const CoordinateSelector = ({
             handlePluginPointSelect={handlePluginPointSelect}
           />
         </DialogContent>
+        <DialogActions>
+          {
+            pluginLongitude && pluginLatitude && <Button onClick={() => {
+              onCoordinateSelect(pluginLongitude, pluginLatitude)
+              setpluginPanelOpen(false)
+            }}>
+              確認
+            </Button>
+          }
+        </DialogActions>
       </Dialog>
     </>
   )
