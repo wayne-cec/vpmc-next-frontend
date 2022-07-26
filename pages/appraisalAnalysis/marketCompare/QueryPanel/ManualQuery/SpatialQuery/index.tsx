@@ -41,6 +41,7 @@ const SpatialQuery = () => {
             locatedTown={marketCompareContext.locatedTown!}
             active={marketCompareContext.isSelectorActive!}
             enabled={marketCompareContext.sketchMode === 'inactive'}
+            thirdParty={true}
             onClick={() => {
               marketCompareContext.onCoordinatorSelectorClick(!marketCompareContext.isSelectorActive)
             }}

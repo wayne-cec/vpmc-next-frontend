@@ -116,7 +116,7 @@ const QueryPanel = () => {
             />
             <Tab
               icon={<AutoFixHighIcon />} iconPosition="start"
-              label="系統智選" value="1"
+              label="系統智選" value="1" disabled
             />
           </TabList>
         </Box>
