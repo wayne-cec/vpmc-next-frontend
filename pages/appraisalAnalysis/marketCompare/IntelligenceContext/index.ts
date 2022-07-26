@@ -3,7 +3,7 @@ import { ICountyData, IGraphData, IMarketCompareResult, ITownData } from '../../
 import { SpatialQueryType } from '..'
 import { PolygonSketchMode } from '../../../../components/PolygonSketch'
 
-export interface IMarketCompareContext {
+export interface IIntelligenceContext {
   queryPanelShow: boolean
   resultPanelShow: boolean
   longitude?: number
@@ -87,13 +87,9 @@ export interface IMarketCompareContext {
   onCountyRadioClick: () => void
   onCountyChange: (county: string) => void
   onTownChange: (town: string[]) => void
-  // 小窗
-  handleCoordinateSelect: (longitude: number | null, latitude: number | null) => void
-  // 正式資料
-  onCoordinateSelect: (longitude: number | undefined, latitude: number | undefined) => void
 }
 
-const MarketCompareContext = createContext<IMarketCompareContext>({
+const IntelligenceContext = createContext<IIntelligenceContext>({
   queryPanelShow: false,
   resultPanelShow: false,
   longitude: undefined,
@@ -176,9 +172,7 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   onShow: (value) => { },
   onCountyRadioClick: () => { },
   onCountyChange: (county) => { },
-  onTownChange: (town) => { },
-  handleCoordinateSelect: () => { },
-  onCoordinateSelect: () => { }
+  onTownChange: (town) => { }
 })
 
-export default MarketCompareContext
+export default IntelligenceContext

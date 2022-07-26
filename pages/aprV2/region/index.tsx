@@ -88,7 +88,7 @@ const townData: { [key: string]: { name: string, marked: boolean }[] } = {
 const AprRegion: NextPage = () => {
   const [townGeojson, settownGeojson] = useState<any | null>(null)
   const [county, setcounty] = useState<string | null>(null)
-  const [town, settown] = useState<string | null>(null)
+  const [town, settown] = useState<string | undefined>(undefined)
   const [displayData, setdisplayData] = useState<IAprRegionGraphDisplayData | null>(null)
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)

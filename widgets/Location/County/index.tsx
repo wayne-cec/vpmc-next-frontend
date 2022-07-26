@@ -12,7 +12,7 @@ import { Grid } from '@mui/material'
 const County = () => {
   const { mapView } = useContext(widgetContext)
   const [county, setcounty] = useState<string | null>(null)
-  const [town, settown] = useState<string | null>(null)
+  const [town, settown] = useState<string | undefined>(undefined)
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
 

@@ -1,22 +1,22 @@
 import React, { useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
-import CoordinateSelector from '../../../../../components/CoordinateSelector'
-import { SpatialQueryType } from '../..'
+import CoordinateSelector from '../../../../../../components/CoordinateSelector'
+import { SpatialQueryType } from '../../..'
 import { Grid, Radio, TextField } from '@mui/material'
-import PolygonSketch from '../../../../../components/PolygonSketch'
-import { PolygonSketchMode } from '../../../../../components/PolygonSketch'
-import CountySelector from '../../../../../components/CountySelector'
-import TownSelector from '../../../../../components/TownSelector'
-import MarketCompareContext from '../../MarketCompareContext'
+import PolygonSketch from '../../../../../../components/PolygonSketch'
+import { PolygonSketchMode } from '../../../../../../components/PolygonSketch'
+import CountySelector from '../../../../../../components/CountySelector'
+import TownSelector from '../../../../../../components/TownSelector'
+import MarketCompareContext from '../../../MarketCompareContext'
 
-const SpatialQuery = () => {
+const SpatialQueryIntelligence = () => {
   const marketCompareContext = useContext(MarketCompareContext)
 
   return (
     <div className={classNames({
       [style.spatialQuery]: true,
-      [style.divide]: true
+      [style.divide]: false
     })}>
 
       <Grid container spacing={2}>
@@ -41,6 +41,7 @@ const SpatialQuery = () => {
             locatedTown={marketCompareContext.locatedTown!}
             active={marketCompareContext.isSelectorActive!}
             enabled={marketCompareContext.sketchMode === 'inactive'}
+            thirdParty={true}
             onClick={() => {
               marketCompareContext.onCoordinatorSelectorClick(!marketCompareContext.isSelectorActive)
             }}
@@ -62,6 +63,8 @@ const SpatialQuery = () => {
             fullWidth
           ></TextField>
         </Grid>
+
+        {/* 自定義範圍 */}
         <Grid item xs={2}>
           <Radio
             checked={
@@ -97,7 +100,7 @@ const SpatialQuery = () => {
           />
         </Grid>
 
-
+        {/* 行政區範圍 */}
         <Grid item xs={2}>
           <Radio
             checked={
@@ -142,4 +145,4 @@ const SpatialQuery = () => {
   )
 }
 
-export default SpatialQuery
+export default SpatialQueryIntelligence

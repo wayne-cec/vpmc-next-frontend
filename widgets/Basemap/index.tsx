@@ -24,12 +24,12 @@ export interface IBasemapData {
 }
 
 const basemapDataList: IBasemapData[] = [
-  {
-    id: 'DEFAULT',
-    title: '預設底圖',
-    icon: '/basemaps/default.png',
-    tileLayer: new WebTileLayer()
-  },
+  // {
+  //   id: 'DEFAULT',
+  //   title: '預設底圖',
+  //   icon: '/basemaps/default.png',
+  //   tileLayer: new WebTileLayer()
+  // },
   {
     id: 'EMAP5',
     title: '臺灣通用電子地圖',
@@ -81,27 +81,32 @@ const geographicDataList: IBasemapData[] = [
 ]
 
 const Basemap = () => {
-  const { map, show, onShowChange } = useContext(widgetContext)
-  const [activeBasemap, setactiveBasemap] = useState<string>('EMAP5')
+  const { map, show } = useContext(widgetContext)
+  const [activeBasemaps, setactiveBasemaps] = useState<string[]>([])
   const [basemapTypeExpanded, setbasemapTypeExpanded] = useState<BasemapCategory | false>(false)
 
-  const handleChangeBasemap = (basemap: IBasemapData) => {
-    if (map) {
-      setactiveBasemap(basemap.id)
-      handleRemoveAllBasemaps()
-      onShowChange('none')
-      if (basemap.id === 'DEFAULT') return
-      map.add(basemap.tileLayer)
-      map.reorder(basemap.tileLayer, 0)
-    }
+  const getTileLayersById = (id: string): WebTileLayer[] => {
+    return basemapDataList.concat(geographicDataList).filter((layer) => {
+      return layer.id === id
+    }).map(a => a.tileLayer)
   }
 
-  const handleRemoveAllBasemaps = () => {
-    let baseLayers = basemapDataList.map(a => a.tileLayer)
-    map?.removeMany(baseLayers)
-
-    let geographicLayers = geographicDataList.map(a => a.tileLayer)
-    map?.removeMany(geographicLayers)
+  const handleChangeBasemap = (basemap: IBasemapData) => {
+    if (!map) return
+    if (activeBasemaps.includes(basemap.id)) {
+      let newActiveBasemaps = [...activeBasemaps.filter((item) => {
+        return item !== basemap.id
+      })]
+      setactiveBasemaps([...newActiveBasemaps])
+      map.removeMany(
+        getTileLayersById(basemap.id)
+      )
+      return
+    }
+    setactiveBasemaps([...activeBasemaps, basemap.id])
+    map.addMany(
+      getTileLayersById(basemap.id)
+    )
   }
 
   const handleAccordionClick =
@@ -110,9 +115,10 @@ const Basemap = () => {
     }
 
   useEffect(() => {
-    let tileLayers = basemapDataList.filter(a => a.id === activeBasemap).map(a => a.tileLayer)
-    map?.addMany(tileLayers)
-    map?.reorder(tileLayers[0], 0)
+    if (!map) return
+    let tileLayers = basemapDataList.filter(a => activeBasemaps.includes(a.id)).map(a => a.tileLayer)
+    map.addMany(tileLayers)
+    map.reorder(tileLayers[0], 0)
   }, [])
 
   return (
@@ -137,7 +143,7 @@ const Basemap = () => {
                 icon={basemap.icon}
                 title={basemap.title}
                 layer={basemap.tileLayer}
-                active={basemap.id === activeBasemap}
+                active={activeBasemaps.includes(basemap.id)}
                 onClick={() => {
                   handleChangeBasemap(basemap)
                 }}
@@ -163,16 +169,9 @@ const Basemap = () => {
                 icon={basemap.icon}
                 title={basemap.title}
                 layer={basemap.tileLayer}
-                active={basemap.id === activeBasemap}
+                active={activeBasemaps.includes(basemap.id)}
                 onClick={() => {
-                  if (map) {
-                    setactiveBasemap(basemap.id)
-                    handleRemoveAllBasemaps()
-                    onShowChange('none')
-                    if (basemap.id === 'DEFAULT') return
-                    map.add(basemap.tileLayer)
-                    map.reorder(basemap.tileLayer, 0)
-                  }
+                  handleChangeBasemap(basemap)
                 }}
               />
             })

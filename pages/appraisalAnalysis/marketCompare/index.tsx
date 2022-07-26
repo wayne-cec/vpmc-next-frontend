@@ -9,6 +9,7 @@ import QueryPanel from './QueryPanel'
 import ResultPanel from './ResultPanel'
 import AprDetailContent from './AprDetailContent'
 import MarketCompareContext from './MarketCompareContext'
+import IntelligenceContext from './IntelligenceContext'
 import PanelContainer from '../../../components/PanelContainer'
 import PanelButton from '../../../components/PanelContainer/PanelButton'
 import { PolygonSketchMode } from '../../../components/PolygonSketch'
@@ -34,8 +35,8 @@ const MarketMapContainer = dynamic(
 )
 
 const MarketCompare: NextPage = () => {
-  const [longitude, setlongitude] = useState<number | null>(null)
-  const [latitude, setlatitude] = useState<number | null>(null)
+  const [longitude, setlongitude] = useState<number | undefined>(undefined)
+  const [latitude, setlatitude] = useState<number | undefined>(undefined)
   const [locatedCounty, setlocatedCounty] = useState<string | null>(null)
   const [locatedTown, setlocatedTown] = useState<string | null>(null)
   const [isSelectorActive, setisCoordinateSelectorActive] = useState<boolean>(false)
@@ -102,7 +103,7 @@ const MarketCompare: NextPage = () => {
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
 
-  const handleCoordinateSelect = async (longitude: number | null, latitude: number | null) => {
+  const handleCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
     setlongitude(longitude)
     setlatitude(latitude)
     setisCoordinateSelectorActive(false)
@@ -479,8 +480,18 @@ const MarketCompare: NextPage = () => {
           },
           onTownChange: (towns) => {
             settowns(towns)
+          },
+          handleCoordinateSelect: (longitude, latitude) => {
+            if (longitude)
+              setlongitude(longitude)
+            if (latitude)
+              setlatitude(latitude)
+          },
+          onCoordinateSelect: (longitude, latitude) => {
+            handleCoordinateSelect(longitude, latitude)
           }
-        }}>
+        }}
+      >
         <div className={style.main}>
           <PanelContainer>
             <PanelButton
