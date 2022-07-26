@@ -43,7 +43,7 @@ const Address = () => {
     <div className={style.addressQuery}>
 
       <Grid container spacing={0}>
-        <Grid item xs={10} sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px' }}>
+        <Grid item xs={10} sx={{ display: 'flex', alignItems: 'center', paddingLeft: '10px', paddingRight: '10px' }}>
           <TextField
             size='small'
             label='請輸入門牌'
@@ -53,7 +53,7 @@ const Address = () => {
             fullWidth
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
           <div className={classNames({
             [style.queryBtn]: true,
             [style.loading]: pending

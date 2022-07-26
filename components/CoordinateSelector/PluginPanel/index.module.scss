@@ -1,11 +1,36 @@
 
+@mixin queryBtn {
+    @apply bg-main-primary w-full h-[75%] px-2 
+    text-white rounded-md flex items-center 
+    justify-center cursor-pointer;
+    &:hover{
+        @apply shadow-md;
+    }
+}
+
 .PluginPanel{
     @apply w-[800px] h-[400px] flex;
     .Manipulate{
-        @apply bg-gray-500 h-full w-1/2;
+        @apply h-full w-1/2 flex flex-col;
+        .Action{
+            @apply pr-4 flex items-center;
+            flex:0.3;
+            .Input{
+                @apply h-full flex flex-col justify-center pr-2;
+                flex: 0.85;
+            }
+            .Submit{
+                flex: 0.15;
+                @include queryBtn;
+            }
+        }
+        .Result{
+            @apply border mr-4 overflow-y-auto px-2;
+            flex:0.7;
+        }
     }
     .MapContainer{
-        @apply h-full w-1/2 ;
+        @apply h-full w-1/2 border;
         .Map{
             @apply w-full h-full bg-black;
         }
