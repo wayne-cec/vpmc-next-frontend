@@ -73,11 +73,12 @@ const AttributeQuery = () => {
         </Grid>
         <Grid item xs={10}>
           <FormControl size='small' fullWidth>
-            {
+            {/* {
               marketCompareContext.isTransactionTimeFiltered && !marketCompareContext.isTransactionTimeFosced
                 ? <></>
                 : <InputLabel id="transaction-time">交易時間</InputLabel>
-            }
+            } */}
+            <InputLabel id="transaction-time">交易時間</InputLabel>
             <Select
               labelId="transaction-time"
               label="交易時間"
@@ -116,11 +117,12 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {
+                  {/* {
                     marketCompareContext.isBuildingAreaFiltered && !marketCompareContext.isBuildingAreaFosced
                       ? <></>
                       : <InputLabel id="building-transfer-area">建坪面積</InputLabel>
-                  }
+                  } */}
+                  <InputLabel id="building-transfer-area">建坪面積</InputLabel>
                   <Select
                     labelId="building-transfer-area"
                     label="建坪面積"
@@ -162,11 +164,12 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {
+                  {/* {
                     marketCompareContext.isLandAreaFiltered && !marketCompareContext.isLandAreaFosced
                       ? <></>
                       : <InputLabel id="land-transfer-area">地坪面積</InputLabel>
-                  }
+                  } */}
+                  <InputLabel id="land-transfer-area">地坪面積</InputLabel>
                   <Select
                     labelId="land-transfer-area"
                     label="地坪面積"
@@ -190,7 +193,6 @@ const AttributeQuery = () => {
                     }
                   </Select>
                 </FormControl>
-
               </Grid>
             </>
             : null
@@ -208,11 +210,12 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {
+                  {/* {
                     marketCompareContext.isAgeFiltered && !marketCompareContext.isAgeFosced
                       ? <></>
                       : <InputLabel id="age">屋齡</InputLabel>
-                  }
+                  } */}
+                  <InputLabel id="age">屋齡</InputLabel>
                   <Select
                     labelId="age"
                     label="屋齡"
@@ -236,7 +239,6 @@ const AttributeQuery = () => {
                     }
                   </Select>
                 </FormControl>
-
               </Grid>
             </>
             : null
@@ -254,11 +256,12 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {
+                  {/* {
                     marketCompareContext.isParkSpaceFiltered && !marketCompareContext.isParkSpaceFosced
                       ? <></>
                       : <InputLabel id="park-space">車位類型</InputLabel>
-                  }
+                  } */}
+                  <InputLabel id="park-space">車位類型</InputLabel>
                   <Select
                     labelId="park-space"
                     label="車位類型"
@@ -282,7 +285,6 @@ const AttributeQuery = () => {
                     }
                   </Select>
                 </FormControl>
-
               </Grid>
             </>
             : null
@@ -327,11 +329,11 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <MultiChipSelect
-                  placeholder='分都市土地分區'
+                  placeholder='非都市土地分區'
                   urbanLandUse={marketCompareContext.urbanLandUse}
                   urbanUsageSet={urbanUsageSet}
                   isUrbanUsageFiltered={false}
-                  isUrbanUsageFosced={marketCompareContext.isUrbanUsageFosced}
+                  isUrbanUsageFosced={false}
                   onChange={(value) => {
                     marketCompareContext.onUrbanLaudUseSelect(value)
                   }}

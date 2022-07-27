@@ -46,6 +46,7 @@ const CoordinateSelector = ({
           setpluginPanelOpen(true)
           event.stopPropagation()
         }}
+        disabled={!enabled}
       >
         <ExtensionIcon />
       </IconButton>
