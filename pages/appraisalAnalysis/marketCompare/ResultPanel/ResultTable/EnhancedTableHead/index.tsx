@@ -88,7 +88,7 @@ export const headCells: readonly HeadCell[] = [
   }
 ]
 
-interface EnhancedTableProps {
+export interface IEnhancedTableHead {
   numSelected: number
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void
@@ -97,7 +97,7 @@ interface EnhancedTableProps {
   rowCount: number
 }
 
-const EnhancedTableHead = (props: EnhancedTableProps) => {
+const EnhancedTableHead = (props: IEnhancedTableHead) => {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler =
