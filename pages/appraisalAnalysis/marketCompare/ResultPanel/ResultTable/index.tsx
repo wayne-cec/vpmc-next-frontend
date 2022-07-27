@@ -22,6 +22,7 @@ import {
   TablePagination, TableContainer, TableCell,
   TableBody, Switch, Grid
 } from '@mui/material'
+import EnhancedTableFoot from './EnhancedTableFoot'
 
 export type Order = 'asc' | 'desc'
 
@@ -65,6 +66,7 @@ const ResultTable = (props: IResultTable) => {
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [rows, setrows] = useState<Data[]>([])
   const [dense, setDense] = useState(true)
+  const [simple, setsimple] = useState(true)
   const [page, setPage] = useState(0)
   const isSelected = (name: string) => selected.indexOf(name) !== -1
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
@@ -364,34 +366,22 @@ const ResultTable = (props: IResultTable) => {
           </Table>
         </TableContainer>
 
-        <Grid container spacing={0}>
-          <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
-            <Switch
-              value={dense}
-              onChange={() => {
-                setDense(prev => !prev)
-              }}
-              defaultChecked
-            />
-            <span>縮小模式</span>
-          </Grid>
-          <Grid item xs={6}>
-            <TablePagination
-              rowsPerPageOptions={[5]}
-              component="div"
-              count={rows.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={(event: unknown, newPage: number) => {
-                setPage(newPage)
-              }}
-              onRowsPerPageChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                setRowsPerPage(parseInt(event.target.value, 10))
-                setPage(0)
-              }}
-            />
-          </Grid>
-        </Grid>
+        <EnhancedTableFoot
+          dense={dense}
+          simple={simple}
+          rows={rows}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onDense={() => {
+            setDense(prev => !prev)
+          }}
+          onSimple={() => {
+            setsimple(prev => !prev)
+          }}
+          onPageChange={(event: unknown, newPage: number) => {
+            setPage(newPage)
+          }}
+        />
 
       </Paper>
     </Box>
