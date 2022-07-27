@@ -14,6 +14,7 @@ import AttributeQuery from './ManualQuery/AttributeQuery'
 import Action from './ManualQuery/Action'
 import SpatialQueryIntelligence from './IntelligenceQuery/SpatialQueryIntelligence'
 import AttributeQueryIntelligence from './IntelligenceQuery/AttributeQueryIntelligence'
+import ActionIntelligence from './IntelligenceQuery/ActionIntelligence'
 
 const ManualQuery = () => {
   return (
@@ -30,6 +31,7 @@ const IntelligenceQuery = () => {
     <div className={style.filterGroup}>
       <SpatialQueryIntelligence />
       <AttributeQueryIntelligence />
+      <ActionIntelligence />
     </div>
   )
 }

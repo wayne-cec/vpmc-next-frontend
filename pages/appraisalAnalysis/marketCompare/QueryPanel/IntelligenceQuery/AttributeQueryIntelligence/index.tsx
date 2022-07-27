@@ -3,6 +3,7 @@ import style from './index.module.scss'
 import classNames from 'classnames'
 import MarketCompareContext from '../../../MarketCompareContext'
 import FileUpload from '../../../../../../components/FileUpload'
+import { Grid } from '@mui/material'
 
 const accept = '.csv'
 
@@ -48,7 +49,42 @@ const AttributeQueryIntelligence = () => {
     })}>
       {
         objectInfo
-          ? <div>{objectInfo[1]}</div>
+          ? <div>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                標的簡稱
+              </Grid>
+              <Grid item xs={6}>
+                {objectInfo[1]}
+              </Grid>
+              <Grid item xs={6}>
+                資產類型
+              </Grid>
+              <Grid item xs={6}>
+                {objectInfo[2]}
+              </Grid>
+              <Grid item xs={6}>
+                門牌
+              </Grid>
+              <Grid item xs={6}>
+                {objectInfo[3]}
+              </Grid>
+              <Grid item xs={6}>
+                樓層
+              </Grid>
+              <Grid item xs={6}>
+                {objectInfo[5]}F
+              </Grid>
+
+              <Grid item xs={6}>
+                建物完工日期
+              </Grid>
+              <Grid item xs={6}>
+                {objectInfo[6]}
+              </Grid>
+
+            </Grid>
+          </div>
           : <FileUpload
             accept={accept}
             onChange={onFileChange}
