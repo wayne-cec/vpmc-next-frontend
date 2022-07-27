@@ -202,7 +202,7 @@ const ResultTable = (props: IResultTable) => {
                       }
                     }
                     return (
-                      <EnhancedTableRow {...enhancedTableRowProps} />
+                      <EnhancedTableRow key={index} {...enhancedTableRowProps} />
                     )
                   })
               }
