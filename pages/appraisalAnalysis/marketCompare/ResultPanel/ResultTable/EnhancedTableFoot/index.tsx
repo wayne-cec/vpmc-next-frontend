@@ -29,16 +29,17 @@ const EnhancedTableFoot = ({
   return (
     <Grid container spacing={0}>
       <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
-        <Grid container spacing={2}>
-          <Grid item xs={3}>
-            <Switch
-              value={dense}
-              onChange={onDense}
-              defaultChecked
-            />
-            <span>縮小模式</span>
-          </Grid>
-          <Grid item xs={3}>
+        <Switch
+          value={dense}
+          onChange={() => {
+            onDense()
+            onSimple()
+          }}
+          defaultChecked
+        />
+        <span>縮小模式</span>
+        {/* <Grid container spacing={2}>
+          <Grid item xs={4}>
             <Switch
               value={simple}
               onChange={onSimple}
@@ -46,7 +47,15 @@ const EnhancedTableFoot = ({
             />
             <span>簡易模式</span>
           </Grid>
-        </Grid>
+          <Grid item xs={4}>
+            <Switch
+              value={dense}
+              onChange={onDense}
+              defaultChecked
+            />
+            <span>縮小模式</span>
+          </Grid>
+        </Grid> */}
       </Grid>
       <Grid item xs={6}>
         <TablePagination

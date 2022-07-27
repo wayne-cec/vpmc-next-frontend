@@ -2,25 +2,16 @@ import React, { useState, useEffect, useContext } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import style from './index.module.scss'
-import moment from 'moment'
 import api from '../../../../../api'
-import classNames from 'classnames'
-import ArticleIcon from '@mui/icons-material/Article'
 import EnhancedTableHead from './EnhancedTableHead'
 import MarketCompareContext from '../../MarketCompareContext'
-import calculateArea from '../../../../../lib/calculateArea'
 import { IMarketCompareResult } from '../../../../../api/prod'
-import { parseCommitee } from '../../../../../lib/parseCommitee'
-import { getAge } from '../../../../../lib/calculateAge'
-import { parkSpaceSet } from '../../../../../lib/marketComapreConst'
 import {
   getComparator,
   stableSort
 } from '../../../../../lib/tableHelper'
 import {
-  IconButton, Checkbox, Paper, TableRow,
-  TableContainer, TableCell,
-  TableBody
+  Paper, TableContainer, TableBody
 } from '@mui/material'
 import EnhancedTableFoot from './EnhancedTableFoot'
 import EnhancedTableRow, { IEnhancedTableRow } from './EnhancedTableRow'
@@ -185,6 +176,7 @@ const ResultTable = (props: IResultTable) => {
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
+              simple={simple}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -197,8 +189,8 @@ const ResultTable = (props: IResultTable) => {
                 pending
                   ? renderMatchingCommitee()
                   : renderRows.map((row, index) => {
-
                     const enhancedTableRowProps: IEnhancedTableRow = {
+                      simple: simple,
                       row: row,
                       labelId: `enhanced-table-checkbox-${index}`,
                       isItemSelected: isSelected(row.id),
@@ -216,7 +208,6 @@ const ResultTable = (props: IResultTable) => {
                         onDetailAprChange(row.id)
                       }
                     }
-
                     return (
                       <EnhancedTableRow {...enhancedTableRowProps} />
                     )

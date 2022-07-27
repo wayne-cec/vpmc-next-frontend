@@ -15,6 +15,7 @@ import { parkSpaceSet } from '../../../../../../lib/marketComapreConst'
 const square = 3.305785
 
 export interface IEnhancedTableRow {
+  simple: boolean
   labelId: string
   isItemSelected: boolean
   row: Data
@@ -25,6 +26,7 @@ export interface IEnhancedTableRow {
 }
 
 const EnhancedTableRow = ({
+  simple,
   labelId,
   isItemSelected,
   row,
@@ -107,27 +109,31 @@ const EnhancedTableRow = ({
         {row.transferFloor}/{row.floor}樓
       </TableCell>
 
-      <TableCell align="right">
-        <span>
-          {calculateArea(row.landTransferArea)}坪
-          {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
-        </span>
-      </TableCell>
+      {
+        !simple && <>
+          <TableCell align="right">
+            <span>
+              {calculateArea(row.landTransferArea)}坪
+              {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
+            </span>
+          </TableCell>
 
-      <TableCell align="right">
-        <span>
-          {calculateArea(row.buildingTransferArea - row.parkingSpaceTransferArea)}坪
-          {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
-        </span>
-      </TableCell>
+          <TableCell align="right">
+            <span>
+              {calculateArea(row.buildingTransferArea - row.parkingSpaceTransferArea)}坪
+              {/* {Math.round((row.buildingTransferArea - row.parkingSpaceTransferArea) / square * 10) / 10}坪 */}
+            </span>
+          </TableCell>
 
-      <TableCell align="right">
-        <span>
-          {
-            Math.round(row.buildingArea / row.buildingTransferArea * 1000) / 10
-          }%
-        </span>
-      </TableCell>
+          <TableCell align="right">
+            <span>
+              {
+                Math.round(row.buildingArea / row.buildingTransferArea * 1000) / 10
+              }%
+            </span>
+          </TableCell>
+        </>
+      }
 
       <TableCell align="right">
         <span className={style.unitPrice}>
