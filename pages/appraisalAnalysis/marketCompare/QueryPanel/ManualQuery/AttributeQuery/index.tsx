@@ -328,16 +328,30 @@ const AttributeQuery = () => {
                 />
               </Grid>
               <Grid item xs={10}>
-                <MultiChipSelect
+                {/* <MultiChipSelect
                   placeholder='非都市土地分區'
-                  urbanLandUse={marketCompareContext.urbanLandUse}
+                  urbanLandUse={undefined}
                   urbanUsageSet={urbanUsageSet}
                   isUrbanUsageFiltered={false}
                   isUrbanUsageFosced={false}
                   onChange={(value) => {
                     marketCompareContext.onUrbanLaudUseSelect(value)
                   }}
-                />
+                /> */}
+                <FormControl size='small' fullWidth>
+                  <InputLabel id="aaa">非都市土地分區</InputLabel>
+                  <Select
+                    labelId="aaa"
+                    label="非都市土地分區"
+                    id="aaa-select"
+                    size='small'
+                    fullWidth
+                    value={''}
+                    onChange={(event) => { }}
+                    disabled={true}
+                  >
+                  </Select>
+                </FormControl>
               </Grid>
             </>
             : null
