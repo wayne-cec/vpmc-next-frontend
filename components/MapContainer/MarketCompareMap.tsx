@@ -183,9 +183,11 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   }, [marketCompareContext.filteredResults])
 
   useEffect(() => {
-    if (longitude && latitude) {
-      updateBufferCircle(longitude, latitude)
-    }
+    if (!marketCompareContext.longitude || !marketCompareContext.latitude) return
+    updateBufferCircle(
+      marketCompareContext.longitude,
+      marketCompareContext.latitude
+    )
   }, [marketCompareContext.bufferRadius])
 
   useEffect(() => {
@@ -218,7 +220,7 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   }, [marketCompareContext.isSelectorActive])
 
   useEffect(() => {
-    if (!pointLayer || !marketCompareContext.longitude || !marketCompareContext.latitude || !map) return
+    if (!pointLayer || !marketCompareContext.longitude || !marketCompareContext.latitude || !map || !aprLayer || !mapView) return
     const pointGraphic = new Graphic({
       geometry: new Point({ longitude: marketCompareContext.longitude, latitude: marketCompareContext.latitude }),
       symbol: new PictureMarkerSymbol({
@@ -232,6 +234,8 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
     pointLayer.graphics = collection
     map.add(pointLayer)
     updateBufferCircle(marketCompareContext.longitude, marketCompareContext.latitude)
+    aprLayer.graphics = new Collection()
+    mapView.goTo(pointGraphic)
   }, [marketCompareContext.longitude, marketCompareContext.latitude])
 
 

@@ -16,7 +16,7 @@ const SpatialQueryIntelligence = () => {
   return (
     <div className={classNames({
       [style.spatialQuery]: true,
-      [style.divide]: false
+      [style.divide]: true
     })}>
 
       <Grid container spacing={2}>
