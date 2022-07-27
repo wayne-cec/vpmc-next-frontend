@@ -60,8 +60,8 @@ const ResultTable = (props: IResultTable) => {
   const [dense, setDense] = useState(true)
   const [simple, setsimple] = useState(true)
   const [page, setPage] = useState(0)
-  const isSelected = (name: string) => selected.indexOf(name) !== -1
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0
+  const isSelected = (name: string) => selected.indexOf(name) !== -1
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -81,11 +81,11 @@ const ResultTable = (props: IResultTable) => {
     setSelected([])
   }
 
-  const handleSelect = (name: string) => {
-    const selectedIndex = selected.indexOf(name)
+  const handleRowSelect = (event: React.MouseEvent<unknown>, id: string) => {
+    const selectedIndex = selected.indexOf(id)
     let newSelected: readonly string[] = []
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name)
+      newSelected = newSelected.concat(selected, id)
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1))
     } else if (selectedIndex === selected.length - 1) {
@@ -97,10 +97,6 @@ const ResultTable = (props: IResultTable) => {
       )
     }
     setSelected(newSelected)
-  }
-
-  const handleRowClick = (event: React.MouseEvent<unknown>, id: string) => {
-    handleSelect(id)
   }
 
   const handleGetCommiteeByAprId = async (id: string) => {
@@ -153,9 +149,6 @@ const ResultTable = (props: IResultTable) => {
     )
   }
 
-  const renderTableRow = () => {
-  }
-
   useEffect(() => {
     handleLoadingData()
   }, [props.data])
@@ -201,7 +194,7 @@ const ResultTable = (props: IResultTable) => {
                         onZoomIdChange(null)
                       },
                       onSelect: (event) => {
-                        handleRowClick(event, row.id)
+                        handleRowSelect(event, row.id)
                         event.stopPropagation()
                       },
                       onDetailOpen: () => {
@@ -221,6 +214,7 @@ const ResultTable = (props: IResultTable) => {
             rows={rows}
             rowsPerPage={rowsPerPage}
             page={page}
+            selected={selected}
             onDense={() => {
               setDense(prev => !prev)
             }}
