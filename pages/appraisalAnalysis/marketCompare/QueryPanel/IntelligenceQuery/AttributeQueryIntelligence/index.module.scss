@@ -1,0 +1,17 @@
+.AttributeQuery{
+    @apply h-fit py-4 w-full;
+    &.divide{
+        @apply border-b border-gray-400;
+    }
+    .filterRow{
+        @apply flex flex-row;
+    }
+    .polygonSketchContainer{
+        @apply pl-0;
+    }
+    .selectorContainer{
+        // @apply pl-2;
+        padding-left: 16px !important;
+        // padding-top: 0px !important;
+    }
+}

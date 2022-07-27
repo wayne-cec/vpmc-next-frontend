@@ -13,6 +13,7 @@ import SpatialQuery from './ManualQuery/SpatialQuery'
 import AttributeQuery from './ManualQuery/AttributeQuery'
 import Action from './ManualQuery/Action'
 import SpatialQueryIntelligence from './IntelligenceQuery/SpatialQueryIntelligence'
+import AttributeQueryIntelligence from './IntelligenceQuery/AttributeQueryIntelligence'
 
 const ManualQuery = () => {
   return (
@@ -28,6 +29,7 @@ const IntelligenceQuery = () => {
   return (
     <div className={style.filterGroup}>
       <SpatialQueryIntelligence />
+      <AttributeQueryIntelligence />
     </div>
   )
 }
@@ -116,7 +118,7 @@ const QueryPanel = () => {
             />
             <Tab
               icon={<AutoFixHighIcon />} iconPosition="start"
-              label="系統智選" value="1" disabled
+              label="系統智選" value="1"
             />
           </TabList>
         </Box>

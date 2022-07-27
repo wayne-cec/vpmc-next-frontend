@@ -102,7 +102,7 @@ const Header = () => {
                   onMouseOver={() => { setaprV2(true) }}
                   onMouseLeave={() => { setaprV2(false) }}
                   onClick={() => { Router.push('/aprV2/commitee') }}
-                >實價登陸2.0</NavButton>
+                >實價地圖</NavButton>
               </div>
             </> : null
         }
