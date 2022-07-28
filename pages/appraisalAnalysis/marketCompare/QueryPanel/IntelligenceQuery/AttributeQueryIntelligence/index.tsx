@@ -57,7 +57,13 @@ const AttributeQueryIntelligence = () => {
       return
     }
     const objectInfo: string[] = parsedCsv[2]
-    objectInfo[2]
+
+    const assetTypeCode = findKey(assetTypeSet, (o) => {
+      return o === objectInfo[2]
+    })
+    // alert(objectInfo[2])
+    // alert(assetTypeCode)
+    setassetTypeCode(assetTypeCode)
     setcompletionTime(new Date(objectInfo[6]))
     settransactionTime(new Date(objectInfo[11]))
     settransferFloor(Number(objectInfo[5]))
