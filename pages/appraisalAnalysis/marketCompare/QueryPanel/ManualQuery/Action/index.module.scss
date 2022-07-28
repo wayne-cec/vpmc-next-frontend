@@ -1,7 +1,7 @@
 .action{
     @apply flex flex-row w-full;
     .searchBtn{
-        @apply h-[40px] w-full bg-main-primary m-2 
+        @apply h-[40px] w-full bg-main-primary my-2 
         rounded-md text-white cursor-pointer flex items-center
         p-2 justify-center;
         &:hover{
@@ -38,7 +38,7 @@
         }
     }
     .settingBtn{
-        @apply h-[40px] w-full bg-main-primary bg-opacity-60 m-2 
+        @apply h-[40px] w-full bg-main-primary bg-opacity-60 my-2 mr-2 
         rounded-md text-white cursor-pointer flex items-center
         p-2 justify-center;
         &:hover{
