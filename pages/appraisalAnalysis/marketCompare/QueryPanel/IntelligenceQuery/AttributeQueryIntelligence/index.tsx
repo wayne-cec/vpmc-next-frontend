@@ -63,7 +63,8 @@ const AttributeQueryIntelligence = () => {
     })
     // alert(objectInfo[2])
     // alert(assetTypeCode)
-    setassetTypeCode(assetTypeCode)
+    if (!assetTypeCode) return
+    setassetTypeCode(Number(assetTypeCode))
     setcompletionTime(new Date(objectInfo[6]))
     settransactionTime(new Date(objectInfo[11]))
     settransferFloor(Number(objectInfo[5]))
