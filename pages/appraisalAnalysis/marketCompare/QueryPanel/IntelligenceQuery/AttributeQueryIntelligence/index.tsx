@@ -61,15 +61,12 @@ const AttributeQueryIntelligence = () => {
     const assetTypeCode = findKey(assetTypeSet, (o) => {
       return o === objectInfo[2]
     })
-    // alert(objectInfo[2])
-    // alert(assetTypeCode)
     if (!assetTypeCode) return
     setassetTypeCode(Number(assetTypeCode))
     setcompletionTime(new Date(objectInfo[6]))
     settransactionTime(new Date(objectInfo[11]))
     settransferFloor(Number(objectInfo[5]))
-
-    // setobjectInfo(objectInfo)
+    setuploadPanelOpen(false)
   }
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
