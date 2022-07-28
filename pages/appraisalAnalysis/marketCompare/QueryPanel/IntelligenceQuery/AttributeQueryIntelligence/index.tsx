@@ -6,12 +6,10 @@ import FileUpload from '../../../../../../components/FileUpload'
 import {
   Grid, Button, FormControl,
   InputLabel, Select, MenuItem,
-  Dialog, DialogActions,
-  DialogContent, DialogContentText,
-  DialogTitle, TextField
+  Dialog, DialogContent, TextField
 } from '@mui/material'
 import {
-  assetTypeSet
+  assetTypeSet, urbanUsageSet
 } from '../../../../../../lib/marketComapreConst'
 import { makeStyles } from '@mui/styles'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
@@ -20,6 +18,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { findKey } from 'lodash'
 
 const accept = '.csv'
+
+export type ObjectType = 0 | 1 | 2 // 建物 土地 停車位
 
 const parseCsvString = (data: string) => {
   const output: string[][] = []
@@ -44,10 +44,17 @@ const AttributeQueryIntelligence = () => {
   const marketCompareContext = useContext(MarketCompareContext)
   // const [objectInfo, setobjectInfo] = useState<string[] | undefined>(undefined)
   const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
+  const [objectTypeCode, setobjectTypeCode] = useState<ObjectType>(0)
   const [assetTypeCode, setassetTypeCode] = useState<number>(0)
   const [completionTime, setcompletionTime] = useState<Date | null>(null)
   const [transactionTime, settransactionTime] = useState<Date | null>(null)
   const [transferFloor, settransferFloor] = useState<number>(1)
+  const [buildingArea, setbuildingArea] = useState<number>(0)
+  const [landArea, setlandArea] = useState<number>(0)
+  const [unitPrice, setunitPrice] = useState<number>(0)
+  const [price, setprice] = useState<number>(0)
+  const [urbanUsageCode, seturbanUsageCode] = useState<number>(0)
+  const [nonUrbanUsageCode, setnonUrbanUsageCode] = useState<number>(0)
 
   const handleFileBlob = async (file: File) => {
     const csvString = await file.text()
@@ -58,14 +65,23 @@ const AttributeQueryIntelligence = () => {
     }
     const objectInfo: string[] = parsedCsv[2]
 
-    const assetTypeCode = findKey(assetTypeSet, (o) => {
-      return o === objectInfo[2]
+    const assetTypeCodea = findKey(assetTypeSet, (o) => {
+      return o === objectInfo[3]
     })
-    if (!assetTypeCode) return
-    setassetTypeCode(Number(assetTypeCode))
-    setcompletionTime(new Date(objectInfo[6]))
-    settransactionTime(new Date(objectInfo[11]))
-    settransferFloor(Number(objectInfo[5]))
+    const urbanUsagea = findKey(urbanUsageSet, (o) => {
+      return o === objectInfo[11]
+    })
+    if (!assetTypeCodea || !urbanUsagea) return
+    setobjectTypeCode(0)
+    setassetTypeCode(Number(assetTypeCodea))
+    setcompletionTime(new Date(objectInfo[7]))
+    settransactionTime(new Date(objectInfo[12]))
+    settransferFloor(Number(objectInfo[6]))
+    setbuildingArea(Number(objectInfo[8]))
+    setlandArea(Number(objectInfo[9]))
+    setunitPrice(Number(objectInfo[13]))
+    setprice(Number(objectInfo[14]))
+    seturbanUsageCode(Number(urbanUsagea))
     setuploadPanelOpen(false)
   }
 
@@ -87,8 +103,8 @@ const AttributeQueryIntelligence = () => {
     })}>
 
       <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <Grid container spacing={2}>
-          <Grid item xs={5}>
+        <Grid container spacing={1.5}>
+          <Grid item xs={4}>
             <Button
               className={classes.uploadButton}
               variant='outlined'
@@ -100,33 +116,81 @@ const AttributeQueryIntelligence = () => {
               上傳檔案
             </Button>
           </Grid>
-          <Grid item xs={7}>
+          <Grid item xs={8}>
             <FormControl size='small' fullWidth>
-              <InputLabel id="asset-type">資產類型*</InputLabel>
+              <InputLabel id="object-type">標的類型*</InputLabel>
               <Select
-                labelId="asset-type"
-                label="資產類型"
-                id="asset-type-select"
-                value={assetTypeCode}
+                labelId="object-type"
+                label="標的類型"
+                id="object-type-select"
+                value={objectTypeCode}
                 onChange={(event) => {
-                  setassetTypeCode(Number(event.target.value))
+                  setobjectTypeCode(Number(event.target.value) as ObjectType)
                 }}
                 size='small'
                 fullWidth
               >
-                {
-                  Object.keys(assetTypeSet).map((assetCode, index) => {
-                    return <MenuItem
-                      key={index}
-                      value={assetCode}
-                    >{assetTypeSet[Number(assetCode)]}</MenuItem>
-                  })
-                }
+                <MenuItem value={0}>建物</MenuItem>
+                <MenuItem value={1}>土地</MenuItem>
+                <MenuItem value={2}>停車位</MenuItem>
               </Select>
             </FormControl>
           </Grid>
 
-          <Grid item xs={5}>
+          {
+            objectTypeCode === 0 && <>
+              <Grid item xs={6}>
+                <FormControl size='small' fullWidth>
+                  <InputLabel id="asset-type">資產類型*</InputLabel>
+                  <Select
+                    labelId="asset-type"
+                    label="資產類型"
+                    id="asset-type-select"
+                    value={assetTypeCode}
+                    onChange={(event) => {
+                      setassetTypeCode(Number(event.target.value))
+                    }}
+                    size='small'
+                    fullWidth
+                  >
+                    {
+                      Object.keys(assetTypeSet).map((assetCode, index) => {
+                        return <MenuItem
+                          key={index}
+                          value={assetCode}
+                        >{assetTypeSet[Number(assetCode)]}</MenuItem>
+                      })
+                    }
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl size='small' fullWidth>
+                  <TextField
+                    type='number'
+                    label="樓層"
+                    size='small'
+                    value={transferFloor}
+                    disabled={false}
+                    onChange={(event) => {
+                      settransferFloor(Number(event.target.value))
+                    }}
+                    InputProps={{
+                      inputProps: {
+                        min: 1,
+                        max: 150
+                      }
+                    }}
+                    fullWidth
+                  >
+                  </TextField>
+                </FormControl>
+              </Grid>
+            </>
+          }
+
+          {/* 時間 */}
+          <Grid item xs={6}>
             <FormControl size='small' fullWidth>
               <DesktopDatePicker
                 // className={classes.datePicker}
@@ -140,7 +204,7 @@ const AttributeQueryIntelligence = () => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={5}>
+          <Grid item xs={6}>
             <FormControl size='small' fullWidth>
               <DesktopDatePicker
                 // className={classes.datePicker}
@@ -154,21 +218,23 @@ const AttributeQueryIntelligence = () => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={2}>
+
+          {/* 面積 */}
+          <Grid item xs={6}>
             <FormControl size='small' fullWidth>
               <TextField
                 type='number'
-                label="樓層"
+                label="建坪面積"
                 size='small'
-                value={transferFloor}
+                value={buildingArea}
                 disabled={false}
                 onChange={(event) => {
-                  settransferFloor(Number(event.target.value))
+                  setbuildingArea(Number(event.target.value))
                 }}
                 InputProps={{
                   inputProps: {
-                    min: 1,
-                    max: 150
+                    min: 0,
+                    max: 100000
                   }
                 }}
                 fullWidth
@@ -176,6 +242,120 @@ const AttributeQueryIntelligence = () => {
               </TextField>
             </FormControl>
           </Grid>
+          <Grid item xs={6}>
+            <FormControl size='small' fullWidth>
+              <TextField
+                type='number'
+                label="土地面積"
+                size='small'
+                value={landArea}
+                disabled={false}
+                onChange={(event) => {
+                  setlandArea(Number(event.target.value))
+                }}
+                InputProps={{
+                  inputProps: {
+                    min: 1,
+                    max: 10000000
+                  }
+                }}
+                fullWidth
+              >
+              </TextField>
+            </FormControl>
+          </Grid>
+
+          {/* 價格 */}
+          <Grid item xs={6}>
+            <FormControl size='small' fullWidth>
+              <TextField
+                type='number'
+                label="單價"
+                size='small'
+                value={unitPrice}
+                disabled={false}
+                onChange={(event) => {
+                  setunitPrice(Number(event.target.value))
+                }}
+                InputProps={{
+                  inputProps: {
+                    min: 1,
+                    max: 10000
+                  }
+                }}
+                fullWidth
+              >
+              </TextField>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl size='small' fullWidth>
+              <TextField
+                type='number'
+                label="總價"
+                size='small'
+                value={price}
+                disabled={false}
+                onChange={(event) => {
+                  setprice(Number(event.target.value))
+                }}
+                InputProps={{
+                  inputProps: {
+                    min: 0,
+                    max: 1000000000
+                  }
+                }}
+                fullWidth
+              >
+              </TextField>
+            </FormControl>
+          </Grid>
+
+          {/* 分區 */}
+          <Grid item xs={6}>
+            <FormControl size='small' fullWidth>
+              <InputLabel id="urban-use">使用分區</InputLabel>
+              <Select
+                labelId="urban-use"
+                label="使用分區"
+                id="urban-use-select"
+                value={urbanUsageCode}
+                onChange={(event) => {
+                  seturbanUsageCode(Number(event.target.value))
+                }}
+                size='small'
+                fullWidth
+              >
+                {
+                  Object.keys(urbanUsageSet).map((assetCode, index) => {
+                    return <MenuItem
+                      key={index}
+                      value={assetCode}
+                    >{urbanUsageSet[Number(assetCode)]}</MenuItem>
+                  })
+                }
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={6}>
+            <FormControl size='small' fullWidth>
+              <InputLabel id="non-urban-use">非都市土地</InputLabel>
+              <Select
+                labelId="non-urban-use"
+                label="非都市土地"
+                id="non-urban-use-select"
+                // value={0}
+                onChange={(event) => {
+                  console.log(Number(event.target.value))
+                }}
+                size='small'
+                disabled
+                fullWidth
+              >
+              </Select>
+            </FormControl>
+          </Grid>
+
         </Grid>
       </LocalizationProvider>
 
@@ -194,51 +374,6 @@ const AttributeQueryIntelligence = () => {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* {
-        objectInfo
-          ? <div>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                標的簡稱
-              </Grid>
-              <Grid item xs={6}>
-                {objectInfo[1]}
-              </Grid>
-              <Grid item xs={6}>
-                資產類型
-              </Grid>
-              <Grid item xs={6}>
-                {objectInfo[2]}
-              </Grid>
-              <Grid item xs={6}>
-                門牌
-              </Grid>
-              <Grid item xs={6}>
-                {objectInfo[3]}
-              </Grid>
-              <Grid item xs={6}>
-                樓層
-              </Grid>
-              <Grid item xs={6}>
-                {objectInfo[5]}F
-              </Grid>
-
-              <Grid item xs={6}>
-                建物完工日期
-              </Grid>
-              <Grid item xs={6}>
-                {objectInfo[6]}
-              </Grid>
-
-            </Grid>
-          </div>
-          : <FileUpload
-            accept={accept}
-            onChange={onFileChange}
-            onDrop={onFileDrop}
-          />
-      } */}
 
     </div>
   )

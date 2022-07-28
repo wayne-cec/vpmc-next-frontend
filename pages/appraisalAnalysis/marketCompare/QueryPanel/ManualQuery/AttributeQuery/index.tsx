@@ -300,7 +300,7 @@ const AttributeQuery = () => {
                   onClick={marketCompareContext.onUrbanLaudUseFilteredChange}
                 />
               </Grid>
-              <Grid item xs={10}>
+              <Grid item xs={5}>
                 <MultiChipSelect
                   placeholder='使用分區'
                   urbanLandUse={marketCompareContext.urbanLandUse}
@@ -316,18 +316,18 @@ const AttributeQuery = () => {
             : null
         }
 
-        {/* 分都市土地分區 */}
+        {/* 非都市土地分區 */}
         {
           getAttributeQueryType(assetTypeMapping, marketCompareContext) !== 'parking'
             ? <>
-              <Grid item xs={2}>
+              {/* <Grid item xs={0}>
                 <Checkbox
                   checked={false}
                   onClick={() => { }}
                   disabled
                 />
-              </Grid>
-              <Grid item xs={10}>
+              </Grid> */}
+              <Grid item xs={5}>
                 {/* <MultiChipSelect
                   placeholder='非都市土地分區'
                   urbanLandUse={undefined}

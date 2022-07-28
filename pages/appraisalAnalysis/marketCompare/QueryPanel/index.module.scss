@@ -1,7 +1,7 @@
 @import '../../../../styles/Animate.module.scss';
 .queryPanel{ 
-    @apply flex flex-col h-fit absolute z-10 bg-white my-3 mx-1 p-4 rounded
-    shadow-md w-[430px] left-[60px];
+    @apply flex flex-col absolute z-10 bg-white my-3 mx-1 p-4 rounded
+    shadow-md w-[445px] h-fit left-[60px]; // 
     @media(max-width: 1100px){
         @apply static m-0 w-auto;
     }
