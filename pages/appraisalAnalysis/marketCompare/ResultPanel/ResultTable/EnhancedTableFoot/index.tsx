@@ -1,8 +1,9 @@
 import React from 'react'
 import {
-  Grid, Switch, TablePagination
+  Grid, Switch, TablePagination, Button
 } from '@mui/material'
-import { Order, Data } from '../index'
+import { Data } from '../index'
+import DescriptionIcon from '@mui/icons-material/Description'
 
 interface IEnhancedTableFoot {
   dense: boolean
@@ -10,6 +11,7 @@ interface IEnhancedTableFoot {
   rows: Data[]
   rowsPerPage: number
   page: number
+  selected: readonly string[]
   onDense: () => void
   onSimple: () => void
   onPageChange: (event: unknown, newPage: number) => void
@@ -21,6 +23,7 @@ const EnhancedTableFoot = ({
   rows,
   rowsPerPage,
   page,
+  selected,
   onDense,
   onSimple,
   onPageChange
@@ -29,33 +32,30 @@ const EnhancedTableFoot = ({
   return (
     <Grid container spacing={0}>
       <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
-        <Switch
-          value={dense}
-          onChange={() => {
-            onDense()
-            onSimple()
-          }}
-          defaultChecked
-        />
-        <span>縮小模式</span>
-        {/* <Grid container spacing={2}>
+        <Grid container spacing={0} sx={{ display: 'flex', alignItems: 'center' }}>
           <Grid item xs={4}>
             <Switch
-              value={simple}
-              onChange={onSimple}
-              defaultChecked
-            />
-            <span>簡易模式</span>
-          </Grid>
-          <Grid item xs={4}>
-            <Switch
-              value={dense}
-              onChange={onDense}
+              value={dense && simple}
+              onChange={() => {
+                onDense()
+                onSimple()
+              }}
               defaultChecked
             />
             <span>縮小模式</span>
           </Grid>
-        </Grid> */}
+          <Grid item xs={4}>
+            {
+              selected.length !== 0 && <Button
+                size='small'
+                variant='outlined'
+                startIcon={<DescriptionIcon />}
+              >
+                產製文件
+              </Button>
+            }
+          </Grid>
+        </Grid>
       </Grid>
       <Grid item xs={6}>
         <TablePagination

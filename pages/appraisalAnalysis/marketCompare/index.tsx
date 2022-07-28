@@ -145,7 +145,7 @@ const MarketCompare: NextPage = () => {
     const params: IMarketCompare = {
       buildingType: assetTypeCode
     }
-    if (longitude !== null && latitude !== null && bufferRadius !== null && spatialQueryType === 'buffer') {
+    if (longitude !== undefined && latitude !== undefined && bufferRadius !== null && spatialQueryType === 'buffer') {
       params.longitude = longitude
       params.latitude = latitude
       params.bufferRadius = bufferRadius
