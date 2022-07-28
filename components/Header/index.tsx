@@ -4,16 +4,11 @@ import Image from 'next/image'
 import NavButton from '../../components/NavButton'
 import MenuDrawer from './MenuDrawer'
 import Router from 'next/router'
-// import classNames from 'classnames'
 import HeaderDrawer from './HeaderDrawer'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectUser, setUserProfile, setUserToken } from '../../store/slice/user'
-import api from '../../api'
-import { AuthContext } from '../../layout/BaseLayout'
+import { selectUser, setUserToken } from '../../store/slice/user'
 import { useAuth } from '../../layout/BaseLayout'
 import UserGreet from '../../components/UserGreet'
-import Marquee from 'react-fast-marquee'
-import MarqueeNews from '../../components/CustomMarquee/MarqueeNews'
 import CustomMarquee from '../../components/CustomMarquee'
 
 export const appraisalAnalysis = [
@@ -26,16 +21,6 @@ export const onlineSupport = [
   { name: '網站使用手冊', route: '/onlineSupport/manual', protected: false },
   { name: '估價相關法令', route: '/onlineSupport/law', protected: false },
   { name: '技術公報/範本', route: '/onlineSupport/report', protected: true }
-]
-
-export const statistic = [
-  // { name: '使照建照', route: '/statistic/license', protected: true },
-  // { name: '臺灣總經概覽', route: '/statistic/economic', protected: true }
-]
-
-export const aprV2Link = [
-  // { name: '社區個別', route: '/aprV2/commitee', protected: true },
-  // { name: '地區總體', route: '/aprV2/region', protected: true }
 ]
 
 const renderContent = (index: number, link: {
@@ -58,8 +43,6 @@ const Header = () => {
   const [menuDrawerOpen, setmenuDrawerOpen] = useState<boolean>(false)
   const [appAnalysis, setappAnalysis] = useState<boolean>(false)
   const [onlineSup, setonlineSup] = useState<boolean>(false)
-  const [staticsOpen, setstaticsOpen] = useState<boolean>(false)
-  const [aprV2, setaprV2] = useState<boolean>(false)
 
   const handleLogout = () => {
     dispatch(
@@ -69,7 +52,6 @@ const Header = () => {
   }
 
   return (
-
     <div className={style.headerContainer}>
       <header className={style.header}>
         <div className={style.contentGroup}>
@@ -90,17 +72,9 @@ const Header = () => {
                   onMouseOver={() => { setappAnalysis(true) }}
                   onMouseLeave={() => { setappAnalysis(false) }}
                 >估價分析</NavButton>
-                {/* <NavButton
-               onMouseOver={() => { setonlineSup(true) }}
-               onMouseLeave={() => { setonlineSup(false) }}
-             >線上支援</NavButton> */}
-                {/* <NavButton
-                  onMouseOver={() => { setstaticsOpen(true) }}
-                  onMouseLeave={() => { setstaticsOpen(false) }}
-                >統計及行情</NavButton> */}
                 <NavButton
-                  onMouseOver={() => { setaprV2(true) }}
-                  onMouseLeave={() => { setaprV2(false) }}
+                  onMouseOver={() => { }}
+                  onMouseLeave={() => { }}
                   onClick={() => { Router.push('/aprV2/commitee') }}
                 >實價地圖</NavButton>
               </div>
@@ -114,28 +88,6 @@ const Header = () => {
             onLogout={handleLogout}
             onLogin={() => { Router.push('/login') }}
           />
-          {/* {
-            isAuthenticated
-              ?
-              <>
-                <UserGreet
-                  username={userInfo.userProfile?.username!}
-                />
-                <NavButton
-                  onClick={handleLogout}
-                  style={{
-                    paddingTop: '1px',
-                    paddingBottom: '1px'
-                  }}
-                >登出</NavButton></>
-              : <NavButton
-                onClick={() => { Router.push('/login') }}
-                style={{
-                  paddingTop: '1px',
-                  paddingBottom: '1px'
-                }}
-              >登入</NavButton>
-          } */}
         </div>
 
         <div className={style.burger}>
@@ -179,39 +131,6 @@ const Header = () => {
           })
         }
       </HeaderDrawer>
-
-      {/* <HeaderDrawer
-        open={staticsOpen}
-        onMouseOver={() => { setstaticsOpen(true) }}
-        onMouseLeave={() => { setstaticsOpen(false) }}
-      >
-        {
-          statistic.map((link, index) => {
-            return link.protected
-              ? isAuthenticated
-                ? renderContent(index, link)
-                : null
-              : renderContent(index, link)
-          })
-        }
-      </HeaderDrawer> */}
-
-      {/* <HeaderDrawer
-        open={aprV2}
-        onMouseOver={() => { setaprV2(true) }}
-        onMouseLeave={() => { setaprV2(false) }}
-      >
-        {
-          aprV2Link.map((link, index) => {
-            return link.protected
-              ? isAuthenticated
-                ? renderContent(index, link)
-                : null
-              : renderContent(index, link)
-          })
-        }
-      </HeaderDrawer> */}
-
     </div>
   )
 }

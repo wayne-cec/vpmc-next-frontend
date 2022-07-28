@@ -2,8 +2,7 @@ import React from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import Router from 'next/router'
-// import { newBuildingLink, preOwnedLink, rentLink } from '../index'
-import { appraisalAnalysis, onlineSupport, statistic, aprV2Link } from '../index'
+import { appraisalAnalysis } from '../index'
 import { useAuth } from '../../../layout/BaseLayout'
 import { useDispatch } from 'react-redux'
 import { setUserToken } from '../../../store/slice/user'
@@ -65,45 +64,10 @@ const MenuDrawer = (props: IMenuDrawer) => {
               })
             }
           </div>
-          {/* <div className={style.tree}>
-            <p className={style.title}>線上支援</p>
-            {
-              onlineSupport.map((link, index) => {
-                return link.protected
-                  ? isAuthenticated
-                    ? renderContent(index, link, props.onClose)
-                    : null
-                  : renderContent(index, link, props.onClose)
-              })
-            }
-          </div> */}
-          {/* <div className={style.tree}>
-            <p className={style.title}>統計及行情</p>
-            {
-              statistic.map((link, index) => {
-                return link.protected
-                  ? isAuthenticated
-                    ? renderContent(index, link, props.onClose)
-                    : null
-                  : renderContent(index, link, props.onClose)
-              })
-            }
-          </div> */}
           <div className={style.tree}>
             <p className={style.title} onClick={() => { Router.push('/aprV2/commitee') }}>實價登陸2.0</p>
-            {/* {
-              aprV2Link.map((link, index) => {
-                return link.protected
-                  ? isAuthenticated
-                    ? renderContent(index, link, props.onClose)
-                    : null
-                  : renderContent(index, link, props.onClose)
-              })
-            } */}
           </div>
         </div>
-
-
         {
           isAuthenticated
             ? <div className={style.loginBtn}
@@ -119,8 +83,6 @@ const MenuDrawer = (props: IMenuDrawer) => {
               登入
             </div>
         }
-
-
       </div>
       <div className={classNames({
         [style.backgroundGray]: true,
