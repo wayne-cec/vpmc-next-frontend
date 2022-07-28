@@ -40,6 +40,8 @@ const useStyle = makeStyles({
     '&:hover img': {
       opacity: 0.3,
     },
+    width: '100%',
+    height: '100%'
   },
   noMouseEvent: {
     pointerEvents: 'none',
@@ -71,7 +73,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
   hoverLabel = '點擊或拖曳檔案至此',
   dropLabel = '上傳檔案',
   width = '100%',
-  height = '100px',
+  height = '100%',
   backgroundColor = '#fff',
   image: {
     url = FileUploadDefaultImage,
@@ -160,17 +162,6 @@ const FileUpload: React.FC<FileUploadProps> = ({
           bgcolor={backgroundColor}
           className={classes.noMouseEvent}
         >
-          {imageButton && (
-            <Box position="absolute" height={height} width={width}>
-              {/* <img
-                alt="file upload"
-                src={imageUrl}
-                style={imageStyle}
-              /> */}
-              {/* <Image src={imageUrl} /> */}
-            </Box>
-          )}
-
           {(!imageButton || isDragOver || isMouseOver) && (
             <>
               <Box
