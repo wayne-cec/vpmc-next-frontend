@@ -230,7 +230,6 @@ const AprV2: NextPage = () => {
                 }}
               />
             </div>
-
           </div>
         </div>
       </CountyGraphPendingContext.Provider>

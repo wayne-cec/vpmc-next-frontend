@@ -1,15 +1,15 @@
 .CommiteePopupTemplate{
-    @apply w-[300px] h-[100px] bg-white shadow-md rounded-md border border-main-primary;
+    @apply w-fit h-fit bg-white shadow-md rounded-md border border-main-primary;
     &:after {
-        @apply shadow-md;
-        content: "";
-        position:absolute;
-        border-left: 15px solid transparent;
-        border-right: 15px solid transparent;
-        border-bottom: 15px solid #ff8000;
-        left: 50%;
-        top: 100%;
-        transform: translate(-50% ,0%) rotate(-180deg);
-        // transform:;
-      }
+      @apply shadow-md;
+      content: "";
+      position:absolute;
+      border-left: 15px solid transparent;
+      border-right: 15px solid transparent;
+      border-bottom: 15px solid #ff8000;
+      left: 50%;
+      top: 100%;
+      transform: translate(-50% ,0%) rotate(-180deg);
+      // transform:;
+    }
 }
