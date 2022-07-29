@@ -138,7 +138,7 @@ const AprV2Map = (props: IEsriMap) => {
       (await asyncMap).add(townGeoJsonLayer);
       townGeoJsonLayer.when(async () => {
         (await asyncMapView).goTo(townGeoJsonLayer.fullExtent);
-        (await asyncMap).reorder(townGeoJsonLayer, 0);
+        (await asyncMap).reorder(townGeoJsonLayer, (await asyncMap).layers.length - 1);
         setpending(false)
       })
     }
