@@ -1,6 +1,8 @@
 .login{
-    @apply w-screen h-screen bg-main-primary
-    flex items-center justify-center overflow-hidden;
+    @apply w-screen h-screen flex items-center 
+    justify-center overflow-hidden;
+    background: rgb(255,226,90);
+    background: linear-gradient(100deg, rgba(255,226,90,1) 0%, rgba(255,128,0,1) 100%);
     .loginForm{
         @apply w-[400px] h-fit min-h-[500px] bg-white shadow-2xl 
         rounded-xl;

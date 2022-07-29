@@ -1,5 +1,7 @@
 .pageHeader{
-    @apply flex flex-col items-center w-full bg-main-primary;
+    @apply flex flex-col items-center w-full;
+    background: rgb(255,175,95);
+    background: linear-gradient(130deg, rgba(255,175,95,1) 0%, rgba(255,128,0,1) 100%);
     clip-path: ellipse(100% 55% at 50% 44%);
     .title{
         @apply font-extrabold text-6xl text-text-main;
