@@ -6,7 +6,7 @@
     }
     .panel{ 
         @apply flex flex-col h-fit absolute z-10 bg-white m-2 p-4 rounded-md
-        shadow-md w-[440px] left-0;
+        shadow-xl w-[440px] left-0;
         @media(max-width: 1100px){
             @apply static m-0 w-auto;
         }
@@ -51,6 +51,15 @@
         }
         .graphGroup{
             @apply w-full h-fit bg-transparent;
+            &.hide{
+                @apply hidden;
+            }
+        }
+        .expand{
+            @apply text-center cursor-pointer rounded-md;
+            &:hover{
+                @apply bg-gray-200;
+            }
         }
     }
     .content{

@@ -62,11 +62,7 @@ export default function MultiChipSelect (props: IMultiChipSelect) {
 
   return (
     <FormControl size='small' fullWidth>
-      {
-        props.isUrbanUsageFiltered && !props.isUrbanUsageFosced
-          ? <></>
-          : <InputLabel id="land-use">{props.placeholder}</InputLabel>
-      }
+      <InputLabel id="land-use">{props.placeholder}</InputLabel>
       <Select
         labelId="land-use"
         id="land-use-select"

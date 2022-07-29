@@ -88,7 +88,7 @@ const MapPopup = ({
     if (!elemRef.current) return
     if (!transform) return ''
     const { width } = elemRef.current.getBoundingClientRect()
-    return `translate(${transform.x - (width / 2)}px, ${transform.y - 100 - 50}px)`
+    return `translate(${transform.x - (width / 2)}px, ${transform.y - 400}px)`
   })()
 
   const handlePopupPositionTransformation = async () => {

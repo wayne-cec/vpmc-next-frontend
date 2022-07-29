@@ -54,6 +54,7 @@ const AprV2: NextPage = () => {
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
   const [countyGraphPending, setcountyGraphPending] = useState<boolean>(false)
+  const [graphGroupOpen, setgraphGroupOpen] = useState<boolean>(false)
 
 
   const handleFetchTownGeography = async () => {
@@ -72,6 +73,7 @@ const AprV2: NextPage = () => {
     if (statusCode === 200) {
       setdisplayData(responseContent)
       await handleFetchTownGeography()
+      setgraphGroupOpen(true)
     }
   }
 
@@ -162,15 +164,34 @@ const AprV2: NextPage = () => {
 
             </div>
 
-            <div className={style.graphGroup}>
+            <div className={classNames({
+              [style.graphGroup]: true,
+              [style.hide]: !graphGroupOpen
+            })}>
               {
-                displayData
-                  ? <TabsPanel
+                displayData && <>
+                  <TabsPanel
                     displayData={displayData}
                   ></TabsPanel>
-                  : <></>
+                </>
               }
             </div>
+
+            {
+              graphGroupOpen && <div className={style.expand}
+                onClick={() => {
+                  setgraphGroupOpen(false)
+                }}
+              >⮝</div>
+            }
+
+            {
+              !graphGroupOpen && displayData !== null && <div className={style.expand}
+                onClick={() => {
+                  setgraphGroupOpen(true)
+                }}
+              >⮟</div>
+            }
 
           </div>
 
@@ -230,7 +251,6 @@ const AprV2: NextPage = () => {
                 }}
               />
             </div>
-
           </div>
         </div>
       </CountyGraphPendingContext.Provider>

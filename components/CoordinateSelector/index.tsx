@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 import style from './index.module.scss'
 import Image from 'next/image'
 import classNames from 'classnames'
@@ -8,7 +8,6 @@ import {
 } from '@mui/material'
 import ExtensionIcon from '@mui/icons-material/Extension'
 import PluginPanel from './PluginPanel'
-import MarketCompareContext from '../../pages/appraisalAnalysis/marketCompare/MarketCompareContext'
 
 export interface ICoordinateSelector {
   longitude: number | undefined
@@ -19,6 +18,7 @@ export interface ICoordinateSelector {
   enabled: boolean
   thirdParty?: boolean
   onClick: () => void
+  onPluginResolve?: (longitude: number | undefined, latitude: number | undefined) => void
 }
 
 const CoordinateSelector = ({
@@ -29,9 +29,9 @@ const CoordinateSelector = ({
   active,
   enabled,
   thirdParty = false,
-  onClick
+  onClick,
+  onPluginResolve
 }: ICoordinateSelector) => {
-  const { onCoordinateSelect } = useContext(MarketCompareContext)
   const [pluginPanelOpen, setpluginPanelOpen] = useState<boolean>(false)
   const [pluginLongitude, setpluginLongitude] = useState<number | undefined>(undefined)
   const [pluginLatitude, setpluginLatitude] = useState<number | undefined>(undefined)
@@ -46,6 +46,7 @@ const CoordinateSelector = ({
           setpluginPanelOpen(true)
           event.stopPropagation()
         }}
+        disabled={!enabled}
       >
         <ExtensionIcon />
       </IconButton>
@@ -121,8 +122,8 @@ const CoordinateSelector = ({
         </DialogContent>
         <DialogActions>
           {
-            pluginLongitude && pluginLatitude && <Button onClick={() => {
-              onCoordinateSelect(pluginLongitude, pluginLatitude)
+            pluginLongitude && pluginLatitude && onPluginResolve && <Button onClick={() => {
+              onPluginResolve(pluginLongitude, pluginLatitude)
               setpluginPanelOpen(false)
             }}>
               確認

@@ -4,7 +4,9 @@ import Bulletin from './Bulletin'
 import GeneralLaw from './GeneralLaw'
 import TwTrend from './TwTrend'
 import License from './License'
-import NavButton from '../NavButton'
+import Admin from './Admin'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../store/slice/user'
 
 export interface IUserGreet {
   username: string
@@ -14,19 +16,21 @@ export interface IUserGreet {
 }
 
 const UserGreet = (props: IUserGreet) => {
+  const userInfo = useSelector(selectUser)
 
   return (
     <>
       <div className={style.userGreet}>
         {
-          props.isAuthenticated
-            ? <div className={style.btnContainer}>
-              <Bulletin />
-              <GeneralLaw />
-              <TwTrend />
-              <License />
-            </div>
-            : null
+          props.isAuthenticated && <div className={style.btnContainer}>
+            <Bulletin />
+            <GeneralLaw />
+            <TwTrend />
+            <License />
+            {
+              userInfo.userProfile?.roles[0].roleName === 'admin' && <Admin />
+            }
+          </div>
         }
 
         <div className={style.userContainer}>
