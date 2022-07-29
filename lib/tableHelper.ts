@@ -1,4 +1,4 @@
-import { Order } from "../pages/appraisalAnalysis/marketCompare/ResultPanel/ResultTable";
+import { Order } from "../containers/MarketCompareContainer/ResultPanel/ResultTable";
 
 export function descendingComparator<T> (a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {

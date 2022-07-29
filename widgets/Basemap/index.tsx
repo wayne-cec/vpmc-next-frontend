@@ -82,7 +82,7 @@ const geographicDataList: IBasemapData[] = [
 
 const Basemap = () => {
   const { map, show } = useContext(widgetContext)
-  const [activeBasemaps, setactiveBasemaps] = useState<string[]>([])
+  const [activeBasemaps, setactiveBasemaps] = useState<string[]>(['EMAP5'])
   const [basemapTypeExpanded, setbasemapTypeExpanded] = useState<BasemapCategory | false>(false)
 
   const getTileLayersById = (id: string): WebTileLayer[] => {

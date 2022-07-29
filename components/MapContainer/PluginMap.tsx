@@ -1,15 +1,14 @@
 import React, { useContext, useRef, useEffect } from 'react'
+import { PluginContext } from '../CoordinateSelector/PluginPanel'
 import style from './index.module.scss'
 import '@arcgis/core/assets/esri/themes/light/main.css'
 import useMap from '../../hooks/useMap'
 import DefaultUI from '@arcgis/core/views/ui/DefaultUI'
-import { PluginContext } from '../CoordinateSelector/PluginPanel'
 import Point from '@arcgis/core/geometry/Point'
 import GraphicsLayer from '@arcgis/core/layers/GraphicsLayer'
 import Collection from '@arcgis/core/core/Collection'
 import Graphic from '@arcgis/core/Graphic'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
-import MarketCompareContext from '../../pages/appraisalAnalysis/marketCompare/MarketCompareContext'
 
 export const pluginPointLayer = new GraphicsLayer({ id: 'PluginPoint' })
 

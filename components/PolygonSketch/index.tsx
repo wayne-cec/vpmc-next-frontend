@@ -3,7 +3,7 @@ import style from './index.module.scss'
 import classNames from 'classnames'
 import Image from 'next/image'
 import { Tooltip } from '@mui/material'
-import { SpatialQueryType } from '../../pages/appraisalAnalysis/marketCompare'
+import { SpatialQueryType } from '../../containers/MarketCompareContainer'
 
 export type PolygonSketchMode = 'draw' | 'inactive' | 'county'
 

@@ -19,7 +19,10 @@ module.exports = {
         'bg': {
           'darkGrey': '#333333'
         },
-        'border': '#0000003b'
+        'border': '#0000003b',
+        'sub': {
+          'primary': '#007fff'
+        }
       }
     },
   },
