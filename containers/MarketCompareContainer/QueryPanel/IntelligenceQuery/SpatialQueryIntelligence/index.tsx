@@ -6,9 +6,23 @@ import PolygonSketch from '../../../../../components/PolygonSketch'
 import CountySelector from '../../../../../components/CountySelector'
 import TownSelector from '../../../../../components/TownSelector'
 import MarketCompareContext from '../../../MarketCompareContext'
-import { Grid, Radio, TextField } from '@mui/material'
+import {
+  Grid, Radio,
+  TextField, Button
+} from '@mui/material'
+import { makeStyles } from '@mui/styles'
+
+const useStyle = makeStyles({
+  uploadButton: {
+    height: '100%'
+  },
+  datePicker: {
+    height: '39.97px'
+  }
+})
 
 const SpatialQueryIntelligence = () => {
+  const classes = useStyle()
   const marketCompareContext = useContext(MarketCompareContext)
 
   return (
@@ -19,6 +33,18 @@ const SpatialQueryIntelligence = () => {
 
       <Grid container spacing={2}>
         {/* 搜索範圍 */}
+        <Grid item xs={12}>
+          <Button
+            className={classes.uploadButton}
+            variant='outlined'
+            onClick={() => {
+              marketCompareContext.onUploadClick(true)
+            }}
+            fullWidth
+          >
+            上傳檔案
+          </Button>
+        </Grid>
         <Grid item xs={2}>
           <Radio
             checked={marketCompareContext.sketchMode === 'inactive'}

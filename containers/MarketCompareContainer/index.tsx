@@ -99,6 +99,7 @@ const MarketCompareContainer = () => {
   const [towns, settowns] = useState<string[]>([])
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
+  const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
 
   const handleCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
     setlongitude(longitude)
@@ -379,6 +380,8 @@ const MarketCompareContainer = () => {
           towns: towns,
           countyData: countyData,
           townData: townData,
+          uploadPanelOpen: uploadPanelOpen,
+          onUploadClick: (value) => { setuploadPanelOpen(value) },
           onCoordinatorSelectorClick: (value) => { setisCoordinateSelectorActive(value) },
           onSpatialQueryTypeChange: setspatialQueryType,
           onBufferRadiusChange: (value) => { setbufferRadius(value) },

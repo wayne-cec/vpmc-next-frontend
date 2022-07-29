@@ -50,6 +50,8 @@ export interface IMarketCompareContext {
   towns: string[]
   countyData: ICountyData | null
   townData: ITownData | null
+  uploadPanelOpen: boolean
+  onUploadClick: (value: boolean) => void
   onCoordinatorSelectorClick: (value: boolean) => void // (value) => {setisCoordinateSelectorActive(value)}
   onSpatialQueryTypeChange: (value: SpatialQueryType) => void // setspatialQueryType
   onBufferRadiusChange: (value: number) => void // (value) => { setbufferRadius(value) }
@@ -140,6 +142,8 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   towns: [],
   countyData: null,
   townData: null,
+  uploadPanelOpen: false,
+  onUploadClick: (value) => { },
   onCoordinatorSelectorClick: (value: boolean) => { }, // (value) => {setisCoordinateSelectorActive(value)}
   onSpatialQueryTypeChange: (value: SpatialQueryType) => { }, // setspatialQueryType
   onBufferRadiusChange: (value: number) => { }, // (value) => { setbufferRadius(value) }

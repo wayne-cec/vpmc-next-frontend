@@ -41,9 +41,8 @@ const useStyle = makeStyles({
 
 const AttributeQueryIntelligence = () => {
   const classes = useStyle()
-  const marketCompareContext = useContext(MarketCompareContext)
-  // const [objectInfo, setobjectInfo] = useState<string[] | undefined>(undefined)
-  const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
+  const { uploadPanelOpen, onUploadClick } = useContext(MarketCompareContext)
+  // const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
   const [objectTypeCode, setobjectTypeCode] = useState<ObjectType>(0)
   const [assetTypeCode, setassetTypeCode] = useState<number>(0)
   const [completionTime, setcompletionTime] = useState<Date | null>(null)
@@ -82,7 +81,7 @@ const AttributeQueryIntelligence = () => {
     setunitPrice(Number(objectInfo[13]))
     setprice(Number(objectInfo[14]))
     seturbanUsageCode(Number(urbanUsagea))
-    setuploadPanelOpen(false)
+    onUploadClick(false)
   }
 
   const onFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,7 +103,7 @@ const AttributeQueryIntelligence = () => {
 
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Grid container spacing={1.5}>
-          <Grid item xs={4}>
+          {/* <Grid item xs={4}>
             <Button
               className={classes.uploadButton}
               variant='outlined'
@@ -115,8 +114,8 @@ const AttributeQueryIntelligence = () => {
             >
               上傳檔案
             </Button>
-          </Grid>
-          <Grid item xs={8}>
+          </Grid> */}
+          <Grid item xs={4}>
             <FormControl size='small' fullWidth>
               <InputLabel id="object-type">標的類型*</InputLabel>
               <Select
@@ -136,10 +135,9 @@ const AttributeQueryIntelligence = () => {
               </Select>
             </FormControl>
           </Grid>
-
           {
             objectTypeCode === 0 && <>
-              <Grid item xs={6}>
+              <Grid item xs={8}>
                 <FormControl size='small' fullWidth>
                   <InputLabel id="asset-type">資產類型*</InputLabel>
                   <Select
@@ -164,7 +162,7 @@ const AttributeQueryIntelligence = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <FormControl size='small' fullWidth>
                   <TextField
                     type='number'
@@ -190,7 +188,7 @@ const AttributeQueryIntelligence = () => {
           }
 
           {/* 時間 */}
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <FormControl size='small' fullWidth>
               <DesktopDatePicker
                 // className={classes.datePicker}
@@ -204,23 +202,9 @@ const AttributeQueryIntelligence = () => {
               />
             </FormControl>
           </Grid>
-          <Grid item xs={6}>
-            <FormControl size='small' fullWidth>
-              <DesktopDatePicker
-                // className={classes.datePicker}
-                label="交易時間"
-                inputFormat="yyyy/MM/dd"
-                value={transactionTime}
-                onChange={(newValue: Date | null) => {
-                  settransactionTime(newValue)
-                }}
-                renderInput={(params) => <TextField size='small' {...params} />}
-              />
-            </FormControl>
-          </Grid>
 
           {/* 面積 */}
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <FormControl size='small' fullWidth>
               <TextField
                 type='number'
@@ -242,7 +226,7 @@ const AttributeQueryIntelligence = () => {
               </TextField>
             </FormControl>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <FormControl size='small' fullWidth>
               <TextField
                 type='number'
@@ -266,7 +250,7 @@ const AttributeQueryIntelligence = () => {
           </Grid>
 
           {/* 價格 */}
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <FormControl size='small' fullWidth>
               <TextField
                 type='number'
@@ -309,7 +293,7 @@ const AttributeQueryIntelligence = () => {
               >
               </TextField>
             </FormControl>
-          </Grid>
+          </Grid> */}
 
           {/* 分區 */}
           <Grid item xs={6}>
@@ -356,12 +340,27 @@ const AttributeQueryIntelligence = () => {
             </FormControl>
           </Grid>
 
+          <Grid item xs={12}>
+            <FormControl size='small' fullWidth>
+              <DesktopDatePicker
+                // className={classes.datePicker}
+                label="交易時間"
+                inputFormat="yyyy/MM/dd"
+                value={transactionTime}
+                onChange={(newValue: Date | null) => {
+                  settransactionTime(newValue)
+                }}
+                renderInput={(params) => <TextField size='small' {...params} />}
+              />
+            </FormControl>
+          </Grid>
+
         </Grid>
       </LocalizationProvider>
 
       <Dialog
         open={uploadPanelOpen}
-        onClose={() => { setuploadPanelOpen(false) }}
+        onClose={() => { onUploadClick(false) }}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogContent>

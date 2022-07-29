@@ -11,7 +11,7 @@ const Admin = () => {
   const [twStatisticHover, settwStatisticHover] = useState<boolean>(false)
 
   return (
-    <>2
+    <>
       <Tooltip title='後台管理系統'>
         <div className={classNames({
           [style.lawBtn]: true
