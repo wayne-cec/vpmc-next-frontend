@@ -14,6 +14,7 @@ import CustomMarquee from '../../components/CustomMarquee'
 export const appraisalAnalysis = [
   { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true },
   { name: '市場比較法', route: '/appraisalAnalysis/marketCompare', protected: true },
+  { name: '市場比較法(批次) ', route: '/appraisalAnalysis/marketCompareBatch', protected: true },
   { name: '土開分析法', route: '/appraisalAnalysis/landSurvey', protected: true }
 ]
 
