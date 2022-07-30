@@ -4,10 +4,10 @@ import classNames from 'classnames'
 import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import Router from 'next/router'
 import api from '../../api'
+import Image from 'next/image'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { setUserToken } from '../../store/slice/user'
-import { WithNothingLayout } from '../../layout/BaseLayout'
 import {
   Button, Container, Box,
   Avatar, Typography, TextField
@@ -24,8 +24,6 @@ const LoginContainer = () => {
 
   const handleLogin = async () => {
     setbounce(false)
-    console.log(email)
-    console.log(password)
     const { statusCode, responseContent } = await api.prod.authenticate(email, password)
     if (statusCode === 200) {
       console.log(responseContent)
@@ -50,6 +48,16 @@ const LoginContainer = () => {
 
   return (
     <div className={style.login}>
+
+      <div className={style.Title}>
+        <div className='pr-4 flex justify-center items-center'>
+          <Image src={'/logo.jpg'} width="97.2px" height="59.4px"
+            onClick={() => { Router.push('/') }}
+          ></Image>
+        </div>
+        <span>| 實價登錄資訊平台</span>
+      </div>
+
       <div className={classNames({
         [style.loginForm]: true,
         'animate__animated': true,
@@ -117,6 +125,14 @@ const LoginContainer = () => {
           </Box>
         </Container>
       </div>
+
+      <div className={style.Copyright}>
+        <div>Copyright © 2022 VPMC 版權所有</div>
+        <div>
+          <a target="_blank" href="https://www.ccisappraisers.com/vpmc-home/" rel="noopener noreferrer">中華誠信資產管理</a>
+        </div>
+      </div>
+
     </div>
   )
 }

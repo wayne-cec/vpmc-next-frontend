@@ -142,7 +142,7 @@ const QueryPanel = () => {
           <div className={style.resultGroup}>
             <p className={style.resultStatus}>共有
               <span className={style.count}>{marketCompareContext.filteredResults.length}</span>
-              筆實價登陸紀錄
+              筆實價登錄紀錄
             </p>
             <div className={style.graphGroup}>
               {
