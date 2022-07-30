@@ -1,13 +1,13 @@
 .login{
     @apply w-screen h-screen flex flex-col items-center 
     justify-center overflow-hidden justify-between;
-//     background-image: url('/bg.jpg');
-//     background-position: bottom;
-//     background-repeat: no-repeat;
-//     background-size: cover;
-//     backdrop-filter: blur(500px);
-    background: rgb(255,226,90);
-    background: linear-gradient(100deg, rgba(255,226,90,1) 0%, rgba(255,128,0,1) 100%);
+    background-image: url('/loginbg.jpg');
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    // background: rgb(255,226,90);
+    // background: linear-gradient(100deg, rgba(255,226,90,1) 0%, rgba(255,128,0,1) 100%);
     .loginForm{
         @apply w-[400px] h-fit min-h-[500px] bg-white shadow-2xl 
         rounded-xl;
@@ -17,10 +17,10 @@
     }
     .Title{
         @apply w-full text-2xl pt-8 pl-8
-        font-semibold flex items-center;
+        font-semibold flex items-center text-white;
     }
     .Copyright{
-        @apply w-full text-sm pb-8 flex justify-around;
+        @apply w-full text-sm pb-8 flex justify-around text-white;
         a{
             @apply cursor-pointer;
             &:hover{
