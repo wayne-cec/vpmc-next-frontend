@@ -35,7 +35,7 @@ const Footer = () => {
           }
         </div>
         <div className={style.tree}>
-          <p className={style.title} onClick={() => { Router.push('/aprV2/commitee') }}>實價登陸2.0</p>
+          <p className={style.title} onClick={() => { Router.push('/aprV2/commitee') }}>實價登錄2.0</p>
         </div>
       </div>
       <div className={style.copyRightContainer}>
