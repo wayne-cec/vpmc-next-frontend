@@ -4,6 +4,8 @@ import {
   Grid, Switch, TablePagination, Button
 } from '@mui/material'
 import { Data } from '../index'
+import { utf8Tob64 } from '../../../../../lib/base64Convert'
+import Router from 'next/router'
 
 interface IEnhancedTableFoot {
   dense: boolean
@@ -29,6 +31,17 @@ const EnhancedTableFoot = ({
   onPageChange
 }: IEnhancedTableFoot) => {
 
+  const handleProducePaper = () => {
+    const selectedRows = rows.filter(row => selected.includes(row.id))
+    const selectedRowsB64 = utf8Tob64(JSON.stringify(selectedRows))
+    Router.push(
+      {
+        pathname: '/appraisalAnalysis/marketCompare/document/[data]',
+        query: { data: selectedRowsB64 }
+      },
+    )
+  }
+
   return (
     <Grid container spacing={0}>
       <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -50,6 +63,7 @@ const EnhancedTableFoot = ({
                 size='small'
                 variant='outlined'
                 startIcon={<DescriptionIcon />}
+                onClick={handleProducePaper}
               >
                 產製文件
               </Button>
