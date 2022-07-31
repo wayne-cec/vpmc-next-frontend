@@ -23,6 +23,7 @@ const MarketCompareDocumentContainer = ({
   const [fileNameDialogOpen, setfileNameDialogOpen] = useState<boolean>(false)
   const [filename, setfilename] = useState<string>('市場比較文件')
 
+
   const handleExportPDF = async () => {
     setfileNameDialogOpen(false)
     const doc = new jsPDF()

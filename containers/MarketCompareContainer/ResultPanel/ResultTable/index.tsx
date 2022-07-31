@@ -40,6 +40,8 @@ export interface Data {
   landTransferArea: number
   belconyArea: number
   parkingSpaceType: number
+  longitude: number
+  latitude: number
 }
 
 export interface IResultTable {
