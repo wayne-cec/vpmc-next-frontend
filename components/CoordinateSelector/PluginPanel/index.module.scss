@@ -17,10 +17,10 @@
             flex:0.3;
             .Input{
                 @apply h-full flex flex-col justify-center pr-2;
-                flex: 0.85;
+                flex: 0.9;
             }
             .Submit{
-                flex: 0.15;
+                flex: 0.1;
                 @include queryBtn;
                 .loader {
                     border: 4px solid #f3f3f3;

@@ -40,7 +40,7 @@ const ResultPanel = () => {
             <div className={style.resultHeader}>
               <span className={style.resultStatus}>共有
                 <span className={style.count}>{marketCompareContext.filteredResults.length}</span>
-                筆實價登陸紀錄
+                筆實價登錄紀錄
               </span>
               {/* <span className={style.closeBtn}
                 onClick={marketCompareContext.onClose}
