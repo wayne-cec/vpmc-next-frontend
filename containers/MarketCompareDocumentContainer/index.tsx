@@ -22,7 +22,8 @@ const MarketCompareDocumentContainer = ({
 }: IMarketCompareDocumentContainer) => {
   const [fileNameDialogOpen, setfileNameDialogOpen] = useState<boolean>(false)
   const [filename, setfilename] = useState<string>('市場比較文件')
-
+  const [mapScreenshotUrl, setmapScreenshotUrl] = useState<string | undefined>(undefined)
+  const [screenshotFlag, setscreenshotFlag] = useState<{ value: boolean }>({ value: false })
 
   const handleExportPDF = async () => {
     setfileNameDialogOpen(false)
@@ -42,6 +43,11 @@ const MarketCompareDocumentContainer = ({
           <MarketCompareDocument
             pid={documentId}
             aprData={aprData}
+            mapScreenshotUrl={mapScreenshotUrl}
+            screenshotFlag={screenshotFlag}
+            onScreenShotTaken={(dataUrl: string) => {
+              setmapScreenshotUrl(dataUrl)
+            }}
           />
         </div>
 
@@ -49,7 +55,10 @@ const MarketCompareDocumentContainer = ({
           <div className={classNames({
             [style.Action]: true
           })}
-            onClick={() => { setfileNameDialogOpen(true) }}
+            onClick={() => {
+              setfileNameDialogOpen(true)
+              setscreenshotFlag({ value: false })
+            }}
           >
             <Image src={'/document/pdf.png'} width='48px' height='48px' />
           </div>

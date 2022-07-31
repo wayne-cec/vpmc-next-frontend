@@ -25,16 +25,19 @@ const mapOptions = {
 
 interface IDocumentMap {
   aprData: Data[]
+  screenshotFlag: { value: boolean }
+  onScreenShotTaken: (dataUrl: string) => void
 }
 
 const DocumentMap = ({
-  aprData
+  aprData,
+  screenshotFlag,
+  onScreenShotTaken
 }: IDocumentMap) => {
   const mapRef = useRef<HTMLDivElement>(null)
   const { asyncMap, asyncMapView } = useMap(mapRef, mapOptions, true)
 
   useEffect(() => {
-
     (async () => {
       const map = await asyncMap
       const mapView = await asyncMapView
@@ -56,18 +59,28 @@ const DocumentMap = ({
       documentPointLayer.graphics = new Collection(graphics)
       map.add(documentPointLayer)
     })()
-
   }, [])
 
+  useEffect(() => {
+    (async () => {
+      const mapView = await asyncMapView
+      try {
+        const screenshot = await mapView.takeScreenshot()
+        onScreenShotTaken(screenshot.dataUrl)
+      } catch { }
+    })()
+  }, [screenshotFlag])
+
   return (
-    <div className={style.esriMap} ref={mapRef}>
-      <span
+    <>
+      <div className={style.esriMap} ref={mapRef}></div>
+      {/* <span
         onClick={async () => {
           const screenshot = await (await asyncMapView).takeScreenshot()
-          console.log(screenshot.dataUrl)
+          onScreenShotTaken(screenshot.dataUrl)
         }}
-      >asdasd</span>
-    </div>
+      >asdasd</span> */}
+    </>
   )
 }
 

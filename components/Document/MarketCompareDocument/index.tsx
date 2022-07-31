@@ -24,11 +24,17 @@ const square = 3.305785
 export interface IMarketCompareDocument {
   pid: string
   aprData: Data[]
+  mapScreenshotUrl: string | undefined
+  screenshotFlag: { value: boolean }
+  onScreenShotTaken: (dataUrl: string) => void
 }
 
 const MarketCompareDocument = ({
   pid,
-  aprData
+  aprData,
+  mapScreenshotUrl,
+  screenshotFlag,
+  onScreenShotTaken
 }: IMarketCompareDocument) => {
   const userInfo = useSelector(selectUser)
 
@@ -179,9 +185,15 @@ const MarketCompareDocument = ({
         </table>
 
         <div className={style.MapContainer}>
-          <DocumentMapContainer
-            aprData={aprData}
-          />
+          {
+            mapScreenshotUrl
+              ? <img src={mapScreenshotUrl} />
+              : <DocumentMapContainer
+                aprData={aprData}
+                screenshotFlag={screenshotFlag}
+                onScreenShotTaken={onScreenShotTaken}
+              />
+          }
         </div>
       </div>
 
