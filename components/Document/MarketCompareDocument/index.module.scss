@@ -2,4 +2,37 @@
   @apply bg-white flex flex-col items-center;
   width: 21cm;
   height: 29.7cm;
+  .Head{
+    @apply bg-main-primary w-full flex;
+    flex: 0.1;
+    .Title{
+      @apply flex justify-center items-center;
+      flex:0.6;
+      span{
+        @apply text-white text-3xl font-semibold;
+      }
+    }
+    .DocInfo{
+      @apply flex justify-center items-center;
+      flex:0.4;
+      span{
+        @apply text-white text-sm font-semibold;
+      }
+    }
+  }
+
+  .Body{
+    @apply bg-white w-full;
+    flex:0.85;
+  }
+
+  .Foot{
+    @apply bg-main-primary w-full 
+    flex justify-around  items-center;
+    flex:0.05;
+    span{
+      @apply text-white text-sm font-semibold;
+    }
+  }
+
 }

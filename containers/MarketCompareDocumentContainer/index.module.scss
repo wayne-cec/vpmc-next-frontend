@@ -2,7 +2,6 @@
   @apply w-screen h-fit min-h-screen m-0 flex flex-col items-center;
   background: rgb(255,226,90);
   background: linear-gradient(100deg, rgba(255,226,90,1) 0%, rgba(255,128,0,1) 100%);
-  
   .Container{ 
     @apply p-6 flex flex-col gap-6;
     .PaperContainer{

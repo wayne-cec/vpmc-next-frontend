@@ -20,7 +20,7 @@ const MarketCompareDocumentContainer = () => {
     setfileNameDialogOpen(false)
     const doc = new jsPDF()
     const image = await html2canvas(document.getElementById(documentId) as HTMLElement, {
-      scale: 2
+      scale: 3
     })
     doc.addImage({ imageData: image, x: 0, y: 0, width: 210, height: 297 })
     doc.save(`${filename}.pdf`)
