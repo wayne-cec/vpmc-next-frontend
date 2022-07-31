@@ -10,9 +10,15 @@
     }
     .ActionContainer{
       @apply relative w-full h-fit bg-black bg-opacity-60
-      rounded-xl flex justify-center items-center p-4 ;
+      rounded-xl flex justify-center items-center p-2;
       .Action{
-  
+        @apply cursor-pointer p-1 rounded-lg;
+        &:hover:not(.disabled){
+          @apply bg-white;
+        }
+        &.disabled{
+          @apply cursor-not-allowed;
+        }
       }
     }
   }

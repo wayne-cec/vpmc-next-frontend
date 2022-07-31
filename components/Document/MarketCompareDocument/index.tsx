@@ -5,16 +5,12 @@ export interface IPaper {
   pid: string
 
 }
-
-// const formatter = new Intl.NumberFormat('en-US', {
-//   style: 'currency',
-//   currency: 'USD'
-// })
 const formatter = new Intl.NumberFormat(undefined, { style: 'decimal' })
 
 const MarketCompareDocument = (props: IPaper) => {
   return (
     <div className={style.MarketCompareDocument} id={props.pid}>
+      這是市場比較的文件
     </div>
   )
 }
