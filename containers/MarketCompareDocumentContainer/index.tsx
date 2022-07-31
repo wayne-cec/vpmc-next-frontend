@@ -9,10 +9,17 @@ import {
 import { useState } from 'react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
+import { Data } from '../MarketCompareContainer/ResultPanel/ResultTable'
 
 const documentId = 'marketCompareDocument'
 
-const MarketCompareDocumentContainer = () => {
+export interface IMarketCompareDocumentContainer {
+  aprData: Data[]
+}
+
+const MarketCompareDocumentContainer = ({
+  aprData
+}: IMarketCompareDocumentContainer) => {
   const [fileNameDialogOpen, setfileNameDialogOpen] = useState<boolean>(false)
   const [filename, setfilename] = useState<string>('市場比較文件')
 
@@ -31,7 +38,10 @@ const MarketCompareDocumentContainer = () => {
 
       <div className={style.Container}>
         <div className={style.PaperContainer}>
-          <MarketCompareDocument pid={documentId} />
+          <MarketCompareDocument
+            pid={documentId}
+            aprData={aprData}
+          />
         </div>
 
         <div className={style.ActionContainer}>

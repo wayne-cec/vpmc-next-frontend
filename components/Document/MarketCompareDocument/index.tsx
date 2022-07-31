@@ -1,17 +1,25 @@
-import React from 'react'
+import React, { useState } from 'react'
 import style from './index.module.scss'
-import { Grid } from '@mui/material'
+import {
+  Grid
+} from '@mui/material'
 import moment from 'moment'
+import { Data } from '../../../containers/MarketCompareContainer/ResultPanel/ResultTable'
 
-export interface IPaper {
+export interface IMarketCompareDocument {
   pid: string
-
+  aprData: Data[]
 }
+
 const formatter = new Intl.NumberFormat(undefined, { style: 'decimal' })
 
-const MarketCompareDocument = (props: IPaper) => {
+const MarketCompareDocument = ({
+  pid,
+  aprData
+}: IMarketCompareDocument) => {
+
   return (
-    <div className={style.MarketCompareDocument} id={props.pid}>
+    <div className={style.MarketCompareDocument} id={pid}>
 
       <div className={style.Head}>
         <div className={style.Title}>
@@ -36,7 +44,6 @@ const MarketCompareDocument = (props: IPaper) => {
       </div>
 
       <div className={style.Body}>
-
       </div>
 
       <div className={style.Foot}>
