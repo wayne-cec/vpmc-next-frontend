@@ -79,12 +79,12 @@ const PluginPanel = ({
                   <FormControlLabel value="parcel" control={<Radio />}
                     label="地號" sx={{ marginRight: '15px' }}
                     checked={pluginType === 'parcel'}
-                    onClick={() => { setpluginType('parcel') }} disabled
+                    onClick={() => { /*setpluginType('parcel')*/ }} disabled
                   />
                   <FormControlLabel value="ccis" control={<Radio />}
                     label="CCIS案件編號" sx={{ marginRight: '15px' }}
                     checked={pluginType === 'ccis'}
-                    onClick={() => { setpluginType('ccis') }} disabled
+                    onClick={() => { /*setpluginType('ccis')*/ }} disabled
                   />
                 </RadioGroup>
               </FormControl>
