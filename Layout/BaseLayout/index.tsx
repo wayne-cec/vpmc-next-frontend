@@ -6,6 +6,7 @@ import Footer from '../../components/Footer'
 import 'animate.css'
 import api from '../../api'
 import Router from 'next/router'
+import SideBar from '../../components/SideBar'
 
 export const AuthContext = createContext<{ isAuthenticated: boolean }>({ isAuthenticated: false })
 export const useAuth = () => {
@@ -168,11 +169,49 @@ export const WithNothingProtected = function <P extends { [k: string]: any }> (C
       }
       validateToken()
     }, [userInfo.token])
-
     return (
       <>
         <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
           <div className="content-container">
+            <Component {...props} />
+          </div>
+        </AuthContext.Provider>
+      </>
+    )
+  }
+  return wrappedComponent
+}
+
+export const WithSideBarProtected = function <P extends { [k: string]: any }> (Component: React.ComponentType<P>) {
+  const wrappedComponent = (props: P) => {
+    const dispatch = useDispatch()
+    const userInfo = useSelector(selectUser)
+    const [isAuthenticated, setisAuthenticated] = useState<boolean>(false)
+    useEffect(() => {
+      const validateToken = async () => {
+        if (userInfo.token === '') {
+          setisAuthenticated(false)
+          Router.push('/unauthorized')
+          return
+        }
+        const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
+        if (statusCode === 200) {
+          dispatch(
+            setUserProfile(responseContent)
+          )
+          setisAuthenticated(true)
+        } else {
+          setisAuthenticated(false)
+          Router.push('/unauthorized')
+        }
+      }
+      validateToken()
+    }, [userInfo.token])
+    return (
+      <>
+        <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
+          <div className="admin-page">
+            <SideBar />
             <Component {...props} />
           </div>
         </AuthContext.Provider>

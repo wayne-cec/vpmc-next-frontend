@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { WithNothingLayout } from '../../layout/BaseLayout'
+import { WithSideBarProtected } from '../../layout/BaseLayout'
 import AdminContainer from '../../containers/AdminContainer'
 import Head from 'next/head'
 
@@ -16,4 +16,4 @@ const Admin: NextPage = () => {
   )
 }
 
-export default WithNothingLayout(Admin)
+export default WithSideBarProtected(Admin)
