@@ -5,6 +5,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import Router from 'next/router'
 import api from '../../api'
 import Image from 'next/image'
+import WithNothingLayout from '../../layout/utility-layout/WithNothingLayout'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { setUserToken } from '../../store/slice/user'
@@ -48,7 +49,6 @@ const LoginContainer = () => {
 
   return (
     <div className={style.login}>
-
       <div className={style.Title}>
         <div className='pr-4 flex justify-center items-center'>
           <Image src={'/logo.jpg'} width="97.2px" height="59.4px"
@@ -137,4 +137,4 @@ const LoginContainer = () => {
   )
 }
 
-export default LoginContainer
+export default WithNothingLayout(LoginContainer)

@@ -10,6 +10,7 @@ import AprDetailContent from './AprDetailContent'
 import MarketCompareContext from './MarketCompareContext'
 import PanelContainer from '../../components/PanelContainer'
 import PanelButton from '../../components/PanelContainer/PanelButton'
+import WithNavProtected from '../../layout/front-layout/WithNavProtected'
 import { PolygonSketchMode } from '../../components/PolygonSketch'
 import { IGraphData } from '../../api/prod'
 import {
@@ -571,4 +572,4 @@ const MarketCompareContainer = () => {
   )
 }
 
-export default MarketCompareContainer
+export default WithNavProtected(MarketCompareContainer)

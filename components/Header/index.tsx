@@ -7,7 +7,7 @@ import Router from 'next/router'
 import HeaderDrawer from './HeaderDrawer'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectUser, setUserToken } from '../../store/slice/user'
-import { useAuth } from '../../layout/BaseLayout'
+import { useAuth } from '../../layout/AuthContext'
 import UserGreet from '../../components/UserGreet'
 import CustomMarquee from '../../components/CustomMarquee'
 

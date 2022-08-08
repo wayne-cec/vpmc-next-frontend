@@ -11,7 +11,7 @@ import TabsPanel from '../../../components/TabsPanel'
 import { useEffect, useState } from 'react'
 import classNames from 'classnames'
 import { ICountyData, ITownData, IAprRegionGraphDisplayData } from '../../../api/prod'
-import { WithNavFooterProtected } from '../../../layout/BaseLayout'
+import WithNavFooterProtected from '../../../layout/front-layout/WithNavFooterProtected'
 
 const RegionMapContainer = dynamic(
   () => import('../../../components/MapContainer/AprRegionMap'),

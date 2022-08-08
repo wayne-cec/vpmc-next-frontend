@@ -9,7 +9,7 @@ import style from './index.module.scss'
 import CommiteeHeader from '../../../../components/CommiteeHeader'
 import CommiteePhoto from '../../../../components/CommiteePhoto'
 import { ICommiteeAprDetail } from '../../../../store/slice/commitee'
-import { WithNavFooterProtected } from '../../../../layout/BaseLayout'
+import WithNavFooterProtected from '../../../../layout/front-layout/WithNavFooterProtected'
 
 export interface ITempCommiteeInfo {
   id: string
