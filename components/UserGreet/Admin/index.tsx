@@ -18,7 +18,7 @@ const Admin = () => {
         })}
           onMouseOver={() => { settwStatisticHover(true) }}
           onMouseLeave={() => { settwStatisticHover(false) }}
-          onClick={() => { Router.push('/admin') }}
+          onClick={() => { Router.push('/admin/home') }}
         >
           <Image src={twStatisticHover ? '/law/admin-hover.png' : '/law/admin.png'} width='32px' height='32px' />
         </div>
