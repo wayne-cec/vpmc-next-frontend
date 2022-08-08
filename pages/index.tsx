@@ -4,7 +4,7 @@ import style from '../styles/Home.module.scss'
 import PageHeader from '../components/PageHeader'
 import classNames from 'classnames'
 import 'animate.css'
-import { WithNavFooter } from '../layout/BaseLayout'
+import WithNavFooter from '../layout/front-layout/WithNavFooter'
 
 const Home: NextPage = () => {
   return (

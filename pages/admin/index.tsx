@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { WithSideBarProtected } from '../../layout/BaseLayout'
+import WithSideBarProtected from '../../layout/admin-layout/WithSideBarProtected'
 import AdminContainer from '../../containers/AdminContainer'
 import Head from 'next/head'
 

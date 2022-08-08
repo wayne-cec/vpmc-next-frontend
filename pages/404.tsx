@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import style from '../styles/Unavailable.module.scss'
-import { WithNavFooter } from '../layout/BaseLayout'
+import WithNavFooter from '../layout/front-layout/WithNavFooter'
 
 const Custom404: NextPage = () => {
   return (
