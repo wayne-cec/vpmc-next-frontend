@@ -2,12 +2,10 @@ import React from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import MarketCompareDocumentContainer from '../../../../../containers/MarketCompareDocumentContainer'
-import { WithNothingProtected } from '../../../../../layout/utility-layout/WithNothingProtected'
 import { Data } from '../../../../../containers/MarketCompareContainer/ResultPanel/ResultTable'
 import { ParsedUrlQuery } from 'querystring'
 import { GetServerSideProps } from 'next'
 import { b64Toutf8 } from '../../../../../lib/base64Convert'
-// import './index.css'
 
 interface IProps {
   aprData: Data[]
@@ -46,4 +44,4 @@ const Document: NextPage<IProps> = ({
   )
 }
 
-export default WithNothingProtected(Document)
+export default Document

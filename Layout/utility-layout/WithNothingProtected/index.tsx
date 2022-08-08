@@ -5,7 +5,7 @@ import { AuthContext } from '../../AuthContext'
 import Router from 'next/router'
 import api from '../../../api'
 
-export const WithNothingProtected = function <P extends { [k: string]: any }> (Component: React.ComponentType<P>) {
+const WithNothingProtected = function <P extends { [k: string]: any }> (Component: React.ComponentType<P>) {
   const wrappedComponent = (props: P) => {
     const dispatch = useDispatch()
     const userInfo = useSelector(selectUser)
@@ -42,3 +42,5 @@ export const WithNothingProtected = function <P extends { [k: string]: any }> (C
   }
   return wrappedComponent
 }
+
+export default WithNothingProtected

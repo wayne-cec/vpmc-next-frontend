@@ -7,3 +7,4 @@ export const WithNothingLayout = function <P extends { [k: string]: any }> (Comp
   return wrappedComponent
 }
 
+export default WithNothingLayout

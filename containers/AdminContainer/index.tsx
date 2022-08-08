@@ -1,4 +1,5 @@
 import style from './index.module.scss'
+import WithSideBarProtected from '../../layout/admin-layout/WithSideBarProtected'
 
 const AdminContainer = () => {
 
@@ -9,4 +10,4 @@ const AdminContainer = () => {
   )
 }
 
-export default AdminContainer
+export default WithSideBarProtected(AdminContainer)

@@ -1,5 +1,4 @@
 import type { NextPage } from 'next'
-import WithSideBarProtected from '../../layout/admin-layout/WithSideBarProtected'
 import AdminContainer from '../../containers/AdminContainer'
 import Head from 'next/head'
 
@@ -16,4 +15,4 @@ const Admin: NextPage = () => {
   )
 }
 
-export default WithSideBarProtected(Admin)
+export default Admin
