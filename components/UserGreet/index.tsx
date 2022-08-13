@@ -27,9 +27,7 @@ const UserGreet = (props: IUserGreet) => {
             <GeneralLaw />
             <TwTrend />
             <License />
-            {
-              userInfo.userProfile?.roles[0].roleName === 'admin' && <Admin />
-            }
+            <Admin />
           </div>
         }
 

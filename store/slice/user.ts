@@ -26,7 +26,7 @@ export interface IApp {
   code: AppCode
 }
 
-export interface IRole {
+export interface IUserRole {
   id: string
   name: string
   code: RoleCode
@@ -38,17 +38,18 @@ export interface IUserProfile {
   username: string
   email: string
   alias: string | null
-  roles: IRole[]
 }
 
 export interface IUserInfo {
   token: string
   userProfile: IUserProfile | null
+  userRoles: IUserRole[] | undefined
 }
 
 const init = {
   token: '',
-  userProfile: null
+  userProfile: null,
+  userRoles: undefined
 } as IUserInfo
 
 export const userSlice = createSlice({
@@ -60,6 +61,9 @@ export const userSlice = createSlice({
     },
     setUserProfile: (state: IUserInfo, action: { type: string, payload: IUserProfile }) => {
       state.userProfile = action.payload
+    },
+    setUserRoles: (state: IUserInfo, action: { type: string, payload: IUserRole[] }) => {
+      state.userRoles = action.payload
     }
   }
 })
@@ -68,11 +72,17 @@ export const selectUser = (state: any) => {
   return state.user as IUserInfo
 }
 
+export const selectUserRoles = (state: any) => {
+  const userRoles = (state.user as IUserInfo).userRoles
+  if (!userRoles) return []
+  return userRoles
+}
+
 export const selectUserApps = (state: any) => {
-  const userProfile = (state.user as IUserInfo).userProfile
-  if (!userProfile) return []
+  const userRoles = (state.user as IUserInfo).userRoles
+  if (!userRoles) return []
   const apps: IApp[] = []
-  userProfile.roles.forEach((role) => {
+  userRoles.forEach((role) => {
     role.apps.forEach((app) => {
       if (!apps.includes(app)) apps.push(app)
     })
@@ -88,7 +98,8 @@ export const isAppPermitted = (appCode: AppCode, apps: IApp[]) => {
 
 export const {
   setUserToken,
-  setUserProfile
+  setUserProfile,
+  setUserRoles
 } = userSlice.actions
 
 const userReducer = persistReducer<IUserInfo>(persistConfig, userSlice.reducer)

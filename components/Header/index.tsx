@@ -129,7 +129,7 @@ const Header = () => {
         {
           appraisalAnalysis.map((link, index) => {
             return link.protected
-              ? isAuthenticated && isAppPermitted(link.appCode, appInfo) && renderContent(index, link)
+              ? isAuthenticated && isAppPermitted(link.appCode, appInfo) && renderContent(index, link) //  
               : renderContent(index, link)
           })
         }
