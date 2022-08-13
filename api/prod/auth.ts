@@ -34,5 +34,6 @@ export const validateToken = async (token: string) => {
   })
   const statusCode = response.status
   const responseContent = await response.json() as IUserProfile
+  console.log(responseContent)
   return { statusCode, responseContent }
 }

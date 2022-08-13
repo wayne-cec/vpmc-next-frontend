@@ -18,6 +18,7 @@ const WithNavFooter = function <P extends { [k: string]: any }> (Component: Reac
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
+        console.log(responseContent)
         if (statusCode === 200) {
           dispatch(
             setUserProfile(responseContent)
