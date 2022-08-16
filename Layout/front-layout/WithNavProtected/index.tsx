@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectUser, setUserProfile } from '../../../store/slice/user'
+import { selectUser, setUserProfile, setUserRoles } from '../../../store/slice/user'
 import { AuthContext } from '../../AuthContext'
 import Header from '../../../components/Header'
 import api from '../../../api'
@@ -19,11 +19,18 @@ const WithNavProtected = function <P extends { [k: string]: any }> (Component: R
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
+        console.log(responseContent)
         if (statusCode === 200) {
           dispatch(
             setUserProfile(responseContent)
           )
           setisAuthenticated(true)
+          const { statusCode2, responseContent2 } = await api.prod.listRoles(userInfo.token)
+          if (statusCode2 === 200) {
+            dispatch(
+              setUserRoles(responseContent2)
+            )
+          }
         } else {
           setisAuthenticated(false)
           Router.push('/unauthorized')

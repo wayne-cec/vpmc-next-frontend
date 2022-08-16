@@ -6,17 +6,22 @@ import MenuDrawer from './MenuDrawer'
 import Router from 'next/router'
 import HeaderDrawer from './HeaderDrawer'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectUser, setUserToken } from '../../store/slice/user'
+import { selectUser, selectUserApps, setUserToken, isAppPermitted, AppCode } from '../../store/slice/user'
 import { useAuth } from '../../layout/AuthContext'
 import UserGreet from '../../components/UserGreet'
 import CustomMarquee from '../../components/CustomMarquee'
 
-export const appraisalAnalysis = [
-  { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true },
-  { name: '市場比較法', route: '/appraisalAnalysis/marketCompare', protected: true },
-  { name: '市場比較法(批次) ', route: '/appraisalAnalysis/marketCompareBatch', protected: true },
-  { name: '土開分析法', route: '/appraisalAnalysis/landSurvey', protected: true }
-]
+export const appraisalAnalysis: {
+  name: string
+  route: string
+  protected: boolean
+  appCode: AppCode
+}[] = [
+    { name: '現勘資料表', route: '/appraisalAnalysis/surveySheet', protected: true, appCode: 'function:surveySheet' },
+    { name: '市場比較法', route: '/appraisalAnalysis/marketCompare', protected: true, appCode: 'function:marketCompare' },
+    { name: '市場比較法(批次) ', route: '/appraisalAnalysis/marketCompareBatch', protected: true, appCode: 'function:batchMarketCompare' },
+    { name: '土開分析法', route: '/appraisalAnalysis/landSurvey', protected: true, appCode: 'function:landDevelop' }
+  ]
 
 export const onlineSupport = [
   { name: '網站使用手冊', route: '/onlineSupport/manual', protected: false },
@@ -40,16 +45,34 @@ const renderContent = (index: number, link: {
 const Header = () => {
   const dispatch = useDispatch()
   const userInfo = useSelector(selectUser)
+  const appInfo = useSelector(selectUserApps)
   const { isAuthenticated } = useAuth()
   const [menuDrawerOpen, setmenuDrawerOpen] = useState<boolean>(false)
   const [appAnalysis, setappAnalysis] = useState<boolean>(false)
-  const [onlineSup, setonlineSup] = useState<boolean>(false)
 
   const handleLogout = () => {
     dispatch(
       setUserToken('')
     )
     Router.push('/')
+  }
+
+  const renderMarqueeUI = () => {
+    return (
+      <div className={style.marqueeContainer}>
+        <CustomMarquee />
+      </div>
+    )
+  }
+
+  const renderAprMapUI = () => {
+    return (
+      <NavButton
+        onMouseOver={() => { }}
+        onMouseLeave={() => { }}
+        onClick={() => { Router.push('/aprV2/commitee') }}
+      >實價地圖</NavButton>
+    )
   }
 
   return (
@@ -63,23 +86,20 @@ const Header = () => {
           </div>
         </div>
         {
-          isAuthenticated
-            ? <>
-              <div className={style.marqueeContainer}>
-                <CustomMarquee />
-              </div>
-              <div className={style.buttonGroup}>
-                <NavButton
-                  onMouseOver={() => { setappAnalysis(true) }}
-                  onMouseLeave={() => { setappAnalysis(false) }}
-                >估價分析</NavButton>
-                <NavButton
-                  onMouseOver={() => { }}
-                  onMouseLeave={() => { }}
-                  onClick={() => { Router.push('/aprV2/commitee') }}
-                >實價地圖</NavButton>
-              </div>
-            </> : null
+          isAuthenticated && <>
+            {
+              isAppPermitted('news:marquee', appInfo) && renderMarqueeUI()
+            }
+            <div className={style.buttonGroup}>
+              <NavButton
+                onMouseOver={() => { setappAnalysis(true) }}
+                onMouseLeave={() => { setappAnalysis(false) }}
+              >估價分析</NavButton>
+              {
+                isAppPermitted('function:aprMap', appInfo) && renderAprMapUI()
+              }
+            </div>
+          </>
         }
 
         <div className={style.contact}>
@@ -109,25 +129,7 @@ const Header = () => {
         {
           appraisalAnalysis.map((link, index) => {
             return link.protected
-              ? isAuthenticated
-                ? renderContent(index, link)
-                : null
-              : renderContent(index, link)
-          })
-        }
-      </HeaderDrawer>
-
-      <HeaderDrawer
-        open={onlineSup}
-        onMouseOver={() => { setonlineSup(true) }}
-        onMouseLeave={() => { setonlineSup(false) }}
-      >
-        {
-          onlineSupport.map((link, index) => {
-            return link.protected
-              ? isAuthenticated
-                ? renderContent(index, link)
-                : null
+              ? isAuthenticated && isAppPermitted(link.appCode, appInfo) && renderContent(index, link) //  
               : renderContent(index, link)
           })
         }

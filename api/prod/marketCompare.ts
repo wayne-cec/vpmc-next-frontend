@@ -113,11 +113,14 @@ const buildMarketCompareUrl = (url: string, params: IMarketCompare): string => {
   return url
 }
 
-export const marketCompare = async (params: IMarketCompare) => {
+export const marketCompare = async (params: IMarketCompare, token: string) => {
+  const myHeaders = new Headers()
+  myHeaders.append("authorization", token)
   let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
   url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',
+    headers: myHeaders,
     redirect: 'follow'
   })
   const statusCode = response.status
@@ -125,11 +128,14 @@ export const marketCompare = async (params: IMarketCompare) => {
   return { statusCode, responseContent }
 }
 
-export const marketCompareStatistic = async (params: IMarketCompare) => {
+export const marketCompareStatistic = async (params: IMarketCompare, token: string) => {
+  const myHeaders = new Headers()
+  myHeaders.append("authorization", token)
   let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
   url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',
+    headers: myHeaders,
     redirect: 'follow'
   })
   const statusCode = response.status

@@ -31,6 +31,7 @@ const LoginContainer = () => {
       dispatch(
         setUserToken(responseContent.token)
       )
+      localStorage.setItem('vpmc-token', responseContent.token)
       setslideOut(true)
       seterrorMsg('')
       setTimeout(() => {

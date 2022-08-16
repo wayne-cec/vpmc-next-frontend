@@ -25,6 +25,8 @@ import MapPopup from '../MapPopup'
 import CommiteePopupTemplate from '../MapPopup/CommiteePopupTemplate'
 import PictureMarkerSymbol from '@arcgis/core/symbols/PictureMarkerSymbol'
 import { ICommiteePopupTemplate } from '../MapPopup/CommiteePopupTemplate'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../store/slice/user'
 
 export const square = 3.305785
 
@@ -103,6 +105,7 @@ const mapOptions = {
 let townGeoJsonLayer = new GeoJSONLayer()
 
 const AprV2Map = (props: IEsriMap) => {
+  const userInfo = useSelector(selectUser)
   const { setpending } = useCountyGraphPendingStatus()
   const mapRef = useRef<HTMLDivElement>(null)
   const { asyncMap, asyncMapView } = useMap(mapRef, mapOptions)
@@ -146,10 +149,13 @@ const AprV2Map = (props: IEsriMap) => {
 
   const fetchTownData = async (map: Map) => {
     const promises: any[] = []
+    const headers = new Headers()
+    headers.append('authorization', userInfo.token)
     for (let [key, value] of Object.entries(towns)) {
       promises.push(
         fetch(process.env.API_DOMAIN_PROD + `/api/Commitee/listTownAvg?county=新北市&town=${key}&startDate=2021-01-01&endDate=2022-01-01`, {
           method: 'GET',
+          headers: headers,
           redirect: 'follow'
         })
       )
@@ -245,10 +251,13 @@ const AprV2Map = (props: IEsriMap) => {
 
   const fetchCommiteeByExtent = async (map: Map, extent: Extent, WGS84: SpatialReference) => {
     const convertedExtent = projection.project(extent, WGS84) as Extent
+    const headers = new Headers()
+    headers.append('authorization', userInfo.token)
     const response = await fetch(
       process.env.API_DOMAIN_PROD + `/api/Commitee/listCommiteeByExtent?xmin=${convertedExtent.xmin}&ymin=${convertedExtent.ymin}&xmax=${convertedExtent.xmax}&ymax=${convertedExtent.ymax}`,
       {
         method: 'GET',
+        headers: headers,
         redirect: 'follow'
       }
     )
@@ -260,6 +269,7 @@ const AprV2Map = (props: IEsriMap) => {
       promises.push(
         fetch(process.env.API_DOMAIN_PROD + `/api/Commitee/getSimpleInfo?commiteeId=${commiteeData[i].id}&bufferRadius=35`, {
           method: 'GET',
+          headers: headers,
           redirect: 'follow'
         })
       )

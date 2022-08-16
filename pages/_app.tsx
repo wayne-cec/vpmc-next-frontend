@@ -12,9 +12,7 @@ function MyApp ({ Component, pageProps }: AppProps) {
 
   return <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <Component {...pageProps} />
     </PersistGate>
   </Provider>
 }
