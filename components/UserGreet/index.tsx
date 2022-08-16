@@ -6,7 +6,8 @@ import TwTrend from './TwTrend'
 import License from './License'
 import Admin from './Admin'
 import { useSelector } from 'react-redux'
-import { selectUser } from '../../store/slice/user'
+import { selectUser, selectUserApps } from '../../store/slice/user'
+import { isAppPermitted } from '../../store/slice/user'
 
 export interface IUserGreet {
   username: string
@@ -17,17 +18,17 @@ export interface IUserGreet {
 
 const UserGreet = (props: IUserGreet) => {
   const userInfo = useSelector(selectUser)
-
+  const appInfo = useSelector(selectUserApps)
   return (
     <>
       <div className={style.userGreet}>
         {
           props.isAuthenticated && <div className={style.btnContainer}>
-            <Bulletin />
-            <GeneralLaw />
-            <TwTrend />
-            <License />
-            <Admin />
+            {isAppPermitted('info:bulletin', appInfo) && <Bulletin />}
+            {isAppPermitted('info:generalLaw', appInfo) && <GeneralLaw />}
+            {isAppPermitted('info:twTrend', appInfo) && <TwTrend />}
+            {isAppPermitted('info:licenseSta', appInfo) && <License />}
+            {isAppPermitted('info:admin', appInfo) && <Admin />}
           </div>
         }
 
