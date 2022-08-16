@@ -11,8 +11,10 @@ import { useDispatch } from 'react-redux'
 import { setUserToken } from '../../store/slice/user'
 import {
   Button, Container, Box,
-  Avatar, Typography, TextField
+  Avatar, Typography, TextField, Grid
 } from '@mui/material'
+import { GoogleLogin } from '@react-oauth/google'
+import jwt_decode from 'jwt-decode'
 
 const LoginContainer = () => {
   const dispatch = useDispatch()
@@ -110,6 +112,8 @@ const LoginContainer = () => {
                 }}
                 autoComplete="current-password"
               />
+
+
               <Button
                 variant='contained'
                 className='loginBtn'
@@ -119,7 +123,29 @@ const LoginContainer = () => {
               >
                 登入
               </Button>
+              <GoogleLogin
+                size='large'
+                onSuccess={(credentialResponse: any) => {
+                  console.log(credentialResponse)
+                  const decode = jwt_decode(credentialResponse.credential)
+                  console.log(decode)
+                  // const decode = jwt_decode(credentialResponse.credential)
+                  // console.log(decode)
+                  // const { name, email, picture, exp } = decode as any
+                  // dispatch(login({ name, email, picture, exp, token: credentialResponse.credential }))
+                  // setbackDropOpen(true)
+                  // router.push('/admin/userLogs')
+                }}
+                onError={() => {
+                  // setbackDropOpen(false)
+
+                  console.log('Login Failed')
+                }}
+                useOneTap
+              />
+
             </Box>
+
             <Typography variant='subtitle1' color={'red'} >
               {errorMsg}
             </Typography>
