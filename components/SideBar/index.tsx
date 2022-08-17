@@ -12,12 +12,13 @@ import PeopleIcon from '@mui/icons-material/People'
 import TouchAppIcon from '@mui/icons-material/TouchApp'
 import SecurityIcon from '@mui/icons-material/Security'
 import VpnKeyIcon from '@mui/icons-material/VpnKey'
+import Router from 'next/router'
 import { drawerWidth } from '../../layout/admin-layout/WithSideBarProtected'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectSideBarConfig } from '../../store/slice/sideBar'
 import { onPageChange, onToggle } from '../../store/slice/sideBar'
 import { AdminPageType } from '../../store/slice/sideBar'
-import Router from 'next/router'
+import { setUserToken } from '../../store/slice/user'
 import { Button } from '@mui/material'
 
 const categories: {
@@ -68,7 +69,7 @@ export default function SideBar (props: DrawerProps) {
 
   return (
     <Box component="nav" sx={{ width: { md: drawerWidth }, flexShrink: { sm: 0 } }}>
-      <Drawer variant="permanent" {...other} >
+      <Drawer variant="permanent" {...other}>
         <List disablePadding>
           <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
             VPMC後台管理系統
@@ -116,10 +117,17 @@ export default function SideBar (props: DrawerProps) {
               ...item, ...itemCategory, fontSize: 22, color: '#fff',
               display: 'flex', justifyContent: 'space-around'
             }}>
-              <Button variant='outlined'>
+              <Button variant='outlined' onClick={() => {
+                Router.push('/')
+              }}>
                 前端平台
               </Button>
-              <Button variant='contained'>
+              <Button variant='contained' onClick={() => {
+                dispatch(
+                  setUserToken('')
+                )
+                Router.push('/')
+              }}>
                 登出
               </Button>
             </ListItem>

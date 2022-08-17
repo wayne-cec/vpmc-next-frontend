@@ -24,12 +24,12 @@ const RwdSideBar = ({
     <>
       {isBreakPointHit ? (
         <SideBar
-          PaperProps={{ style: { width: drawerWidth } }}
-          sx={{ display: { sm: 'flex', flexDirection: 'column', justifyContent: 'space-between', xs: 'none' } }}
+          PaperProps={{ style: { width: drawerWidth, flexDirection: 'column', justifyContent: 'space-between' } }}
+          sx={{ display: { sm: 'flex', xs: 'none' } }}
         />
       ) : (
         <SideBar
-          PaperProps={{ style: { width: drawerWidth } }}
+          PaperProps={{ style: { width: drawerWidth, flexDirection: 'column', justifyContent: 'space-between' } }}
           variant="temporary"
           open={toggled}
           onClose={() => {
@@ -53,7 +53,7 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
       const validateToken = async () => {
         if (userInfo.token === '') {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
@@ -70,7 +70,7 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
           }
         } else {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
         }
       }
       validateToken()
