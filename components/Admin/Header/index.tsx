@@ -24,7 +24,7 @@ interface HeaderProps {
 const Header = ({ title, onDrawerToggle }: HeaderProps) => {
   return (
     <React.Fragment>
-      <AppBar color="primary" position="sticky" elevation={0}>
+      <AppBar color="primary" position='relative' elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
             <Grid sx={{ display: { md: 'none', sm: 'block' } }} item>
@@ -57,10 +57,9 @@ const Header = ({ title, onDrawerToggle }: HeaderProps) => {
           </Grid>
         </Toolbar>
       </AppBar>
-      <AppBar component="div" color="primary" position="static" elevation={0} sx={{ zIndex: 0 }}>
+      <AppBar color="primary" position='relative' elevation={0}>
         <Toolbar>
           <Grid container alignItems="center" spacing={1}>
-            {/* <Grid item xs /> */}
             <Grid item xs>
               <Button
                 sx={{ borderColor: lightColor }}

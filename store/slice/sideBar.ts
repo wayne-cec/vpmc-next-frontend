@@ -4,15 +4,10 @@ import { persistConfig } from '../config'
 
 export type AdminPageType =
   | 'home'
-  | 'authentication'
-  | 'database'
-  | 'storage'
-  | 'hosting'
+  | 'userLogs'
+  | 'user'
+  | 'role'
   | 'functions'
-  | 'ml'
-  | 'analytics'
-  | 'performance'
-  | 'testlab'
 
 export interface ISideBarConfig {
   toggled: boolean

@@ -25,7 +25,7 @@ const RwdSideBar = ({
       {isBreakPointHit ? (
         <SideBar
           PaperProps={{ style: { width: drawerWidth } }}
-          sx={{ display: { sm: 'block', xs: 'none' } }}
+          sx={{ display: { sm: 'flex', flexDirection: 'column', justifyContent: 'space-between', xs: 'none' } }}
         />
       ) : (
         <SideBar

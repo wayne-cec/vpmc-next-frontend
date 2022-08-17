@@ -9,44 +9,35 @@ import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
 import HomeIcon from '@mui/icons-material/Home'
 import PeopleIcon from '@mui/icons-material/People'
-import DnsRoundedIcon from '@mui/icons-material/DnsRounded'
-import PermMediaOutlinedIcon from '@mui/icons-material/PhotoSizeSelectActual'
-import PublicIcon from '@mui/icons-material/Public'
-import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet'
-import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent'
-import TimerIcon from '@mui/icons-material/Timer'
-import SettingsIcon from '@mui/icons-material/Settings'
-import PhonelinkSetupIcon from '@mui/icons-material/PhonelinkSetup'
+import TouchAppIcon from '@mui/icons-material/TouchApp'
+import SecurityIcon from '@mui/icons-material/Security'
+import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import { drawerWidth } from '../../layout/admin-layout/WithSideBarProtected'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectSideBarConfig } from '../../store/slice/sideBar'
 import { onPageChange, onToggle } from '../../store/slice/sideBar'
 import { AdminPageType } from '../../store/slice/sideBar'
 import Router from 'next/router'
+import { Button } from '@mui/material'
 
 const categories: {
   id: string
   children: { id: AdminPageType; alias: string; icon: React.ReactNode }[]
 }[] = [
     {
-      id: 'Build',
+      id: '使用者與權限設定',
       children: [
-        { id: 'authentication', icon: <PeopleIcon />, alias: 'Authentication' },
-        { id: 'database', icon: <DnsRoundedIcon />, alias: 'Database' },
-        { id: 'storage', icon: <PermMediaOutlinedIcon />, alias: 'Storage' },
-        { id: 'hosting', icon: <PublicIcon />, alias: 'Hosting' },
-        { id: 'functions', icon: <SettingsEthernetIcon />, alias: 'Functions' },
-        { id: 'ml', icon: <SettingsInputComponentIcon />, alias: 'Machine learning' },
-      ],
+        { id: 'userLogs', icon: <VpnKeyIcon />, alias: '使用者日誌' },
+        { id: 'user', icon: <PeopleIcon />, alias: '使用者管理' },
+        { id: 'role', icon: <SecurityIcon />, alias: '角色權限管理' }
+      ]
     },
     {
-      id: 'Quality',
+      id: '應用程式設定',
       children: [
-        { id: 'analytics', icon: <SettingsIcon />, alias: 'Analytics' },
-        { id: 'performance', icon: <TimerIcon />, alias: 'Performance' },
-        { id: 'testlab', icon: <PhonelinkSetupIcon />, alias: 'Test Lab' },
-      ],
-    },
+        { id: 'functions', icon: <TouchAppIcon />, alias: '功能列表' }
+      ]
+    }
   ]
 
 const item = {
@@ -77,10 +68,10 @@ export default function SideBar (props: DrawerProps) {
 
   return (
     <Box component="nav" sx={{ width: { md: drawerWidth }, flexShrink: { sm: 0 } }}>
-      <Drawer variant="permanent" {...other}>
+      <Drawer variant="permanent" {...other} >
         <List disablePadding>
           <ListItem sx={{ ...item, ...itemCategory, fontSize: 22, color: '#fff' }}>
-            NADI Cloud
+            VPMC後台管理系統
           </ListItem>
           <ListItem sx={{ ...item, ...itemCategory }}>
             <ListItemButton
@@ -92,7 +83,7 @@ export default function SideBar (props: DrawerProps) {
               <ListItemIcon>
                 <HomeIcon />
               </ListItemIcon>
-              <ListItemText>Home</ListItemText>
+              <ListItemText>個人資訊</ListItemText>
             </ListItemButton>
           </ListItem>
           {categories.map(({ id, children }) => (
@@ -118,6 +109,24 @@ export default function SideBar (props: DrawerProps) {
             </Box>
           ))}
         </List>
+
+        <List disablePadding>
+          <Box sx={{ bgcolor: '#101F33' }}>
+            <ListItem sx={{
+              ...item, ...itemCategory, fontSize: 22, color: '#fff',
+              display: 'flex', justifyContent: 'space-around'
+            }}>
+              <Button variant='outlined'>
+                前端平台
+              </Button>
+              <Button variant='contained'>
+                登出
+              </Button>
+            </ListItem>
+            <Divider sx={{ mt: 2 }} />
+          </Box>
+        </List>
+
       </Drawer>
     </Box>
   )
