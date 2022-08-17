@@ -50,6 +50,31 @@ const LoginContainer = () => {
     }
   }
 
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    const decode = jwt_decode(credentialResponse.credential) as { email: string }
+    const { statusCode, responseContent } = await api.prod.googleAuth(decode.email, credentialResponse.credential)
+    if (statusCode === 200) {
+      console.log(responseContent)
+      dispatch(
+        setUserToken(responseContent.token)
+      )
+      localStorage.setItem('vpmc-token', responseContent.token)
+      setslideOut(true)
+      seterrorMsg('')
+      setTimeout(() => {
+        Router.back()
+      }, 1000)
+    } else if (statusCode === 401) {
+      setslideIn(false)
+      setbounce(true)
+      seterrorMsg('帳號或密碼錯誤')
+    } else {
+      setslideIn(false)
+      setbounce(true)
+      seterrorMsg('伺服器錯誤，請聯繫開發人員')
+    }
+  }
+
   return (
     <div className={style.login}>
       <div className={style.Title}>
@@ -125,21 +150,11 @@ const LoginContainer = () => {
               </Button>
               <GoogleLogin
                 size='large'
-                onSuccess={(credentialResponse: any) => {
-                  console.log(credentialResponse)
-                  const decode = jwt_decode(credentialResponse.credential)
-                  console.log(decode)
-                  // const decode = jwt_decode(credentialResponse.credential)
-                  // console.log(decode)
-                  // const { name, email, picture, exp } = decode as any
-                  // dispatch(login({ name, email, picture, exp, token: credentialResponse.credential }))
-                  // setbackDropOpen(true)
-                  // router.push('/admin/userLogs')
-                }}
+                onSuccess={handleGoogleLogin}
                 onError={() => {
-                  // setbackDropOpen(false)
-
-                  console.log('Login Failed')
+                  setslideIn(false)
+                  setbounce(true)
+                  seterrorMsg('伺服器錯誤，請聯繫開發人員')
                 }}
                 useOneTap
               />
