@@ -10,6 +10,9 @@ import SideBar from '../../../components/SideBar'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { CssBaseline, Box } from '@mui/material'
 
+import { ThemeProvider } from '@mui/material'
+import theme from '../../../styles/theme'
+
 export const drawerWidth = 256
 
 const RwdSideBar = ({
@@ -78,7 +81,7 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
     return (
       <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
         <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-          <CssBaseline />
+          {/* <CssBaseline /> */}
           <RwdSideBar toggled={toggled} isBreakPointHit={isBreakPointHit} />
           <Component {...props} />
         </Box>

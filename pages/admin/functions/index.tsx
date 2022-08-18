@@ -1,12 +1,12 @@
 import React from 'react'
-import HomeContainer from '../../../containers/Admin/HomeContainer'
+import FunctionsContainer from '../../../containers/Admin/FunctionsContainer'
 import { ThemeProvider } from '@mui/material'
 import theme from '../../../styles/theme'
 
-const Home = () => {
+const Functions = () => {
   return <ThemeProvider theme={theme}>
-    <HomeContainer />
+    <FunctionsContainer />
   </ThemeProvider>
 }
 
-export default Home
+export default Functions
