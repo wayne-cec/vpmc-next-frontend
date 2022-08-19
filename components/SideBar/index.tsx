@@ -13,6 +13,7 @@ import ListItem from '@mui/material/ListItem'
 import List from '@mui/material/List'
 import Box from '@mui/material/Box'
 import Router from 'next/router'
+import LogoutIcon from '@mui/icons-material/Logout'
 import { drawerWidth } from '../../layout/admin-layout/WithSideBarProtected'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectSideBarConfig } from '../../store/slice/sideBar'
@@ -126,8 +127,8 @@ export default function SideBar (props: DrawerProps) {
                 dispatch(
                   setUserToken('')
                 )
-                Router.push('/')
-              }}>
+                Router.push('/login')
+              }} startIcon={<LogoutIcon />}>
                 登出
               </Button>
             </ListItem>

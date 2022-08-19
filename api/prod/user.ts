@@ -13,9 +13,29 @@ export interface IUserLogsProcessed {
   loginTime: string
 }
 
+export interface IUserInfo {
+  email: string
+  phoneNumber: string
+  createdDate: string
+  isActive: boolean
+  lastLoginTime: string
+  roles: {
+    name: string
+    code: string
+  }[]
+  thumbnails: string[]
+}
+
 export const listLoginLogs = async () => {
   const response = await fetch(process.env.API_DOMAIN_PROD + '/api/User/loginLogs')
   const statusCode = response.status
   const responseContent = await response.json() as IUserLogs[]
+  return { statusCode, responseContent }
+}
+
+export const listUsers = async () => {
+  const response = await fetch(process.env.API_DOMAIN_PROD + '/api/User/list')
+  const statusCode = response.status
+  const responseContent = await response.json() as IUserInfo[]
   return { statusCode, responseContent }
 }
