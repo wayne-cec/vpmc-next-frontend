@@ -16,7 +16,7 @@ export interface ISideBarConfig {
 
 const init = {
   toggled: false,
-  page: 'home',
+  page: 'userLogs',
 } as ISideBarConfig
 
 export const sideBarSlice = createSlice({

@@ -1,18 +1,13 @@
 import type { NextPage } from 'next'
 import Router, { useRouter } from 'next/router'
 import Head from 'next/head'
-import { ParsedUrlQuery } from 'querystring'
-import { GetServerSideProps } from 'next'
-import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import style from './index.module.scss'
 import CommiteeHeader from '../../../../components/CommiteeHeader'
 import CommiteePhoto from '../../../../components/CommiteePhoto'
-import { ICommiteeAprDetail } from '../../../../store/slice/commitee'
 import WithNavFooterProtected from '../../../../layout/front-layout/WithNavFooterProtected'
-import { useSelect } from '@mui/base'
-import { selectUser } from '../../../../store/slice/user'
-import { useSelector } from 'react-redux'
+import { ParsedUrlQuery } from 'querystring'
+import { GetServerSideProps } from 'next'
+import { ICommiteeAprDetail } from '../../../../store/slice/commitee'
 
 export interface ITempCommiteeInfo {
   id: string
@@ -37,19 +32,7 @@ interface Params extends ParsedUrlQuery {
 export const getServerSideProps: GetServerSideProps<IProps, Params> = async ({
   params,
 }) => {
-  // const token = localStorage.getItem('vpmc-token')
-  // if (!token) {
-  //   // Router.push('/login')
-  //   return {
-  //     redirect: {
-  //       permanent: false,
-  //       destination: "/login",
-  //     },
-  //     props: {},
-  //   }
-  // }
   const headers = new Headers()
-  // headers.append('authorization', token)
   let api = process.env.API_DOMAIN_PROD + `/api/Commitee/getAprInfo?commiteeId=${params?.id}`
   let res = await fetch(api, { method: "GET", headers: headers })
   const json: ICommiteeAprDetail[] = await res.json()
