@@ -12,9 +12,13 @@ export interface IUserManageProps {
 
 export const getServerSideProps: GetServerSideProps<IUserManageProps, {}> = async () => {
   const { responseContent } = await api.prod.listUsers()
+  const newData = responseContent.map((user) => {
+    user.thumbnails = [`/avatar/fakeAvatar-3.png`]
+    return user
+  })
   return {
     props: {
-      userInfo: responseContent
+      userInfo: newData
     }
   }
 }

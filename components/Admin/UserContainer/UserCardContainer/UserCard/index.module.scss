@@ -1,0 +1,17 @@
+.UserCard{
+    @apply border-t-[1px] border-border w-full h-[120px]
+    cursor-pointer transition-colors flex;
+    &:hover{
+        @apply bg-selectedGray;
+    }
+    &.selected{
+        @apply bg-selectedGray;
+    }
+    .UserInfoGrid{
+        @apply flex flex-row;
+    }
+    p{
+        
+        word-break: break-all;
+    }
+}

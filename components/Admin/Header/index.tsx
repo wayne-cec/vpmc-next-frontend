@@ -50,11 +50,9 @@ const Header = ({ title, onDrawerToggle }: HeaderProps) => {
               </Tooltip>
             </Grid>
             <Grid item>
-
               <IconButton color="inherit" sx={{ p: 0.5 }}>
-                <Avatar src="/static/images/avatar/1.jpg" alt={userInfo.userProfile?.email} />
+                <Avatar src={`/avatar/fakeAvatar-3.png`} alt={userInfo.userProfile?.email} />
               </IconButton>
-
             </Grid>
           </Grid>
         </Toolbar>

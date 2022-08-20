@@ -14,6 +14,7 @@ export interface IUserLogsProcessed {
 }
 
 export interface IUserInfo {
+  userId: string
   email: string
   phoneNumber: string
   createdDate: string

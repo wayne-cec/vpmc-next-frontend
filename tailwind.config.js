@@ -22,7 +22,8 @@ module.exports = {
         'border': '#0000003b',
         'sub': {
           'primary': '#007fff'
-        }
+        },
+        'selectedGray': '#00000018'
       }
     },
   },

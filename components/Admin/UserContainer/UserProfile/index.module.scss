@@ -1,0 +1,18 @@
+.UserProfile{
+    @apply bg-selectedGray rounded-md 
+    flex items-center flex-col;
+    flex:0.3;
+    .AvatarContainer{
+        @apply flex items-center justify-center;
+        flex: 0.3;
+    }
+    .InfoConatiner{
+        @apply w-[90%];
+        flex: 0.7;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+        p{
+            @apply text-sm;
+        }
+    }
+}

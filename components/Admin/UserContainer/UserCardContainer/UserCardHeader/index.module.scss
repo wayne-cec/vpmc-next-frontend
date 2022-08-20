@@ -1,0 +1,7 @@
+.UserCardHeader{
+    @apply  w-full h-[40px]
+    cursor-pointer transition-colors flex;
+    .head{
+        @apply text-gray-400;
+    }
+}

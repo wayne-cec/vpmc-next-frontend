@@ -5,8 +5,12 @@ import { useDispatch } from 'react-redux'
 import { onToggle } from '../../../store/slice/sideBar'
 import { IUserManageProps } from '../../../pages/admin/user'
 import { useTheme } from '@mui/material'
+import { useState } from 'react'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import style from './index.module.scss'
+import UserCard from '../../../components/Admin/UserContainer/UserCardContainer/UserCard'
+import UserProfile from '../../../components/Admin/UserContainer/UserProfile'
+import UserCardContainer from '../../../components/Admin/UserContainer/UserCardContainer'
+import UserCardHeader from '../../../components/Admin/UserContainer/UserCardContainer/UserCardHeader'
 
 const UserContainer = ({
   userInfo
@@ -14,6 +18,7 @@ const UserContainer = ({
   const dispatch = useDispatch()
   const theme = useTheme()
   const isBreakPointHit = useMediaQuery(theme.breakpoints.up('md'))
+  const [selectedUserId, setselectedUserId] = useState<string | undefined>(undefined)
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -25,32 +30,26 @@ const UserContainer = ({
       />
       <Box sx={{
         flex: 1, py: 6, px: 4, bgcolor: '#eaeff1', height: '1%',
-        display: 'flex', flexDirection: { md: 'row', sm: 'column-reverse' }
+        display: 'flex', flexDirection: { md: 'row', sm: 'column-reverse', xs: 'column-reverse' }
       }}>
-
-        <Box sx={{
-          flex: 0.7, px: { md: 4, sm: 0 }, overflowY: 'auto',
-          height: '100%', direction: 'rtl'
-        }}>
+        <UserCardContainer>
+          <UserCardHeader />
           {
-            Array.apply(null, Array(20)).map((user, index) => {
-              return <Box
+            userInfo.map((user, index) => {
+              return <UserCard
                 key={index}
-                sx={{
-                  width: '100%', height: '120px', mt: 2,
-                  cursor: 'pointer', borderRadius: '8px', bgcolor: 'black'
+                userInfo={user}
+                id={selectedUserId}
+                onClick={(id) => {
+                  setselectedUserId(id)
                 }}
-              >
-              </Box>
+              />
             })
           }
-
-        </Box>
-
-        <Paper sx={{ flex: 0.3, bgcolor: '#b7bbbd', borderRadius: '8px' }}>
-
-        </Paper>
-
+        </UserCardContainer>
+        <UserProfile
+          userInfo={userInfo.filter(u => u.userId === selectedUserId).at(0)}
+        />
       </Box>
     </Box>
   )
