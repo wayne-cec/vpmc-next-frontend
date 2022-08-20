@@ -49,7 +49,7 @@ const UserCard = ({
         </Grid>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-          <p>{moment(new Date(userInfo.lastLoginTime)).format('YYYY-MM-DD HH:mm:ss')}</p>
+          <p>{moment(new Date(userInfo.lastLoginTime)).add(8, 'hour').format('YYYY-MM-DD HH:mm:ss')}</p>
         </Grid>
 
       </Grid>
