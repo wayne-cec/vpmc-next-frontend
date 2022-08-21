@@ -1,19 +1,19 @@
-import { IUserInfo } from '../../../../api/prod'
-import style from './index.module.scss'
+import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
 import { Avatar, Grid, Chip, Button, IconButton, Tooltip } from '@mui/material'
-import EmailIcon from '@mui/icons-material/Email'
-import moment from 'moment'
-import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone'
-import LoginIcon from '@mui/icons-material/Login'
-import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
-import SecurityIcon from '@mui/icons-material/Security'
-import AddIcon from '@mui/icons-material/Add'
-import EditIcon from '@mui/icons-material/Edit'
-import { useState } from 'react'
-import api from '../../../../api'
-import { useSelector } from 'react-redux'
 import { selectUser } from '../../../../store/slice/user'
 import { IRole } from '../../../../api/prod/role'
+import { IUserInfo } from '../../../../api/prod'
+import { useSelector } from 'react-redux'
+import { useState } from 'react'
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone'
+import SecurityIcon from '@mui/icons-material/Security'
+import LoginIcon from '@mui/icons-material/Login'
+import EmailIcon from '@mui/icons-material/Email'
+import EditIcon from '@mui/icons-material/Edit'
+import style from './index.module.scss'
+import api from '../../../../api'
+import moment from 'moment'
 
 interface IUserProfile {
   userInfo: IUserInfo | undefined
@@ -25,6 +25,7 @@ const UserProfile = ({
   userInfo, isRoleEditing, onRoleEdit
 }: IUserProfile) => {
   const user = useSelector(selectUser)
+  const [savable, setsavable] = useState<boolean>(false)
   const [sourceRole, setsourceRole] = useState<IRole[]>([])
   const [targetRole, settargetRole] = useState<IRole[]>([])
 
@@ -52,6 +53,24 @@ const UserProfile = ({
         return r
     })
     return unOwnedRoles
+  }
+
+  const handleDragEnd = (result: DropResult) => {
+    if (!result.destination || !result.source) return
+    if (result.destination.droppableId === result.source.droppableId) return
+
+    console.log('drag')
+    if (result.destination.droppableId === 'sourceRoles') { // 拉去 source panel
+      const extractedRoles = targetRole.filter(r => r.code === result.draggableId)
+      const excludedRoles = targetRole.filter(r => r.code !== result.draggableId)
+      settargetRole(excludedRoles)
+      setsourceRole(prev => prev.concat(extractedRoles))
+    } else { // 拉去 target panel
+      const extractedRoles = sourceRole.filter(r => r.code === result.draggableId)
+      const excludedRoles = sourceRole.filter(r => r.code !== result.draggableId)
+      setsourceRole(excludedRoles)
+      settargetRole(prev => prev.concat(extractedRoles))
+    }
   }
 
   const renderRoleState = () => {
@@ -87,47 +106,85 @@ const UserProfile = ({
   }
 
   const renderRoleSetting = () => {
-    return <div
-      className={style.RoleSettingContainer}
-    >
-      <div className={style.Panel}>
-        <div className={style.Source}>
-          {
-            sourceRole.map((role, index) => {
-              return <Chip
-                key={index}
-                label={role.name}
-                color={role.code === 'admin:root' ? 'secondary' : 'primary'}
-                sx={{
-                  margin: '2px', cursor: 'pointer', userSelect: 'none',
-                  transition: '0.3s',
-                  '&:hover': {
-                    opacity: 0.6
+    return <div className={style.RoleSettingContainer}>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <div className={style.Panel}>
+          <Droppable droppableId='sourceRoles'>
+            {
+              provided => (
+                <div className={style.Source}
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {
+                    sourceRole.map((role, index) => {
+                      return <Draggable draggableId={role.code} index={index} key={index}>
+                        {
+                          p => (
+                            <Chip
+                              key={role.code}
+                              ref={p.innerRef}
+                              {...p.draggableProps}
+                              {...p.dragHandleProps}
+                              label={role.name}
+                              color={role.code === 'admin:root' ? 'secondary' : 'primary'}
+                              sx={{
+                                margin: '2px', cursor: 'pointer', userSelect: 'none',
+                                transition: '0.3s',
+                                '&:hover': {
+                                  opacity: 0.6
+                                }
+                              }}
+                            />
+                          )
+                        }
+                      </Draggable>
+                    })
                   }
-                }}
-              />
-            })
-          }
-        </div>
-        <div className={style.Target}>
-          {
-            targetRole.map((role, index) => {
-              return <Chip
-                key={index}
-                label={role.name}
-                color={role.code === 'admin:root' ? 'secondary' : 'primary'}
-                sx={{
-                  margin: '2px', cursor: 'pointer', userSelect: 'none',
-                  transition: '0.3s',
-                  '&:hover': {
-                    opacity: 0.6
+                  {provided.placeholder}
+                </div>
+              )
+            }
+          </Droppable>
+          <Droppable droppableId='targetRoles'>
+            {
+              provided => (
+                <div className={style.Target}
+                  ref={provided.innerRef}
+                  {...provided.droppableProps}
+                >
+                  {
+                    targetRole.map((role, index) => {
+                      return <Draggable draggableId={role.code} index={index} key={index}>
+                        {
+                          p => (
+                            <Chip
+                              key={role.code}
+                              ref={p.innerRef}
+                              {...p.draggableProps}
+                              {...p.dragHandleProps}
+                              label={role.name}
+                              color={role.code === 'admin:root' ? 'secondary' : 'primary'}
+                              sx={{
+                                margin: '2px', cursor: 'pointer', userSelect: 'none',
+                                transition: '0.3s',
+                                '&:hover': {
+                                  opacity: 0.6
+                                }
+                              }}
+                            />
+                          )
+                        }
+                      </Draggable>
+                    })
                   }
-                }}
-              />
-            })
-          }
+                  {provided.placeholder}
+                </div>
+              )
+            }
+          </Droppable>
         </div>
-      </div>
+      </DragDropContext>
       <div className={style.Action}>
         <Button color='error' variant='contained'
           sx={{ marginRight: '8px' }}
@@ -137,6 +194,7 @@ const UserProfile = ({
         </Button>
         <Button color='secondary' variant='contained'
           onClick={() => { onRoleEdit(false) }}
+          disabled={!savable}
         >
           儲存
         </Button>
