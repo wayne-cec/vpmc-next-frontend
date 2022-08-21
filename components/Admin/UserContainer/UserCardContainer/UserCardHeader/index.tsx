@@ -15,7 +15,7 @@ const UserCardHeader = () => {
         </Grid>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-          <p className={style.head}>手機號碼</p>
+          <p className={style.head}>權限</p>
         </Grid>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>

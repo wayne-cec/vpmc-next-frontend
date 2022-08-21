@@ -19,6 +19,7 @@ const UserContainer = ({
   const theme = useTheme()
   const isBreakPointHit = useMediaQuery(theme.breakpoints.up('md'))
   const [selectedUserId, setselectedUserId] = useState<string | undefined>(undefined)
+  const [isRoleEditing, setisRoleEditing] = useState<boolean>(false)
 
   return (
     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh' }}>
@@ -42,6 +43,7 @@ const UserContainer = ({
                 id={selectedUserId}
                 onClick={(id) => {
                   setselectedUserId(id)
+                  setisRoleEditing(false)
                 }}
               />
             })
@@ -49,6 +51,10 @@ const UserContainer = ({
         </UserCardContainer>
         <UserProfile
           userInfo={userInfo.filter(u => u.userId === selectedUserId).at(0)}
+          isRoleEditing={isRoleEditing}
+          onRoleEdit={(value) => {
+            setisRoleEditing(value)
+          }}
         />
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import { Grid, Avatar, useTheme } from '@mui/material'
+import { Grid, Avatar, useTheme, Chip } from '@mui/material'
 import style from './index.module.scss'
 import { IUserInfo } from '../../../../../api/prod'
 import className from 'classnames'
@@ -45,7 +45,19 @@ const UserCard = ({
         </Grid>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-          <p>{userInfo.phoneNumber}</p>
+
+          <Grid container spacing={2} sx={{ display: 'flex', alignItems: 'center' }}>
+            {
+              userInfo.roles.map((role, index) => {
+                return <Grid item key={index}>
+                  <Chip
+                    label={role.name}
+                    color={role.code === 'admin:root' ? 'secondary' : 'primary'}
+                  />
+                </Grid>
+              })
+            }
+          </Grid>
         </Grid>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
