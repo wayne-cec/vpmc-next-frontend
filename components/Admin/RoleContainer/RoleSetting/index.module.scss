@@ -1,6 +1,15 @@
 .RoleSetting{
-    @apply px-8 py-8;
+    @apply px-8 py-8 flex;
     background-color: #009BE5;
-    opacity: 0;
+    // opacity: 0;
     flex: 0.7;
+    .RoleBrowser{
+        // background-color: #009BE5;
+        @apply rounded-md overflow-y-auto;
+        background-color: rgb(0 156 229 / 18%);
+        flex:0.7;
+    }
+    .RoleEditor{
+        flex:0.3;
+    }
 }
