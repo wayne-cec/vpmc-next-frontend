@@ -42,14 +42,8 @@ const Header = ({ title, onDrawerToggle }: HeaderProps) => {
                 {title}
               </Typography>
             </Grid>
-            <Grid item>
-              <Tooltip title="Alerts • No alerts">
-                <IconButton color="inherit">
-                  <NotificationsIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-            <Grid item>
+            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+              <span>{userInfo.userProfile?.email}</span>
               <IconButton color="inherit" sx={{ p: 0.5 }}>
                 <Avatar src={`/avatar/fakeAvatar-3.png`} alt={userInfo.userProfile?.email} />
               </IconButton>
