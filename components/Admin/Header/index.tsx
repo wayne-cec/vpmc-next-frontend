@@ -1,18 +1,17 @@
 import * as React from 'react'
+import Grid from '@mui/material/Grid'
 import AppBar from '@mui/material/AppBar'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
-import HelpIcon from '@mui/icons-material/Help'
-import IconButton from '@mui/material/IconButton'
-import Link from '@mui/material/Link'
-import MenuIcon from '@mui/icons-material/Menu'
-import NotificationsIcon from '@mui/icons-material/Notifications'
-import Tab from '@mui/material/Tab'
-import Tabs from '@mui/material/Tabs'
 import Toolbar from '@mui/material/Toolbar'
 import Tooltip from '@mui/material/Tooltip'
+import HelpIcon from '@mui/icons-material/Help'
+import MenuIcon from '@mui/icons-material/Menu'
 import Typography from '@mui/material/Typography'
+import IconButton from '@mui/material/IconButton'
+import NotificationsIcon from '@mui/icons-material/Notifications'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../../store/slice/user'
 
 const lightColor = 'rgba(255, 255, 255, 0.7)'
 
@@ -22,9 +21,10 @@ interface HeaderProps {
 }
 
 const Header = ({ title, onDrawerToggle }: HeaderProps) => {
+  const userInfo = useSelector(selectUser)
   return (
     <React.Fragment>
-      <AppBar color="primary" position="sticky" elevation={0}>
+      <AppBar color="primary" position='relative' elevation={0}>
         <Toolbar>
           <Grid container spacing={1} alignItems="center">
             <Grid sx={{ display: { md: 'none', sm: 'block' } }} item>
@@ -42,25 +42,18 @@ const Header = ({ title, onDrawerToggle }: HeaderProps) => {
                 {title}
               </Typography>
             </Grid>
-            <Grid item>
-              <Tooltip title="Alerts • No alerts">
-                <IconButton color="inherit">
-                  <NotificationsIcon />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-            <Grid item>
+            <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+              <span>{userInfo.userProfile?.email}</span>
               <IconButton color="inherit" sx={{ p: 0.5 }}>
-                <Avatar src="/static/images/avatar/1.jpg" alt="My Avatar" />
+                <Avatar src={`/avatar/fakeAvatar-3.png`} alt={userInfo.userProfile?.email} />
               </IconButton>
             </Grid>
           </Grid>
         </Toolbar>
       </AppBar>
-      <AppBar component="div" color="primary" position="static" elevation={0} sx={{ zIndex: 0 }}>
+      <AppBar color="primary" position='relative' elevation={0}>
         <Toolbar>
           <Grid container alignItems="center" spacing={1}>
-            {/* <Grid item xs /> */}
             <Grid item xs>
               <Button
                 sx={{ borderColor: lightColor }}

@@ -14,7 +14,7 @@ const WithNothingProtected = function <P extends { [k: string]: any }> (Componen
       const validateToken = async () => {
         if (userInfo.token === '') {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
@@ -31,7 +31,7 @@ const WithNothingProtected = function <P extends { [k: string]: any }> (Componen
           }
         } else {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
         }
       }
       validateToken()

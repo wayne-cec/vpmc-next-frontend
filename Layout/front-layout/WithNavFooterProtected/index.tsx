@@ -16,7 +16,7 @@ const WithNavFooterProtected = function <P extends { [k: string]: any }> (Compon
       const validateToken = async () => {
         if (userInfo.token === '') {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
@@ -34,7 +34,7 @@ const WithNavFooterProtected = function <P extends { [k: string]: any }> (Compon
           }
         } else {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
         }
       }
       validateToken()

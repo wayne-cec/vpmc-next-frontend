@@ -29,7 +29,7 @@ let theme = createTheme({
     toolbar: {
       minHeight: 48,
     },
-  },
+  }
 })
 
 theme = {

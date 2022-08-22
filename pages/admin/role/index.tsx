@@ -1,12 +1,12 @@
 import React from 'react'
-import HomeContainer from '../../../containers/Admin/HomeContainer'
+import RoleContainer from '../../../containers/Admin/RoleContainer'
 import { ThemeProvider } from '@mui/material'
 import theme from '../../../styles/theme'
 
-const Home = () => {
+const Role = () => {
   return <ThemeProvider theme={theme}>
-    <HomeContainer />
+    <RoleContainer />
   </ThemeProvider>
 }
 
-export default Home
+export default Role

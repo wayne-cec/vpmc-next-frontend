@@ -10,6 +10,9 @@ import SideBar from '../../../components/SideBar'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { CssBaseline, Box } from '@mui/material'
 
+import { ThemeProvider } from '@mui/material'
+import theme from '../../../styles/theme'
+
 export const drawerWidth = 256
 
 const RwdSideBar = ({
@@ -24,12 +27,12 @@ const RwdSideBar = ({
     <>
       {isBreakPointHit ? (
         <SideBar
-          PaperProps={{ style: { width: drawerWidth } }}
-          sx={{ display: { sm: 'block', xs: 'none' } }}
+          PaperProps={{ style: { width: drawerWidth, flexDirection: 'column', justifyContent: 'space-between' } }}
+          sx={{ display: { sm: 'flex', xs: 'none' } }}
         />
       ) : (
         <SideBar
-          PaperProps={{ style: { width: drawerWidth } }}
+          PaperProps={{ style: { width: drawerWidth, flexDirection: 'column', justifyContent: 'space-between' } }}
           variant="temporary"
           open={toggled}
           onClose={() => {
@@ -53,7 +56,7 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
       const validateToken = async () => {
         if (userInfo.token === '') {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
@@ -70,7 +73,7 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
           }
         } else {
           setisAuthenticated(false)
-          Router.push('/unauthorized')
+          Router.push('/login')
         }
       }
       validateToken()
@@ -78,7 +81,7 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
     return (
       <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
         <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-          <CssBaseline />
+          {/* <CssBaseline /> */}
           <RwdSideBar toggled={toggled} isBreakPointHit={isBreakPointHit} />
           <Component {...props} />
         </Box>

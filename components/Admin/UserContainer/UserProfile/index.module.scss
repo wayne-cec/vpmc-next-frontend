@@ -1,0 +1,63 @@
+.UserProfile{
+    @apply bg-selectedGray rounded-md 
+    flex items-center flex-col;
+    flex:0.3;
+    .AvatarContainer{
+        @apply flex items-center justify-center;
+        flex: 0.3;
+    }
+    .InfoConatiner{
+        @apply w-[90%];
+        flex: 0.3;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+        p{
+            @apply text-sm;
+        }
+    }
+    .RoleInfoConatiner{
+        @apply w-[90%];
+        flex: 0.3;
+        word-wrap: break-word;
+        text-overflow: ellipsis;
+        p{
+            @apply text-sm;
+        }
+    }
+    .RoleSettingContainer{
+        @apply w-[90%] border rounded-md flex flex-col;
+        border-color: #009be5;
+        background-color: #009be5;
+        flex:0.35;
+        .Panel{
+            @apply p-2 pb-0 flex;
+            flex:0.8;
+            .Source{
+                @apply h-[190px] overflow-y-auto 
+                rounded-l-md border-r-[1px] border-border bg-gray-300
+                p-2;
+                flex:0.5;
+            }
+            .Target{
+                @apply h-[190px] overflow-y-auto
+                rounded-r-md bg-gray-300 p-2;
+                flex:0.5;
+            }
+        }
+        .Action{
+            @apply border-t-[1px] p-2 flex justify-end;
+            border-color: #009be5;
+            background-color: #009be5;
+            flex:0.2;
+        }
+    }
+}
+
+.Chip{
+    @apply w-fit h-fit px-3 py-2 rounded-full
+    cursor-pointer select-none text-xs m-2 text-white;
+    background-color: #009be5;
+    &.Root{
+        background-color: #9c27b0;
+    }
+}
