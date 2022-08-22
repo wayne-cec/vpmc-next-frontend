@@ -16,6 +16,7 @@ export type AppCode = 'info:bulletin' |
   'function:test'
 
 export type RoleCode = 'user:basic' |
+  'user:test' |
   'user:ccis' |
   'admin:ccis' |
   'admin:root'

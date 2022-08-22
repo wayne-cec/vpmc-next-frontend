@@ -1,0 +1,13 @@
+.RoleHeader{
+    @apply  px-8 py-8;
+    background-color: #009ce549;
+    // opacity: 0.2;
+    flex: 0.3;
+    .Header{
+        @apply   select-none
+        font-extrabold;
+        p{
+            @apply text-3xl text-black;
+        }
+    }
+}

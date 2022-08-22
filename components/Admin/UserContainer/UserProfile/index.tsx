@@ -65,7 +65,7 @@ const UserProfile = ({
     if (!userRoles) return
     settargetRole(userRoles)
     setoriginalRole(userRoles)
-    const { statusCode, responseContent } = await api.prod.listAllRole(user.token)
+    const { statusCode, responseContent } = await api.prod.listAllRole()
     if (statusCode === 200) {
       const unOwnedRoles = filterUserRole(responseContent, userRoles)
       setsourceRole(unOwnedRoles)

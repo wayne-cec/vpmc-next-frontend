@@ -30,7 +30,7 @@ const UserCard = ({
         onClick(userInfo.userId)
       }}
     >
-      <Grid container spacing={2} sx={{ direction: 'ltr' }}>
+      <Grid container spacing={2} sx={{ direction: 'ltr', height: '100%' }}>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <Avatar
