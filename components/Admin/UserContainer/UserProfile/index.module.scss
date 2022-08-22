@@ -52,3 +52,12 @@
         }
     }
 }
+
+.Chip{
+    @apply w-fit h-fit px-3 py-2 rounded-full
+    cursor-pointer select-none text-xs m-2 text-white;
+    background-color: #009be5;
+    &.Root{
+        background-color: #9c27b0;
+    }
+}

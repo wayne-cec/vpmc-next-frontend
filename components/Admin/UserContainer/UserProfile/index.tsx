@@ -1,10 +1,10 @@
-import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from 'react-beautiful-dnd'
 import { Avatar, Grid, Chip, Button, IconButton, Tooltip } from '@mui/material'
 import { selectUser } from '../../../../store/slice/user'
 import { IRole } from '../../../../api/prod/role'
 import { IUserInfo } from '../../../../api/prod'
 import { useSelector } from 'react-redux'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone'
 import SecurityIcon from '@mui/icons-material/Security'
@@ -14,6 +14,9 @@ import EditIcon from '@mui/icons-material/Edit'
 import style from './index.module.scss'
 import api from '../../../../api'
 import moment from 'moment'
+import className from 'classnames'
+import { isEqual } from 'lodash'
+import Router, { useRouter } from 'next/router'
 
 interface IUserProfile {
   userInfo: IUserInfo | undefined
@@ -21,13 +24,35 @@ interface IUserProfile {
   onRoleEdit: (value: boolean) => void
 }
 
+const RoleChip = ({
+  p, role
+}: {
+  p: DraggableProvided
+  role: IRole
+}) => {
+  return (
+    <div
+      className={className({
+        [style.Chip]: true,
+        [style.Root]: role.code === 'admin:root'
+      })}
+      key={role.code}
+      ref={p.innerRef}
+      {...p.draggableProps}
+      {...p.dragHandleProps}
+    >{role.name}</div>
+  )
+}
+
 const UserProfile = ({
   userInfo, isRoleEditing, onRoleEdit
 }: IUserProfile) => {
+  const router = useRouter()
   const user = useSelector(selectUser)
-  const [savable, setsavable] = useState<boolean>(false)
+  // const [savable, setsavable] = useState<boolean>(false)
   const [sourceRole, setsourceRole] = useState<IRole[]>([])
   const [targetRole, settargetRole] = useState<IRole[]>([])
+  const [originalRole, setoriginalRole] = useState<IRole[]>([])
 
   const handleRoleEdit = async () => {
     onRoleEdit(true)
@@ -39,6 +64,7 @@ const UserProfile = ({
     })
     if (!userRoles) return
     settargetRole(userRoles)
+    setoriginalRole(userRoles)
     const { statusCode, responseContent } = await api.prod.listAllRole(user.token)
     if (statusCode === 200) {
       const unOwnedRoles = filterUserRole(responseContent, userRoles)
@@ -58,8 +84,6 @@ const UserProfile = ({
   const handleDragEnd = (result: DropResult) => {
     if (!result.destination || !result.source) return
     if (result.destination.droppableId === result.source.droppableId) return
-
-    console.log('drag')
     if (result.destination.droppableId === 'sourceRoles') { // 拉去 source panel
       const extractedRoles = targetRole.filter(r => r.code === result.draggableId)
       const excludedRoles = targetRole.filter(r => r.code !== result.draggableId)
@@ -70,6 +94,20 @@ const UserProfile = ({
       const excludedRoles = sourceRole.filter(r => r.code !== result.draggableId)
       setsourceRole(excludedRoles)
       settargetRole(prev => prev.concat(extractedRoles))
+    }
+  }
+
+  const handleRoleSave = async () => {
+    if (!userInfo) return
+    const { statusCode } = await api.prod.assignRole(
+      user.token, userInfo.userId, targetRole.map(r => r.code).join(',')
+    )
+    if (statusCode === 200) {
+      onRoleEdit(false)
+      router.replace(router.asPath)
+    } else if (statusCode === 401) {
+      alert('權限不足')
+      router.push('/login')
     }
   }
 
@@ -118,25 +156,9 @@ const UserProfile = ({
                 >
                   {
                     sourceRole.map((role, index) => {
-                      return <Draggable draggableId={role.code} index={index} key={index}>
+                      return <Draggable draggableId={role.code} index={index} key={role.code}>
                         {
-                          p => (
-                            <Chip
-                              key={role.code}
-                              ref={p.innerRef}
-                              {...p.draggableProps}
-                              {...p.dragHandleProps}
-                              label={role.name}
-                              color={role.code === 'admin:root' ? 'secondary' : 'primary'}
-                              sx={{
-                                margin: '2px', cursor: 'pointer', userSelect: 'none',
-                                transition: '0.3s',
-                                '&:hover': {
-                                  opacity: 0.6
-                                }
-                              }}
-                            />
-                          )
+                          p => <RoleChip role={role} p={p} />
                         }
                       </Draggable>
                     })
@@ -155,25 +177,9 @@ const UserProfile = ({
                 >
                   {
                     targetRole.map((role, index) => {
-                      return <Draggable draggableId={role.code} index={index} key={index}>
+                      return <Draggable draggableId={role.code} index={index} key={role.code}>
                         {
-                          p => (
-                            <Chip
-                              key={role.code}
-                              ref={p.innerRef}
-                              {...p.draggableProps}
-                              {...p.dragHandleProps}
-                              label={role.name}
-                              color={role.code === 'admin:root' ? 'secondary' : 'primary'}
-                              sx={{
-                                margin: '2px', cursor: 'pointer', userSelect: 'none',
-                                transition: '0.3s',
-                                '&:hover': {
-                                  opacity: 0.6
-                                }
-                              }}
-                            />
-                          )
+                          p => <RoleChip role={role} p={p} />
                         }
                       </Draggable>
                     })
@@ -193,8 +199,8 @@ const UserProfile = ({
           取消
         </Button>
         <Button color='secondary' variant='contained'
-          onClick={() => { onRoleEdit(false) }}
-          disabled={!savable}
+          onClick={handleRoleSave}
+          disabled={isEqual(targetRole, originalRole) || targetRole.length === 0}
         >
           儲存
         </Button>
