@@ -1,24 +1,47 @@
 import Header from '../../../components/Admin/Header'
 import WithSideBarProtected from '../../../layout/admin-layout/WithSideBarProtected'
 import { Box, AppBar, Tabs, Tab } from '@mui/material'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { onToggle } from '../../../store/slice/sideBar'
 import { useState, useEffect } from 'react'
 import { IRoleManageProps } from '../../../pages/admin/role'
 import api from '../../../api'
 import { IRoleWithApp, IApp } from '../../../api/prod'
-import { RoleCode } from '../../../store/slice/user'
+import { RoleCode, selectUser } from '../../../store/slice/user'
 import RoleHeader from '../../../components/Admin/RoleContainer/RoleHeader'
 import RoleSetting from '../../../components/Admin/RoleContainer/RoleSetting'
+import { useRouter } from 'next/dist/client/router'
 
 const RoleContainer = ({
   roles
 }: IRoleManageProps) => {
+  const router = useRouter()
   const dispatch = useDispatch()
+  const userInfo = useSelector(selectUser)
   const [tabPage, settabPage] = useState<RoleCode>('user:basic')
   const [roleInfo, setroleInfo] = useState<IRoleWithApp | undefined>(undefined)
   const [ownedApps, setownedApps] = useState<IApp[]>([])
   const [unOwnedApps, setunOwnedApps] = useState<IApp[]>([])
+  const [originalApps, setoriginalApps] = useState<IApp[]>([])
+  const [originalUnOwnedApps, setoriginalUnOwnedApps] = useState<IApp[]>([])
+
+  const handleAppsSave = async () => {
+    const { statusCode } = await api.prod.assignApp(
+      userInfo.token,
+      tabPage, ownedApps.map(a => a.code).join(',')
+    )
+    if (statusCode === 200) {
+      router.replace(router.asPath)
+      fetchRoleData(tabPage)
+      return
+    }
+    alert('權限設定失敗')
+  }
+
+  const resetApps = () => {
+    setownedApps(originalApps)
+    setunOwnedApps(originalUnOwnedApps)
+  }
 
   const filterOwnedApps = async (ownedApps: IApp[]) => {
     const { statusCode, responseContent } = await api.prod.listAllApps()
@@ -27,6 +50,8 @@ const RoleContainer = ({
       const unOwnedApps = responseContent.filter(a => !ownedAppsCodes.includes(a.code))
       setownedApps(ownedApps)
       setunOwnedApps(unOwnedApps)
+      setoriginalApps(ownedApps)
+      setoriginalUnOwnedApps(unOwnedApps)
     }
   }
 
@@ -75,10 +100,13 @@ const RoleContainer = ({
             <RoleSetting
               ownedApps={ownedApps}
               unOwnedApps={unOwnedApps}
+              originalApps={originalApps}
               onAppDrop={(own, unOwn) => {
                 setownedApps(own)
                 setunOwnedApps(unOwn)
               }}
+              resetApps={resetApps}
+              handleAppsSave={handleAppsSave}
             />
           </>
         }

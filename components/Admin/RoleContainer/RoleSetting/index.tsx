@@ -9,19 +9,17 @@ import { IApp } from '../../../../api/prod'
 import { Button } from '@mui/material'
 import { uniqBy } from 'lodash'
 import { DragDropContext, Droppable, Draggable, DropResult, DraggableProvided } from 'react-beautiful-dnd'
-import HighlightOffIcon from '@mui/icons-material/HighlightOff'
+import { isEqual } from 'lodash'
 
 const tempMap: { [key: string]: string } = {
   info: '基本資訊', news: '新聞', function: '主要功能'
 }
 
 const AppChip = ({
-  p, app, icon, onClick
+  p, app
 }: {
   p: DraggableProvided
   app: IApp
-  icon?: React.ReactNode | undefined
-  onClick?: () => void | undefined
 }) => {
   return (
     <div
@@ -31,7 +29,6 @@ const AppChip = ({
       {...p.draggableProps}
       {...p.dragHandleProps}
     >
-      {icon}
       {app.name}
     </div>
   )
@@ -40,11 +37,14 @@ const AppChip = ({
 interface IRoleSetting {
   ownedApps: IApp[]
   unOwnedApps: IApp[]
+  originalApps: IApp[]
   onAppDrop: (own: IApp[], unOwn: IApp[]) => void
+  resetApps: () => void
+  handleAppsSave: () => void
 }
 
 const RoleSetting = ({
-  ownedApps, unOwnedApps, onAppDrop
+  ownedApps, unOwnedApps, originalApps, onAppDrop, resetApps, handleAppsSave
 }: IRoleSetting) => {
   const [expanded, setExpanded] = useState<string | false>(false)
   const [appTypes, setappTypes] = useState<string[]>([])
@@ -72,37 +72,43 @@ const RoleSetting = ({
   return (
     <div className={style.RoleSetting}>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className={style.RoleBrowser}>
+        <Droppable droppableId='sourceApps'>
           {
-            appTypes.map((type, index) => {
-              return (
-                <Accordion
-                  key={index}
-                  expanded={expanded === type}
-                  onChange={() => {
-                    if (expanded && type === expanded) {
-                      setExpanded(false)
-                      return
-                    }
-                    setExpanded(type)
-                  }}
-                >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls="type"
-                    id="type"
-                  >
-                    <Typography sx={{ width: '33%', flexShrink: 0 }}>
-                      {tempMap[type]}
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary' }}>{type}</Typography>
-                  </AccordionSummary>
-                  <Droppable droppableId='sourceApps'>
-                    {
-                      provided => (
+            provided => (
+              <div className={style.RoleBrowser}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {
+                  appTypes.map((type, index) => {
+                    return (
+                      <Accordion
+                        key={index}
+                        expanded={expanded === type}
+                        onChange={() => {
+                          if (expanded && type === expanded) {
+                            setExpanded(false)
+                            return
+                          }
+                          setExpanded(type)
+                        }}
+                      >
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="type"
+                          id="type"
+                        >
+                          <Typography sx={{ width: '33%', flexShrink: 0 }}>
+                            {tempMap[type]}
+                          </Typography>
+                          <Typography sx={{ color: 'text.secondary' }}>{type}</Typography>
+                        </AccordionSummary>
+                        {/* <Droppable droppableId='sourceApps'>
+                          {
+                            provided => ( */}
                         <AccordionDetails sx={{ display: 'flex', flexDirection: 'row' }}
-                          ref={provided.innerRef}
-                          {...provided.droppableProps}
+                        // ref={provided.innerRef}
+                        // {...provided.droppableProps}
                         >
                           {
                             unOwnedApps.map((app, index) => {
@@ -115,16 +121,20 @@ const RoleSetting = ({
                               }
                             })
                           }
-                          {provided.placeholder}
+                          {/* {provided.placeholder} */}
                         </AccordionDetails>
-                      )
-                    }
-                  </Droppable>
-                </Accordion>
-              )
-            })
+                        {/* )
+                          }
+                        </Droppable> */}
+                      </Accordion>
+                    )
+                  })
+                }
+                {provided.placeholder}
+              </div>
+            )
           }
-        </div>
+        </Droppable>
         <div className={style.RoleEditor}>
           <Droppable droppableId='targetApps'>
             {
@@ -137,12 +147,7 @@ const RoleSetting = ({
                     ownedApps.map((app, index) => {
                       return <Draggable draggableId={app.code} index={index} key={app.code}>
                         {
-                          p => <AppChip app={app} p={p}
-                            icon={
-                              <Button startIcon={<HighlightOffIcon />} color='secondary'
-                              ></Button>
-                            }
-                          />
+                          p => <AppChip app={app} p={p} />
                         }
                       </Draggable>
                     })
@@ -156,10 +161,13 @@ const RoleSetting = ({
             <Button
               variant='contained'
               color='error'
+              onClick={resetApps}
             >重置</Button>
             <Button
               variant='contained'
               color='secondary'
+              disabled={isEqual(ownedApps, originalApps)}
+              onClick={handleAppsSave}
             >儲存</Button>
           </div>
         </div>
