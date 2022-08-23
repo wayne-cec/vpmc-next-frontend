@@ -75,6 +75,10 @@ const RoleContainer = ({
             <RoleSetting
               ownedApps={ownedApps}
               unOwnedApps={unOwnedApps}
+              onAppDrop={(own, unOwn) => {
+                setownedApps(own)
+                setunOwnedApps(unOwn)
+              }}
             />
           </>
         }
