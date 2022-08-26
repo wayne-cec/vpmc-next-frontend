@@ -5,13 +5,16 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import Router from 'next/router'
 import api from '../../api'
 import Image from 'next/image'
+import WithNothingLayout from '../../layout/utility-layout/WithNothingLayout'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { setUserToken } from '../../store/slice/user'
 import {
   Button, Container, Box,
-  Avatar, Typography, TextField
+  Avatar, Typography, TextField, Grid
 } from '@mui/material'
+import { GoogleLogin } from '@react-oauth/google'
+import jwt_decode from 'jwt-decode'
 
 const LoginContainer = () => {
   const dispatch = useDispatch()
@@ -30,6 +33,32 @@ const LoginContainer = () => {
       dispatch(
         setUserToken(responseContent.token)
       )
+      localStorage.setItem('vpmc-token', responseContent.token)
+      setslideOut(true)
+      seterrorMsg('')
+      setTimeout(() => {
+        Router.back()
+      }, 1000)
+    } else if (statusCode === 401) {
+      setslideIn(false)
+      setbounce(true)
+      seterrorMsg('帳號或密碼錯誤')
+    } else {
+      setslideIn(false)
+      setbounce(true)
+      seterrorMsg('伺服器錯誤，請聯繫開發人員')
+    }
+  }
+
+  const handleGoogleLogin = async (credentialResponse: any) => {
+    const decode = jwt_decode(credentialResponse.credential) as { email: string }
+    const { statusCode, responseContent } = await api.prod.googleAuth(decode.email, credentialResponse.credential)
+    if (statusCode === 200) {
+      console.log(responseContent)
+      dispatch(
+        setUserToken(responseContent.token)
+      )
+      localStorage.setItem('vpmc-token', responseContent.token)
       setslideOut(true)
       seterrorMsg('')
       setTimeout(() => {
@@ -48,7 +77,6 @@ const LoginContainer = () => {
 
   return (
     <div className={style.login}>
-
       <div className={style.Title}>
         <div className='pr-4 flex justify-center items-center'>
           <Image src={'/logo.jpg'} width="97.2px" height="59.4px"
@@ -109,6 +137,8 @@ const LoginContainer = () => {
                 }}
                 autoComplete="current-password"
               />
+
+
               <Button
                 variant='contained'
                 className='loginBtn'
@@ -118,7 +148,19 @@ const LoginContainer = () => {
               >
                 登入
               </Button>
+              <GoogleLogin
+                size='large'
+                onSuccess={handleGoogleLogin}
+                onError={() => {
+                  setslideIn(false)
+                  setbounce(true)
+                  seterrorMsg('伺服器錯誤，請聯繫開發人員')
+                }}
+                useOneTap
+              />
+
             </Box>
+
             <Typography variant='subtitle1' color={'red'} >
               {errorMsg}
             </Typography>
@@ -137,4 +179,4 @@ const LoginContainer = () => {
   )
 }
 
-export default LoginContainer
+export default WithNothingLayout(LoginContainer)

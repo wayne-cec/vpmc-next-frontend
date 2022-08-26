@@ -1,15 +1,13 @@
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 import Head from 'next/head'
-import { ParsedUrlQuery } from 'querystring'
-import { GetServerSideProps } from 'next'
-import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import style from './index.module.scss'
 import CommiteeHeader from '../../../../components/CommiteeHeader'
 import CommiteePhoto from '../../../../components/CommiteePhoto'
+import WithNavFooterProtected from '../../../../layout/front-layout/WithNavFooterProtected'
+import { ParsedUrlQuery } from 'querystring'
+import { GetServerSideProps } from 'next'
 import { ICommiteeAprDetail } from '../../../../store/slice/commitee'
-import { WithNavFooterProtected } from '../../../../layout/BaseLayout'
 
 export interface ITempCommiteeInfo {
   id: string
@@ -34,12 +32,13 @@ interface Params extends ParsedUrlQuery {
 export const getServerSideProps: GetServerSideProps<IProps, Params> = async ({
   params,
 }) => {
+  const headers = new Headers()
   let api = process.env.API_DOMAIN_PROD + `/api/Commitee/getAprInfo?commiteeId=${params?.id}`
-  let res = await fetch(api, { method: "GET" })
+  let res = await fetch(api, { method: "GET", headers: headers })
   const json: ICommiteeAprDetail[] = await res.json()
 
   api = process.env.API_DOMAIN_PROD + `/api/Commitee/getCommiteeInfoById?commiteeId=${params?.id}`
-  res = await fetch(api, { method: "GET" })
+  res = await fetch(api, { method: "GET", headers: headers })
   const commiteeInfo = await res.json() as ITempCommiteeInfo
   return {
     props: {

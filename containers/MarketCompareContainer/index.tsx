@@ -10,6 +10,7 @@ import AprDetailContent from './AprDetailContent'
 import MarketCompareContext from './MarketCompareContext'
 import PanelContainer from '../../components/PanelContainer'
 import PanelButton from '../../components/PanelContainer/PanelButton'
+import WithNavProtected from '../../layout/front-layout/WithNavProtected'
 import { PolygonSketchMode } from '../../components/PolygonSketch'
 import { IGraphData } from '../../api/prod'
 import {
@@ -21,6 +22,8 @@ import { IMarketCompare, IMarketCompareResult } from '../../api/prod'
 import { parseCommitee } from '../../lib/parseCommitee'
 import { IDetailAprInfo } from './AprDetailContent'
 import { ICountyData, ITownData } from '../../api/prod'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../store/slice/user'
 
 const square = 3.305785
 
@@ -32,6 +35,7 @@ const MarketMapContainer = dynamic(
 )
 
 const MarketCompareContainer = () => {
+  const userInfo = useSelector(selectUser)
   const [longitude, setlongitude] = useState<number | undefined>(undefined)
   const [latitude, setlatitude] = useState<number | undefined>(undefined)
   const [locatedCounty, setlocatedCounty] = useState<string | null>(null)
@@ -226,11 +230,11 @@ const MarketCompareContainer = () => {
     }
 
 
-    const { statusCode, responseContent } = await api.prod.marketCompare(params)
+    const { statusCode, responseContent } = await api.prod.marketCompare(params, userInfo.token)
     if (statusCode === 200) {
       console.log(responseContent)
       setfilteredResults(responseContent)
-      const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params)
+      const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params, userInfo.token)
       if (statusCode === 200) {
         setgraphData(responseContent2)
         setpending(false)
@@ -571,4 +575,4 @@ const MarketCompareContainer = () => {
   )
 }
 
-export default MarketCompareContainer
+export default WithNavProtected(MarketCompareContainer)

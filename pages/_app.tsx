@@ -1,19 +1,18 @@
+import { PersistGate } from 'redux-persist/integration/react'
+import { Provider } from 'react-redux'
+import store, { persistor } from '../store'
+import type { AppProps } from 'next/app'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+
 import '../styles/globals.css'
 import 'animate.css'
-import { Provider } from 'react-redux'
-import { useRouter } from 'next/router'
-import type { AppProps } from 'next/app'
-import store, { persistor } from '../store'
-import { PersistGate } from 'redux-persist/integration/react'
-import React from 'react'
-// import BaseLayout from '../layout/BaseLayout'
 
 function MyApp ({ Component, pageProps }: AppProps) {
-  const route = useRouter()
-
   return <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
-      <Component {...pageProps} />
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_AUTH_CLIENT_ID || ''}>
+        <Component {...pageProps} />
+      </GoogleOAuthProvider>
     </PersistGate>
   </Provider>
 }

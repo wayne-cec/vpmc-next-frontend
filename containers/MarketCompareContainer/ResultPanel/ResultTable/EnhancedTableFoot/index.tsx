@@ -34,12 +34,13 @@ const EnhancedTableFoot = ({
   const handleProducePaper = () => {
     const selectedRows = rows.filter(row => selected.includes(row.id))
     const selectedRowsB64 = utf8Tob64(JSON.stringify(selectedRows))
-    Router.push(
-      {
-        pathname: '/appraisalAnalysis/marketCompare/document/[data]',
-        query: { data: selectedRowsB64 }
-      },
-    )
+    // Router.push(
+    //   {
+    //     pathname: '/appraisalAnalysis/marketCompare/document/[data]',
+    //     query: { data: selectedRowsB64 }
+    //   },
+    // )
+    window.open(`/appraisalAnalysis/marketCompare/document/${selectedRowsB64}`, '_blank')
   }
 
   return (

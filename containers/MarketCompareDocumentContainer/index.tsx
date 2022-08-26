@@ -2,13 +2,14 @@ import MarketCompareDocument from '../../components/Document/MarketCompareDocume
 import style from './index.module.scss'
 import Image from 'next/image'
 import classNames from 'classnames'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
+import WithNothingProtected from '../../layout/utility-layout/WithNothingProtected'
 import {
   Dialog, DialogTitle, DialogContent,
   TextField, DialogActions, Button
 } from '@mui/material'
 import { useState } from 'react'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
 import { Data } from '../MarketCompareContainer/ResultPanel/ResultTable'
 
 const documentId = 'marketCompareDocument'
@@ -97,4 +98,4 @@ const MarketCompareDocumentContainer = ({
   )
 }
 
-export default MarketCompareDocumentContainer
+export default WithNothingProtected(MarketCompareDocumentContainer)
