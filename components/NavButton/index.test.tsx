@@ -1,9 +1,8 @@
 import { render } from '@testing-library/react'
 import NavButton from '.'
-import '@testing-library/jest-dom/extend-expect'
 
-describe('Home', () => {
-  it('renders a heading', () => {
+describe('NavButton', () => {
+  it('does NavButton has text', () => {
     const { container } = render(
       <NavButton
         onMouseOver={() => { }}
