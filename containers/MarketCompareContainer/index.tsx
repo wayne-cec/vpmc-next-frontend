@@ -12,7 +12,7 @@ import PanelContainer from '../../components/PanelContainer'
 import PanelButton from '../../components/PanelContainer/PanelButton'
 import WithNavProtected from '../../layout/front-layout/WithNavProtected'
 import { PolygonSketchMode } from '../../components/PolygonSketch'
-import { IGraphData } from '../../api/prod'
+import { AssetType, IGraphData } from '../../api/prod'
 import {
   Dialog, DialogActions,
   DialogContent, DialogContentText,
@@ -63,7 +63,9 @@ const MarketCompareContainer = () => {
   const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
   const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
 
-  const [assetTypeCode, setassetTypeCode] = useState<number>(0)
+  const [assetTypeCode, setassetTypeCode] = useState<AssetType>('building')
+  const [buildingTypeCode, setbuildingTypeCode] = useState<number>(0)
+
   const [bufferRadius, setbufferRadius] = useState<number>(300)
   const [transactiontime, settransactionTime] = useState<number | null>(null)
   const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
@@ -145,7 +147,8 @@ const MarketCompareContainer = () => {
     }
     // alert(spatialQueryType)
     const params: IMarketCompare = {
-      buildingType: assetTypeCode
+      assetType: assetTypeCode,
+      buildingType: buildingTypeCode
     }
     if (longitude !== undefined && latitude !== undefined && bufferRadius !== null && spatialQueryType === 'buffer') {
       params.longitude = longitude
@@ -364,6 +367,7 @@ const MarketCompareContainer = () => {
           isBuildingAreaCheckable: isBuildingAreaCheckable,
           isLandAreaCheckable: isLandAreaCheckable,
           assetTypeCode: assetTypeCode,
+          buildingTypeCode: buildingTypeCode,
           bufferRadius: bufferRadius,
           transactiontime: transactiontime!,
           buildingTransferArea: buildingTransferArea!,
@@ -393,6 +397,7 @@ const MarketCompareContainer = () => {
           onDraw: () => { setsketchMode('draw') },
           onClear: () => { setspatialQueryType('clear') },
           onAssetTypeChange: (value) => { setassetTypeCode(value) },
+          onBuildingTypeChange: (value) => { setbuildingTypeCode(value) },
           onTransactionTimeFilteredChange: () => {
             setisTransactionTimeFiltered(prev => !prev)
             settransactionTime(1)

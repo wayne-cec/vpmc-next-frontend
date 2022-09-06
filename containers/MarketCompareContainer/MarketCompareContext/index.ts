@@ -1,5 +1,5 @@
 import { createContext } from 'react'
-import { ICountyData, IGraphData, IMarketCompareResult, ITownData } from '../../../api/prod'
+import { AssetType, ICountyData, IGraphData, IMarketCompareResult, ITownData } from '../../../api/prod'
 import { SpatialQueryType } from '..'
 import { PolygonSketchMode } from '../../../components/PolygonSketch'
 
@@ -29,7 +29,8 @@ export interface IMarketCompareContext {
   isUnitPriceFocused: boolean
   isBuildingAreaCheckable: boolean
   isLandAreaCheckable: boolean
-  assetTypeCode: number
+  assetTypeCode: AssetType
+  buildingTypeCode: number
   bufferRadius: number
   transactiontime?: number
   buildingTransferArea?: number
@@ -58,7 +59,8 @@ export interface IMarketCompareContext {
   onSketchModeChange: (value: PolygonSketchMode) => void // (value) => {setsketchMode(value)}
   onDraw: () => void // () => {setsketchMode('draw')}
   onClear: () => void // () => {setsketchMode('inactive')}
-  onAssetTypeChange: (value: number) => void // (value) => { setassetTypeCode(value) }
+  onAssetTypeChange: (value: AssetType) => void // (value) => { setassetTypeCode(value) }
+  onBuildingTypeChange: (value: number) => void
   onTransactionTimeFilteredChange: () => void // () => {setisTransactionTimeFiltered(prev => !prev)settransactionTime(1)}
   onTransactionTimeSelect: (value: number) => void //(value) => {settransactionTime(value)setisTransactionTimeFosced(true)}
   onBuildingAreaFilteredChange: () => void //() => {setisBuildingAreaFiltered(prev => !prev)setbuildingTransferArea(0)}
@@ -121,7 +123,8 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   isUnitPriceFocused: false,
   isBuildingAreaCheckable: true,
   isLandAreaCheckable: true,
-  assetTypeCode: 0,
+  assetTypeCode: 'building',
+  buildingTypeCode: 0,
   bufferRadius: 300,
   transactiontime: undefined,
   buildingTransferArea: undefined,
@@ -150,7 +153,8 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   onSketchModeChange: (value: PolygonSketchMode) => { }, // (value) => {setsketchMode(value)}
   onDraw: () => { }, // () => {setsketchMode('draw')}
   onClear: () => { }, // () => {setsketchMode('inactive')}
-  onAssetTypeChange: (value: number) => { }, // (value) => { setassetTypeCode(value) }
+  onAssetTypeChange: (value: AssetType) => { }, // (value) => { setassetTypeCode(value) }
+  onBuildingTypeChange: (value: number) => { },
   onTransactionTimeFilteredChange: () => { }, // () => {setisTransactionTimeFiltered(prev => !prev)settransactionTime(1)}
   onTransactionTimeSelect: (value: number) => { }, //(value) => {settransactionTime(value)setisTransactionTimeFosced(true)}
   onBuildingAreaFilteredChange: () => { }, //() => {setisBuildingAreaFiltered(prev => !prev)setbuildingTransferArea(0)}
