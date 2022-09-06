@@ -1,0 +1,8 @@
+.main{
+  @apply relative w-full flex overflow-y-hidden bg-selectedGray;
+  // background-color: #e2f1ff;
+  height: calc(100vh - 75px);
+  @media(max-width: 1100px){
+      @apply flex flex-col;
+  }
+}
