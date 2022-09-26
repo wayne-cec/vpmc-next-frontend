@@ -24,6 +24,8 @@ import { IDetailAprInfo } from './AprDetailContent'
 import { ICountyData, ITownData } from '../../api/prod'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../store/slice/user'
+import { useLazyGetAssetDetailByAprIdQuery } from '../../store/services/apr'
+import { DetailResponse } from '../../store/services/types/apr'
 
 const square = 3.305785
 
@@ -106,6 +108,8 @@ const MarketCompareContainer = () => {
   const [countyData, setcountyData] = useState<ICountyData | null>(null)
   const [townData, settownData] = useState<ITownData | null>(null)
   const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
+
+  const [trigger, { isFetching }] = useLazyGetAssetDetailByAprIdQuery()
 
   const handleCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
     setlongitude(longitude)
@@ -311,8 +315,16 @@ const MarketCompareContainer = () => {
         return
       }
       const commiteeName = await handleGetCommiteeByAprId(detailAprId.id)
+      const response = await trigger({
+        id: detailAprId.id
+      })
+      console.log(response.data)
+
       setdetailPanelShow(true)
-      setdetailAprInfo({ ...detailApr[0], organization: commiteeName ? commiteeName : '無管委會' })
+      setdetailAprInfo({
+        ...detailApr[0],
+        organization: commiteeName ? commiteeName : '無管委會'
+      })
     })()
   }, [detailAprId])
 
