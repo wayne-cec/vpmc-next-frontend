@@ -564,7 +564,7 @@ const MarketCompareContainer = () => {
           {parseCommitee(detailAprInfo ? detailAprInfo.organization : '無管委會')}
         </DialogTitle>
 
-        <DialogContent>
+        <DialogContent sx={{ width: '900px' }}>
           <AprDetailContent {...detailAprInfo!} />
         </DialogContent>
 

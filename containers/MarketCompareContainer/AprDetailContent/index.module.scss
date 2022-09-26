@@ -9,8 +9,8 @@
         }
     }
     .priceContainer{
-        @apply w-[600px] h-[100px] bg-transparent 
-        flex justify-between mt-2;
+        @apply h-[100px] bg-transparent 
+        flex justify-around mt-2;
         .priceChip{
             @apply bg-blue-600 bg-opacity-10 w-[190px] h-full
             rounded-md flex items-center justify-center flex-col;
@@ -34,12 +34,12 @@
     }
 
     .detailContainer{
-        @apply w-[600px] h-fit bg-transparent
-        mt-4;
+        @apply  h-fit bg-transparent
+        mt-4 px-14;
     }
 
     .AreaDetailContainer{
-        @apply w-[600px] h-fit bg-transparent
+        @apply w-[full] h-fit bg-transparent
         mt-4;
         .heading{
             @apply flex items-center justify-between
