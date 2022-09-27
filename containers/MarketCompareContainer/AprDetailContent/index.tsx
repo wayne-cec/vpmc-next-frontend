@@ -1,6 +1,8 @@
 import { getAge } from '../../../lib/calculateAge'
 import { buildingTypeDecode } from '../../../components/CommiteeCard'
 import { urbanUsageSet } from '../../../lib/marketComapreConst'
+import { AssetDetailResponse } from '../../../store/services/types/apr'
+import { parseCommitee } from '../../../lib/parseCommitee'
 import calculateArea from '../../../lib/calculateArea'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
@@ -18,7 +20,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
-
+import Divider from '@mui/material/Divider'
 
 const square = 3.305785
 
@@ -46,6 +48,8 @@ export interface IDetailAprInfo {
   belconyArea: number
   landTransferArea: number
   organization: string
+  address: string
+  assetsDetail: AssetDetailResponse | undefined
 }
 
 function createLandData (
@@ -98,34 +102,106 @@ const AprDetailContent = (props: IDetailAprInfo) => {
     return (
       <TableContainer component={Paper}>
         <Table size="small">
-          <TableHead>
+          <TableHead sx={{ bgcolor: '#dddddd' }}>
             <TableRow>
               <TableCell>土地位置</TableCell>
               <TableCell>使用分區或編定</TableCell>
               <TableCell align="right">土地移轉面積</TableCell>
               <TableCell align="right">權利人持分分母</TableCell>
               <TableCell align="right">權利人持分分子</TableCell>
-              <TableCell >地號</TableCell>
-              <TableCell >移轉情形</TableCell>
+              <TableCell>地號</TableCell>
+              <TableCell>移轉情形</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rowsLand.map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.address}
-                </TableCell>
-                <TableCell>{row.landUse}</TableCell>
-                <TableCell align="right">{row.landTransferArea}</TableCell>
-                <TableCell align="right">{row.rightDenumerate}</TableCell>
-                <TableCell align="right">{row.rightNumerate}</TableCell>
-                <TableCell>{row.parcelNumber}</TableCell>
-                <TableCell>{row.transferStatus}</TableCell>
-              </TableRow>
-            ))}
+            {props.assetsDetail &&
+              props.assetsDetail.lands.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.address}
+                  </TableCell>
+                  <TableCell>{row.landUse}</TableCell>
+                  <TableCell align="right">{row.landTransferArea}</TableCell>
+                  <TableCell align="right">{row.rightDenumerate}</TableCell>
+                  <TableCell align="right">{row.rightNumerate}</TableCell>
+                  <TableCell>{row.parcelNumber}</TableCell>
+                  <TableCell>{row.transferStatus}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
+  }
+
+  const renderBuildTable = () => {
+    return (
+      <TableContainer component={Paper}>
+        <Table size="small">
+          <TableHead sx={{ bgcolor: '#dddddd' }}>
+            <TableRow>
+              <TableCell>建物移轉面積</TableCell>
+              <TableCell>主要用途</TableCell>
+              <TableCell>主要建材</TableCell>
+              <TableCell>建物分層</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+
+            <TableRow
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row" rowSpan={3}>
+                {'38.87坪'}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {'商業用'}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {'鋼筋混凝土'}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {'一層，騎樓'}
+              </TableCell>
+            </TableRow>
+
+            <TableRow
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row" rowSpan={3}>
+                {'38.87坪'}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {'商業用'}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {'鋼筋混凝土'}
+              </TableCell>
+              <TableCell component="th" scope="row">
+                {'一層，騎樓'}
+              </TableCell>
+            </TableRow>
+
+            {/* {props.assetsDetail &&
+              props.assetsDetail.lands.map((row, index) => (
+                <TableRow
+                  key={row.id}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.address}
+                  </TableCell>
+                  <TableCell>{row.landUse}</TableCell>
+                  <TableCell align="right">{row.landTransferArea}</TableCell>
+                  <TableCell align="right">{row.rightDenumerate}</TableCell>
+                  <TableCell align="right">{row.rightNumerate}</TableCell>
+                  <TableCell>{row.parcelNumber}</TableCell>
+                  <TableCell>{row.transferStatus}</TableCell>
+                </TableRow>
+              ))} */}
           </TableBody>
         </Table>
       </TableContainer>
@@ -136,7 +212,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
     return (
       <TableContainer component={Paper}>
         <Table size="small">
-          <TableHead>
+          <TableHead sx={{ bgcolor: '#dddddd' }}>
             <TableRow>
               <TableCell>車位類型</TableCell>
               <TableCell>價格</TableCell>
@@ -145,19 +221,20 @@ const AprDetailContent = (props: IDetailAprInfo) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rowsPark.map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.parkSpaceType}
-                </TableCell>
-                <TableCell>{row.parkingSpacePrice}</TableCell>
-                <TableCell align="right">{row.parkingSpaceTransferArea}</TableCell>
-                <TableCell align="right">{row.locateLevel}</TableCell>
-              </TableRow>
-            ))}
+            {props.assetsDetail &&
+              props.assetsDetail.parks.map((row, index) => (
+                <TableRow
+                  key={index}
+                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.parkingSpaceType}
+                  </TableCell>
+                  <TableCell>{row.parkingSpacePrice}</TableCell>
+                  <TableCell align="right">{row.parkingSpaceTransferArea}</TableCell>
+                  <TableCell align="right">{row.locateLevel}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -169,6 +246,13 @@ const AprDetailContent = (props: IDetailAprInfo) => {
       <div className={style.chipContainer}>
         <span className={style.chip}>{moment(new Date(props.transactiontime)).format('YYYY-MM-DD')}</span>
         <span className={style.chip}>{props.transferFloor}樓</span>
+
+        {/* {(props.organization !== '' ? props.organization : '無管委會')} */}
+        {
+          props.organization !== '無管委會' && <span className={style.chip}>
+            {parseCommitee(props.organization)}
+          </span>
+        }
       </div>
       <div className={style.priceContainer}>
 
@@ -253,6 +337,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
         </Grid>
       </div>
+      <Divider sx={{ marginTop: '1rem' }} />
       <div className={style.AreaDetailContainer}>
         <TabContext value={tabValue}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -267,13 +352,13 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           </Box>
 
           <TabPanel value="1" sx={{ padding: '0px' }}>
-            {renderLandTable()}
+            {props.assetsDetail && renderLandTable()}
           </TabPanel>
           <TabPanel value="2" sx={{ padding: '0px' }}>
-            Item Two
+            {props.assetsDetail && renderBuildTable()}
           </TabPanel>
           <TabPanel value="3" sx={{ padding: '0px' }}>
-            {renderParkTable()}
+            {props.assetsDetail && renderParkTable()}
           </TabPanel>
 
         </TabContext>

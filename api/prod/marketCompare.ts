@@ -27,6 +27,7 @@ export interface IMarketCompareResult {
   belconyArea: number
   landTransferArea: number
   parkingSpaceType: number
+  address: string
   longitude: number
   latitude: number
 }

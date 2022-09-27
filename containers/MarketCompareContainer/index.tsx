@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import style from './index.module.scss'
 import dynamic from 'next/dynamic'
 import api from '../../api'
@@ -11,21 +11,17 @@ import MarketCompareContext from './MarketCompareContext'
 import PanelContainer from '../../components/PanelContainer'
 import PanelButton from '../../components/PanelContainer/PanelButton'
 import WithNavProtected from '../../layout/front-layout/WithNavProtected'
-import { PolygonSketchMode } from '../../components/PolygonSketch'
-import { AssetType, IGraphData } from '../../api/prod'
+import useMarketCompareStates from './MarketCompareStates'
 import {
   Dialog, DialogActions,
   DialogContent, DialogContentText,
   DialogTitle, Button
 } from '@mui/material'
-import { IMarketCompare, IMarketCompareResult } from '../../api/prod'
+import { IMarketCompare } from '../../api/prod'
 import { parseCommitee } from '../../lib/parseCommitee'
-import { IDetailAprInfo } from './AprDetailContent'
-import { ICountyData, ITownData } from '../../api/prod'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../store/slice/user'
 import { useLazyGetAssetDetailByAprIdQuery } from '../../store/services/apr'
-import { DetailResponse } from '../../store/services/types/apr'
 
 const square = 3.305785
 
@@ -38,238 +34,184 @@ const MarketMapContainer = dynamic(
 
 const MarketCompareContainer = () => {
   const userInfo = useSelector(selectUser)
-  const [longitude, setlongitude] = useState<number | undefined>(undefined)
-  const [latitude, setlatitude] = useState<number | undefined>(undefined)
-  const [locatedCounty, setlocatedCounty] = useState<string | null>(null)
-  const [locatedTown, setlocatedTown] = useState<string | null>(null)
-  const [isSelectorActive, setisCoordinateSelectorActive] = useState<boolean>(false)
-
-  const [isTransactionTimeFiltered, setisTransactionTimeFiltered] = useState<boolean>(false)
-  const [isBuildingAreaFiltered, setisBuildingAreaFiltered] = useState<boolean>(false)
-  const [isLandAreaFiltered, setisLandAreaFiltered] = useState<boolean>(false)
-  const [isAgeFiltered, setisAgeFiltered] = useState<boolean>(false)
-  const [isParkSpaceFiltered, setisParkSpaceFiltered] = useState<boolean>(false)
-  const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
-  const [isPriceFiltered, setisPriceFiltered] = useState<boolean>(false)
-  const [isUnitPriceFiltered, setisUnitPriceFiltered] = useState<boolean>(false)
-
-  const [isTransactionTimeFosced, setisTransactionTimeFosced] = useState<boolean>(false)
-  const [isBuildingAreaFosced, setisBuildingAreaFosced] = useState<boolean>(false)
-  const [isLandAreaFosced, setisLandAreaFosced] = useState<boolean>(false)
-  const [isAgeFosced, setisAgeFosced] = useState<boolean>(false)
-  const [isParkSpaceFosced, setisParkSpaceFosced] = useState<boolean>(false)
-  const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
-  const [isPriceFocused, setisPriceFocused] = useState<boolean>(false)
-  const [isUnitPriceFocused, setisUnitPriceFocused] = useState<boolean>(false)
-
-  const [isBuildingAreaCheckable, setisBuildingAreaCheckable] = useState<boolean>(true)
-  const [isLandAreaCheckable, setisLandAreaCheckable] = useState<boolean>(true)
-
-  const [assetTypeCode, setassetTypeCode] = useState<AssetType>('building')
-  const [buildingTypeCode, setbuildingTypeCode] = useState<number>(0)
-
-  const [bufferRadius, setbufferRadius] = useState<number>(300)
-  const [transactiontime, settransactionTime] = useState<number | null>(null)
-  const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
-  const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
-  const [age, setage] = useState<number | null>(null)
-  const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
-  const [urbanLandUse, seturbanLandUse] = useState<number[] | null>(null)
-  const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
-
-  const [minPrice, setminPrice] = useState<number | undefined>(0)
-  const [maxPrice, setmaxPrice] = useState<number | undefined>(2000)
-  const [minUnitPrice, setminUnitPrice] = useState<number | undefined>(0)
-  const [maxUnitPrice, setmaxUnitPrice] = useState<number | undefined>(100)
-
-  const [filteredResults, setfilteredResults] = useState<IMarketCompareResult[] | null>(null)
-
-  const [msgOpen, setmsgOpen] = useState<boolean>(false)
-  const [errorTitle, seterrorTitle] = useState<string>('')
-  const [errorContent, seterrorContent] = useState<string>('')
-
-  const [graphData, setgraphData] = useState<IGraphData | undefined>(undefined)
-  const [spatialQueryType, setspatialQueryType] = useState<SpatialQueryType>('buffer')
-  const [sketchMode, setsketchMode] = useState<PolygonSketchMode>('inactive')
-  const [zoomId, setzoomId] = useState<{ id: string } | null>(null)
-  const [pending, setpending] = useState<boolean>(false)
-
-  const [queryPanelShow, setqueryPanelShow] = useState<boolean>(true)
-  const [resultPanelShow, setresultPanelShow] = useState<boolean>(false)
-  const [queryPanelHover, setqueryPanelHover] = useState<boolean>(false)
-  const [resultPanelHover, setresultPanelHover] = useState<boolean>(false)
-
-  const [detailPanelShow, setdetailPanelShow] = useState<boolean>(false)
-  const [detailAprId, setdetailAprId] = useState<{ id: string }>({ id: '' })
-  const [detailAprInfo, setdetailAprInfo] = useState<IDetailAprInfo | null>(null)
-
-  const [county, setcounty] = useState<string | null>(null)
-  const [towns, settowns] = useState<string[]>([])
-  const [countyData, setcountyData] = useState<ICountyData | null>(null)
-  const [townData, settownData] = useState<ITownData | null>(null)
-  const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
-
+  const mcStates = useMarketCompareStates()
   const [trigger, { isFetching }] = useLazyGetAssetDetailByAprIdQuery()
 
   const handleCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
-    setlongitude(longitude)
-    setlatitude(latitude)
-    setisCoordinateSelectorActive(false)
+    mcStates.setlongitude(longitude)
+    mcStates.setlatitude(latitude)
+    mcStates.setisCoordinateSelectorActive(false)
     const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude!, latitude!)
     if (statusCode === 200) {
-      setlocatedCounty(responseContent.countyname)
-      setlocatedTown(responseContent.townname)
+      mcStates.setlocatedCounty(responseContent.countyname)
+      mcStates.setlocatedTown(responseContent.townname)
     } else {
-      setlocatedCounty(null)
-      setlocatedTown(null)
+      mcStates.setlocatedCounty(null)
+      mcStates.setlocatedTown(null)
     }
   }
 
   const handleFormSubmit = async () => {
-    setpending(true)
-    setfilteredResults(null)
-    if (assetTypeCode === null) {
-      setmsgOpen(true)
-      seterrorTitle('警告')
-      seterrorContent('請輸入資產類別')
-      setpending(false)
+    mcStates.setpending(true)
+    mcStates.setfilteredResults(null)
+    if (mcStates.assetTypeCode === null) {
+      mcStates.setmsgOpen(true)
+      mcStates.seterrorTitle('警告')
+      mcStates.seterrorContent('請輸入資產類別')
+      mcStates.setpending(false)
       return
     }
-    if (minPrice && maxPrice && minPrice > maxPrice) {
-      setmsgOpen(true)
-      seterrorTitle('錯誤')
-      seterrorContent('價格上限不能低於下限')
-      setpending(false)
+    if (
+      mcStates.minPrice &&
+      mcStates.maxPrice &&
+      mcStates.minPrice > mcStates.maxPrice
+    ) {
+      mcStates.setmsgOpen(true)
+      mcStates.seterrorTitle('錯誤')
+      mcStates.seterrorContent('價格上限不能低於下限')
+      mcStates.setpending(false)
       return
     }
-    if (minUnitPrice && maxUnitPrice && minUnitPrice > maxUnitPrice) {
-      setmsgOpen(true)
-      seterrorTitle('錯誤')
-      seterrorContent('價格上限不能低於下限')
-      setpending(false)
+    if (
+      mcStates.minUnitPrice
+      && mcStates.maxUnitPrice
+      && mcStates.minUnitPrice > mcStates.maxUnitPrice
+    ) {
+      mcStates.setmsgOpen(true)
+      mcStates.seterrorTitle('錯誤')
+      mcStates.seterrorContent('價格上限不能低於下限')
+      mcStates.setpending(false)
       return
     }
     // alert(spatialQueryType)
     const params: IMarketCompare = {
-      assetType: assetTypeCode,
-      buildingType: buildingTypeCode
+      assetType: mcStates.assetTypeCode,
+      buildingType: mcStates.buildingTypeCode
     }
-    if (longitude !== undefined && latitude !== undefined && bufferRadius !== null && spatialQueryType === 'buffer') {
-      params.longitude = longitude
-      params.latitude = latitude
-      params.bufferRadius = bufferRadius
-    } else if (polygonGoejson !== null && spatialQueryType !== 'clear' && spatialQueryType !== 'buffer') {
-      params.geojson = polygonGoejson
-    } else if (sketchMode === 'county') {
-      params.county = county!
-      params.town = towns.join(',')
+    if (
+      mcStates.longitude !== undefined &&
+      mcStates.latitude !== undefined &&
+      mcStates.bufferRadius !== null &&
+      mcStates.spatialQueryType === 'buffer'
+    ) {
+      params.longitude = mcStates.longitude
+      params.latitude = mcStates.latitude
+      params.bufferRadius = mcStates.bufferRadius
+    } else if (
+      mcStates.polygonGoejson !== null &&
+      mcStates.spatialQueryType !== 'clear' &&
+      mcStates.spatialQueryType !== 'buffer'
+    ) {
+      params.geojson = mcStates.polygonGoejson
+    } else if (mcStates.sketchMode === 'county') {
+      params.county = mcStates.county!
+      params.town = mcStates.towns.join(',')
     } else {
-      setmsgOpen(true)
-      seterrorTitle('警告')
-      seterrorContent('至少選擇一種空間查詢方法，並輸入參數。')
-      setpending(false)
+      mcStates.setmsgOpen(true)
+      mcStates.seterrorTitle('警告')
+      mcStates.seterrorContent('至少選擇一種空間查詢方法，並輸入參數。')
+      mcStates.setpending(false)
       return
     }
 
-    if (isTransactionTimeFiltered && transactiontime) {
+    if (mcStates.isTransactionTimeFiltered && mcStates.transactiontime) {
       const dateNow = new Date()
-      params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
+      params.transactionTimeStart = moment(dateNow).add(-mcStates.transactiontime, 'year').format('YYYY/MM/DD')
       params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
     }
-    if (isBuildingAreaFiltered && buildingTransferArea !== null) {
-      if (buildingTransferArea === 0) {
+    if (mcStates.isBuildingAreaFiltered && mcStates.buildingTransferArea !== null) {
+      if (mcStates.buildingTransferArea === 0) {
         params.buildingAreaStart = 0
         params.buildingAreaEnd = 25 * square
-      } else if (buildingTransferArea === 1) {
+      } else if (mcStates.buildingTransferArea === 1) {
         params.buildingAreaStart = 25 * square
         params.buildingAreaEnd = 50 * square
-      } else if (buildingTransferArea === 2) {
+      } else if (mcStates.buildingTransferArea === 2) {
         params.buildingAreaStart = 50 * square
         params.buildingAreaEnd = 80 * square
-      } else if (buildingTransferArea === 3) {
+      } else if (mcStates.buildingTransferArea === 3) {
         params.buildingAreaStart = 80 * square
         params.buildingAreaEnd = 10000 * square
       }
     }
-    if (isLandAreaFiltered && landTransferArea !== null) {
-      if (landTransferArea === 0) {
+    if (mcStates.isLandAreaFiltered && mcStates.landTransferArea !== null) {
+      if (mcStates.landTransferArea === 0) {
         params.landAreaStart = 0
         params.landAreaEnd = 50 * square
-      } else if (landTransferArea === 1) {
+      } else if (mcStates.landTransferArea === 1) {
         params.landAreaStart = 50 * square
         params.landAreaEnd = 200 * square
-      } else if (landTransferArea === 2) {
+      } else if (mcStates.landTransferArea === 2) {
         params.landAreaStart = 200 * square
         params.landAreaEnd = 100000 * square
       }
     }
-    if (isAgeFiltered && age !== null) {
-      if (age === 0) {
+    if (mcStates.isAgeFiltered && mcStates.age !== null) {
+      if (mcStates.age === 0) {
         params.ageStart = 0
         params.ageEnd = 5
-      } else if (age === 1) {
+      } else if (mcStates.age === 1) {
         params.ageStart = 5
         params.ageEnd = 10
-      } else if (age === 2) {
+      } else if (mcStates.age === 2) {
         params.ageStart = 10
         params.ageEnd = 20
-      } else if (age === 3) {
+      } else if (mcStates.age === 3) {
         params.ageStart = 20
         params.ageEnd = 30
-      } else if (age === 4) {
+      } else if (mcStates.age === 4) {
         params.ageStart = 30
         params.ageEnd = 500
       }
     }
-    if (isParkSpaceFiltered && parkSpaceType) {
-      params.parkingSpaceType = parkSpaceType
+    if (mcStates.isParkSpaceFiltered && mcStates.parkSpaceType) {
+      params.parkingSpaceType = mcStates.parkSpaceType
     }
-    if (isUrbanUsageFiltered && urbanLandUse) {
-      params.urbanLandUse = urbanLandUse
+    if (mcStates.isUrbanUsageFiltered && mcStates.urbanLandUse) {
+      params.urbanLandUse = mcStates.urbanLandUse
     }
-    if (isPriceFiltered) {
-      params.minPrice = minPrice
-      params.maxPrice = maxPrice
+    if (mcStates.isPriceFiltered) {
+      params.minPrice = mcStates.minPrice
+      params.maxPrice = mcStates.maxPrice
     }
-    if (isUnitPriceFiltered) {
-      params.minUnitPrice = minUnitPrice
-      params.maxUnitPrice = maxUnitPrice
+    if (mcStates.isUnitPriceFiltered) {
+      params.minUnitPrice = mcStates.minUnitPrice
+      params.maxUnitPrice = mcStates.maxUnitPrice
     }
-
 
     const { statusCode, responseContent } = await api.prod.marketCompare(params, userInfo.token)
     if (statusCode === 200) {
       console.log(responseContent)
-      setfilteredResults(responseContent)
+      mcStates.setfilteredResults(responseContent)
       const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params, userInfo.token)
       if (statusCode === 200) {
-        setgraphData(responseContent2)
-        setpending(false)
-        setqueryPanelShow(false)
-        setresultPanelShow(true)
+        mcStates.setgraphData(responseContent2)
+        mcStates.setpending(false)
+        mcStates.setqueryPanelShow(false)
+        mcStates.setresultPanelShow(true)
       } else {
-        setmsgOpen(true)
-        seterrorTitle('錯誤')
-        seterrorContent('伺服器錯誤，統計圖表資料請求失敗，請聯繫開發人員')
-        setpending(false)
+        mcStates.setmsgOpen(true)
+        mcStates.seterrorTitle('錯誤')
+        mcStates.seterrorContent('伺服器錯誤，統計圖表資料請求失敗，請聯繫開發人員')
+        mcStates.setpending(false)
       }
     } else {
-      setfilteredResults(null)
-      setmsgOpen(true)
-      seterrorTitle('錯誤')
-      seterrorContent('伺服器錯誤，查詢失敗，請聯繫開發人員')
-      setpending(false)
+      mcStates.setfilteredResults(null)
+      mcStates.setmsgOpen(true)
+      mcStates.seterrorTitle('錯誤')
+      mcStates.seterrorContent('伺服器錯誤，查詢失敗，請聯繫開發人員')
+      mcStates.setpending(false)
     }
   }
 
   const handleShowQueryPanel = () => {
-    setqueryPanelShow(prev => !prev)
-    setresultPanelShow(false)
+    mcStates.setqueryPanelShow(prev => !prev)
+    mcStates.setresultPanelShow(false)
   }
 
   const handleShowResultPanel = () => {
-    setresultPanelShow(prev => !prev)
-    setqueryPanelShow(false)
+    mcStates.setresultPanelShow(prev => !prev)
+    mcStates.setqueryPanelShow(false)
   }
 
   const handleGetCommiteeByAprId = async (id: string) => {
@@ -281,63 +223,64 @@ const MarketCompareContainer = () => {
   }
 
   const handleErrorDialogClose = () => {
-    setmsgOpen(false)
-    seterrorTitle('')
-    seterrorContent('')
+    mcStates.setmsgOpen(false)
+    mcStates.seterrorTitle('')
+    mcStates.seterrorContent('')
   }
 
   const reFetchTownData = async (county: string) => {
     const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
     if (statusCode === 200) {
-      settowns([responseContent2['鄉鎮市區'][0].name])
-      settownData(responseContent2)
+      mcStates.settowns([responseContent2['鄉鎮市區'][0].name])
+      mcStates.settownData(responseContent2)
     }
   }
 
   useEffect(() => {
-    if (filteredResults?.length === 0) {
-      setmsgOpen(true)
-      seterrorTitle('訊息')
-      seterrorContent('查無資料')
+    if (mcStates.filteredResults?.length === 0) {
+      mcStates.setmsgOpen(true)
+      mcStates.seterrorTitle('訊息')
+      mcStates.seterrorContent('查無資料')
     }
-  }, [filteredResults])
+  }, [mcStates.filteredResults])
 
   useEffect(() => {
     (async () => {
-      if (filteredResults == null) return
-      if (filteredResults.length === 0) return
-      const detailApr = filteredResults.filter(apr => apr.id === detailAprId.id)
+      if (mcStates.filteredResults == null) return
+      if (mcStates.filteredResults.length === 0) return
+      const detailApr = mcStates.filteredResults.filter(apr => apr.id === mcStates.detailAprId.id)
       if (detailApr.length === 0) {
-        setdetailPanelShow(false)
-        setmsgOpen(true)
-        seterrorTitle('訊息')
-        seterrorContent(`查無 ${detailAprId.id} 的詳細資訊，請聯繫開發人員。`)
+        mcStates.setdetailPanelShow(false)
+        mcStates.setmsgOpen(true)
+        mcStates.seterrorTitle('訊息')
+        mcStates.seterrorContent(`查無 ${mcStates.detailAprId.id} 的詳細資訊，請聯繫開發人員。`)
         return
       }
-      const commiteeName = await handleGetCommiteeByAprId(detailAprId.id)
+      const commiteeName = await handleGetCommiteeByAprId(mcStates.detailAprId.id)
       const response = await trigger({
-        id: detailAprId.id
+        id: mcStates.detailAprId.id
       })
       console.log(response.data)
-
-      setdetailPanelShow(true)
-      setdetailAprInfo({
+      mcStates.setassetDetail(response.data)
+      mcStates.setdetailPanelShow(true)
+      mcStates.setdetailAprInfo({
         ...detailApr[0],
-        organization: commiteeName ? commiteeName : '無管委會'
+        organization: commiteeName ? commiteeName : '無管委會',
+        assetsDetail: response.data
       })
     })()
-  }, [detailAprId])
+  }, [mcStates.detailAprId])
 
   useEffect(() => {
     const fetchDefaultCountyData = async () => {
       const { statusCode, responseContent } = await api.prod.listCountiesByRegion()
       if (statusCode === 200) {
-        setcountyData(responseContent)
-        setcounty(responseContent['北部'][0].name)
+        mcStates.setcountyData(responseContent)
+        mcStates.setcounty(responseContent['北部'][0].name)
         const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(responseContent['北部'][0].name)
         if (statusCode === 200) {
-          settownData(responseContent2)
-          settowns([responseContent2['鄉鎮市區'][0].name])
+          mcStates.settownData(responseContent2)
+          mcStates.settowns([responseContent2['鄉鎮市區'][0].name])
         }
       }
     }
@@ -353,160 +296,160 @@ const MarketCompareContainer = () => {
       </Head>
       <MarketCompareContext.Provider
         value={{
-          queryPanelShow: queryPanelShow,
-          resultPanelShow: resultPanelShow,
-          longitude: longitude!,
-          latitude: latitude!,
-          locatedCounty: locatedCounty!,
-          locatedTown: locatedTown!,
-          isSelectorActive: isSelectorActive,
-          isTransactionTimeFiltered: isTransactionTimeFiltered,
-          isBuildingAreaFiltered: isBuildingAreaFiltered,
-          isLandAreaFiltered: isLandAreaFiltered,
-          isAgeFiltered: isAgeFiltered,
-          isParkSpaceFiltered: isParkSpaceFiltered,
-          isUrbanUsageFiltered: isUrbanUsageFiltered,
-          isPriceFiltered: isPriceFiltered,
-          isUnitPriceFiltered: isUnitPriceFiltered,
-          isTransactionTimeFosced: isTransactionTimeFosced,
-          isBuildingAreaFosced: isBuildingAreaFosced,
-          isLandAreaFosced: isLandAreaFosced,
-          isAgeFosced: isAgeFosced,
-          isParkSpaceFosced: isParkSpaceFosced,
-          isUrbanUsageFosced: isUrbanUsageFosced,
-          isPriceFocused: isPriceFocused,
-          isUnitPriceFocused: isUnitPriceFocused,
-          isBuildingAreaCheckable: isBuildingAreaCheckable,
-          isLandAreaCheckable: isLandAreaCheckable,
-          assetTypeCode: assetTypeCode,
-          buildingTypeCode: buildingTypeCode,
-          bufferRadius: bufferRadius,
-          transactiontime: transactiontime!,
-          buildingTransferArea: buildingTransferArea!,
-          landTransferArea: landTransferArea!,
-          age: age!,
-          parkSpaceType: parkSpaceType!,
-          urbanLandUse: urbanLandUse!,
-          polygonGoejson: polygonGoejson!,
-          minPrice: minPrice,
-          maxPrice: maxPrice,
-          minUnitPrice: minUnitPrice,
-          maxUnitPrice: maxUnitPrice,
-          filteredResults: filteredResults!,
-          spatialQueryType: spatialQueryType,
-          sketchMode: sketchMode,
-          graphData: graphData,
-          county: county,
-          towns: towns,
-          countyData: countyData,
-          townData: townData,
-          uploadPanelOpen: uploadPanelOpen,
-          onUploadClick: (value) => { setuploadPanelOpen(value) },
-          onCoordinatorSelectorClick: (value) => { setisCoordinateSelectorActive(value) },
-          onSpatialQueryTypeChange: setspatialQueryType,
-          onBufferRadiusChange: (value) => { setbufferRadius(value) },
-          onSketchModeChange: (value) => { setsketchMode(value) },
-          onDraw: () => { setsketchMode('draw') },
-          onClear: () => { setspatialQueryType('clear') },
-          onAssetTypeChange: (value) => { setassetTypeCode(value) },
-          onBuildingTypeChange: (value) => { setbuildingTypeCode(value) },
+          queryPanelShow: mcStates.queryPanelShow,
+          resultPanelShow: mcStates.resultPanelShow,
+          longitude: mcStates.longitude!,
+          latitude: mcStates.latitude!,
+          locatedCounty: mcStates.locatedCounty!,
+          locatedTown: mcStates.locatedTown!,
+          isSelectorActive: mcStates.isSelectorActive,
+          isTransactionTimeFiltered: mcStates.isTransactionTimeFiltered,
+          isBuildingAreaFiltered: mcStates.isBuildingAreaFiltered,
+          isLandAreaFiltered: mcStates.isLandAreaFiltered,
+          isAgeFiltered: mcStates.isAgeFiltered,
+          isParkSpaceFiltered: mcStates.isParkSpaceFiltered,
+          isUrbanUsageFiltered: mcStates.isUrbanUsageFiltered,
+          isPriceFiltered: mcStates.isPriceFiltered,
+          isUnitPriceFiltered: mcStates.isUnitPriceFiltered,
+          isTransactionTimeFosced: mcStates.isTransactionTimeFosced,
+          isBuildingAreaFosced: mcStates.isBuildingAreaFosced,
+          isLandAreaFosced: mcStates.isLandAreaFosced,
+          isAgeFosced: mcStates.isAgeFosced,
+          isParkSpaceFosced: mcStates.isParkSpaceFosced,
+          isUrbanUsageFosced: mcStates.isUrbanUsageFosced,
+          isPriceFocused: mcStates.isPriceFocused,
+          isUnitPriceFocused: mcStates.isUnitPriceFocused,
+          isBuildingAreaCheckable: mcStates.isBuildingAreaCheckable,
+          isLandAreaCheckable: mcStates.isLandAreaCheckable,
+          assetTypeCode: mcStates.assetTypeCode,
+          buildingTypeCode: mcStates.buildingTypeCode,
+          bufferRadius: mcStates.bufferRadius,
+          transactiontime: mcStates.transactiontime!,
+          buildingTransferArea: mcStates.buildingTransferArea!,
+          landTransferArea: mcStates.landTransferArea!,
+          age: mcStates.age!,
+          parkSpaceType: mcStates.parkSpaceType!,
+          urbanLandUse: mcStates.urbanLandUse!,
+          polygonGoejson: mcStates.polygonGoejson!,
+          minPrice: mcStates.minPrice,
+          maxPrice: mcStates.maxPrice,
+          minUnitPrice: mcStates.minUnitPrice,
+          maxUnitPrice: mcStates.maxUnitPrice,
+          filteredResults: mcStates.filteredResults!,
+          spatialQueryType: mcStates.spatialQueryType,
+          sketchMode: mcStates.sketchMode,
+          graphData: mcStates.graphData,
+          county: mcStates.county,
+          towns: mcStates.towns,
+          countyData: mcStates.countyData,
+          townData: mcStates.townData,
+          uploadPanelOpen: mcStates.uploadPanelOpen,
+          onUploadClick: (value) => { mcStates.setuploadPanelOpen(value) },
+          onCoordinatorSelectorClick: (value) => { mcStates.setisCoordinateSelectorActive(value) },
+          onSpatialQueryTypeChange: mcStates.setspatialQueryType,
+          onBufferRadiusChange: (value) => { mcStates.setbufferRadius(value) },
+          onSketchModeChange: (value) => { mcStates.setsketchMode(value) },
+          onDraw: () => { mcStates.setsketchMode('draw') },
+          onClear: () => { mcStates.setspatialQueryType('clear') },
+          onAssetTypeChange: (value) => { mcStates.setassetTypeCode(value) },
+          onBuildingTypeChange: (value) => { mcStates.setbuildingTypeCode(value) },
           onTransactionTimeFilteredChange: () => {
-            setisTransactionTimeFiltered(prev => !prev)
-            settransactionTime(1)
+            mcStates.setisTransactionTimeFiltered(prev => !prev)
+            mcStates.settransactionTime(1)
           },
           onTransactionTimeSelect: (value) => {
-            settransactionTime(value)
-            setisTransactionTimeFosced(true)
+            mcStates.settransactionTime(value)
+            mcStates.setisTransactionTimeFosced(true)
           },
           onBuildingAreaFilteredChange: () => {
-            setisBuildingAreaFiltered(prev => !prev)
-            setbuildingTransferArea(0)
+            mcStates.setisBuildingAreaFiltered(prev => !prev)
+            mcStates.setbuildingTransferArea(0)
           },
           onBuildingAreaSelect: (value) => {
-            setbuildingTransferArea(value)
-            setisBuildingAreaFosced(true)
+            mcStates.setbuildingTransferArea(value)
+            mcStates.setisBuildingAreaFosced(true)
           },
           onLandAreaFilteredChange: () => {
-            setisLandAreaFiltered(prev => !prev)
-            setlandTransferArea(0)
+            mcStates.setisLandAreaFiltered(prev => !prev)
+            mcStates.setlandTransferArea(0)
           },
           onLandAreaSelect: (value) => {
-            setlandTransferArea(value)
-            setisLandAreaFosced(true)
+            mcStates.setlandTransferArea(value)
+            mcStates.setisLandAreaFosced(true)
           },
           onAgeFilteredChange: () => {
-            setisAgeFiltered(prev => !prev)
-            setage(0)
+            mcStates.setisAgeFiltered(prev => !prev)
+            mcStates.setage(0)
           },
           onAgeSelect: (value) => {
-            setage(value)
-            setisAgeFosced(true)
+            mcStates.setage(value)
+            mcStates.setisAgeFosced(true)
           },
           onParkSpaceTypeFilteredChange: () => {
-            setisParkSpaceFiltered(prev => !prev)
-            setparkSpaceType(0)
+            mcStates.setisParkSpaceFiltered(prev => !prev)
+            mcStates.setparkSpaceType(0)
           },
           onParkSpaceTypeSelect: (value) => {
-            setparkSpaceType(value)
-            setisParkSpaceFosced(true)
+            mcStates.setparkSpaceType(value)
+            mcStates.setisParkSpaceFosced(true)
           },
           onUrbanLaudUseFilteredChange: () => {
-            setisUrbanUsageFiltered(prev => !prev)
-            seturbanLandUse([0])
+            mcStates.setisUrbanUsageFiltered(prev => !prev)
+            mcStates.seturbanLandUse([0])
           },
           onUrbanLaudUseSelect: (value) => {
-            seturbanLandUse(value)
-            setisUrbanUsageFosced(true)
+            mcStates.seturbanLandUse(value)
+            mcStates.setisUrbanUsageFosced(true)
           },
           onPriceFilteredChange: () => {
-            setisPriceFiltered(prev => !prev)
+            mcStates.setisPriceFiltered(prev => !prev)
           },
           onMinPriceChange: (value) => {
-            setminPrice(value)
+            mcStates.setminPrice(value)
           },
           onMaxPriceChange: (value) => {
-            setmaxPrice(value)
+            mcStates.setmaxPrice(value)
           },
 
           onUnitPriceFilteredChange: () => {
-            setisUnitPriceFiltered(prev => !prev)
+            mcStates.setisUnitPriceFiltered(prev => !prev)
           },
           onMinUnitPriceChange: (value) => {
-            setminUnitPrice(value)
+            mcStates.setminUnitPrice(value)
           },
           onMaxUnitPriceChange: (value) => {
-            setmaxUnitPrice(value)
+            mcStates.setmaxUnitPrice(value)
           },
           onCustomizeParamBtnClick: () => {
-            setmsgOpen(true)
-            seterrorTitle('訊息')
-            seterrorContent('自定義參數功能尚未開發')
+            mcStates.setmsgOpen(true)
+            mcStates.seterrorTitle('訊息')
+            mcStates.seterrorContent('自定義參數功能尚未開發')
           },
           handleFormSubmit: handleFormSubmit,
-          zoomId: zoomId,
-          pending: pending,
-          onZoomIdChange: (value) => { setzoomId(value) },
-          setpending: (value) => { setpending(value) },
-          onDetailAprChange: (id) => { setdetailAprId({ id: id }) },
-          onShow: (value) => { setdetailPanelShow(value) },
-          onResultPanelClose: () => { setfilteredResults(null) },
+          zoomId: mcStates.zoomId,
+          pending: mcStates.pending,
+          onZoomIdChange: (value) => { mcStates.setzoomId(value) },
+          setpending: (value) => { mcStates.setpending(value) },
+          onDetailAprChange: (id) => { mcStates.setdetailAprId({ id: id }) },
+          onShow: (value) => { mcStates.setdetailPanelShow(value) },
+          onResultPanelClose: () => { mcStates.setfilteredResults(null) },
           onCountyRadioClick: () => {
-            setmsgOpen(true)
-            seterrorTitle('警告')
-            seterrorContent('此方法會調出大量資料，請謹慎使用。')
+            mcStates.setmsgOpen(true)
+            mcStates.seterrorTitle('警告')
+            mcStates.seterrorContent('此方法會調出大量資料，請謹慎使用。')
           },
           onCountyChange: (county) => {
-            setcounty(county)
+            mcStates.setcounty(county)
             reFetchTownData(county)
           },
           onTownChange: (towns) => {
-            settowns(towns)
+            mcStates.settowns(towns)
           },
           handleCoordinateSelect: (longitude, latitude) => {
             if (longitude)
-              setlongitude(longitude)
+              mcStates.setlongitude(longitude)
             if (latitude)
-              setlatitude(latitude)
+              mcStates.setlatitude(latitude)
           },
           onCoordinateSelect: (longitude, latitude) => {
             handleCoordinateSelect(longitude, latitude)
@@ -517,17 +460,17 @@ const MarketCompareContainer = () => {
           <PanelContainer>
             <PanelButton
               content='查詢'
-              icon={queryPanelShow || queryPanelHover ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
-              focused={queryPanelShow}
+              icon={mcStates.queryPanelShow || mcStates.queryPanelHover ? '/marketCompare/magnifier-focused.png' : '/marketCompare/magnifier.png'}
+              focused={mcStates.queryPanelShow}
               onClick={handleShowQueryPanel}
-              onHover={(value) => { setqueryPanelHover(value) }}
+              onHover={(value) => { mcStates.setqueryPanelHover(value) }}
             />
             <PanelButton
               content='結果'
-              icon={resultPanelShow || resultPanelHover ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
-              focused={resultPanelShow}
+              icon={mcStates.resultPanelShow || mcStates.resultPanelHover ? '/marketCompare/sheet-focused.png' : '/marketCompare/sheet.png'}
+              focused={mcStates.resultPanelShow}
               onClick={handleShowResultPanel}
-              onHover={(value) => { setresultPanelHover(value) }}
+              onHover={(value) => { mcStates.setresultPanelHover(value) }}
             />
           </PanelContainer>
           <QueryPanel />
@@ -536,25 +479,25 @@ const MarketCompareContainer = () => {
             <div className={style.mapContainer}>
               <MarketMapContainer
                 onCoordinateSelect={handleCoordinateSelect}
-                onSketchModeChange={setsketchMode}
-                onGeojsonChange={setpolygonGoejson}
-                onSpatialQueryTypeChange={setspatialQueryType}
+                onSketchModeChange={mcStates.setsketchMode}
+                onGeojsonChange={mcStates.setpolygonGoejson}
+                onSpatialQueryTypeChange={mcStates.setspatialQueryType}
               />
             </div>
           </div>
         </div>
       </MarketCompareContext.Provider>
       <Dialog
-        open={msgOpen}
+        open={mcStates.msgOpen}
         onClose={handleErrorDialogClose}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title">
-          {errorTitle}
+          {mcStates.errorTitle}
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
-            {errorContent}
+            {mcStates.errorContent}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -564,25 +507,29 @@ const MarketCompareContainer = () => {
         </DialogActions>
       </Dialog>
       <Dialog
-        open={detailPanelShow}
+        open={mcStates.detailPanelShow}
         onClose={() => {
-          setdetailPanelShow(false)
+          mcStates.setdetailPanelShow(false)
         }}
         aria-labelledby="responsive-dialog-title"
       >
         <DialogTitle id="responsive-dialog-title"
           sx={{ paddingBottom: '0px' }}
         >
-          {parseCommitee(detailAprInfo ? detailAprInfo.organization : '無管委會')}
+          {mcStates.detailAprInfo && mcStates.detailAprInfo.address}
         </DialogTitle>
 
         <DialogContent sx={{ width: '900px' }}>
-          <AprDetailContent {...detailAprInfo!} />
+          {
+            mcStates.detailAprInfo && <AprDetailContent
+              {...mcStates.detailAprInfo}
+            />
+          }
         </DialogContent>
 
         <DialogActions>
           <Button onClick={() => {
-            setdetailPanelShow(false)
+            mcStates.setdetailPanelShow(false)
           }}>
             確認
           </Button>
