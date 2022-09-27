@@ -52,49 +52,6 @@ export interface IDetailAprInfo {
   assetsDetail: AssetDetailResponse | undefined
 }
 
-function createLandData (
-  address: string,
-  landUse: string,
-  landTransferArea: number,
-  rightDenumerate: number,
-  rightNumerate: number,
-  parcelNumber: string,
-  transferStatus: string
-) {
-  return {
-    address, landUse, landTransferArea, rightDenumerate,
-    rightNumerate, parcelNumber, transferStatus
-  };
-}
-
-const rowsLand = [
-  createLandData('市府段二小段', '都市：商', 1.09, 23040, 336, '05660000', '持分移轉'),
-  createLandData('市府段二小段', '都市：商', 0.01, 23040, 336, '05660000', '持分移轉'),
-  createLandData('市府段二小段', '都市：商', 1.95, 23040, 336, '05660000', '持分移轉'),
-  createLandData('市府段二小段', '都市：商', 0.82, 23040, 336, '05660000', '持分移轉')
-]
-
-function createParkData (
-  parkSpaceType: string,
-  parkingSpacePrice: number,
-  parkingSpaceTransferArea: number,
-  locateLevel: string
-) {
-  return {
-    parkSpaceType, parkingSpacePrice, parkingSpaceTransferArea, locateLevel
-  };
-}
-
-const rowsPark = [
-  createParkData('坡道平面', 1500000, 36.35, '地下三樓'),
-  createParkData('坡道平面', 1500000, 36.35, '地下三樓'),
-  createParkData('坡道平面', 1500000, 36.35, '地下三樓'),
-  createParkData('坡道平面', 1500000, 36.35, '地下四樓'),
-  createParkData('坡道平面', 1500000, 36.35, '地下四樓'),
-  createParkData('坡道平面', 1500000, 36.35, '地下四樓'),
-  createParkData('坡道平面', 1500000, 36.35, '地下四樓')
-];
-
 const AprDetailContent = (props: IDetailAprInfo) => {
   const [tabValue, settabValue] = useState<string>('1')
 
@@ -102,7 +59,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
     return (
       <TableContainer component={Paper}>
         <Table size="small">
-          <TableHead sx={{ bgcolor: '#dddddd' }}>
+          <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
               <TableCell>土地位置</TableCell>
               <TableCell>使用分區或編定</TableCell>
@@ -137,71 +94,95 @@ const AprDetailContent = (props: IDetailAprInfo) => {
     )
   }
 
+  const renderBuildFirstRow = () => {
+    if (!props.assetsDetail) return
+    const firstBuild = props.assetsDetail.builds.at(0)
+    if (!firstBuild) return
+    return (
+      <>
+        <TableRow
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell component="th" scope="row" rowSpan={4}>
+            {`${calculateArea(firstBuild.buildingTransferArea)}坪`}
+          </TableCell>
+        </TableRow>
+        <TableRow
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell component="th" scope="row">
+            {'主建物'}
+          </TableCell>
+          <TableCell component="th" scope="row">
+            {`${calculateArea(props.buildingArea)}坪`}
+          </TableCell>
+          <TableCell component="th" scope="row" rowSpan={3}>
+            {firstBuild.usage}
+          </TableCell>
+          <TableCell component="th" scope="row" rowSpan={3}>
+            {firstBuild.material}
+          </TableCell>
+          <TableCell component="th" scope="row" rowSpan={3}>
+            {firstBuild.buildingLayer}
+          </TableCell>
+        </TableRow>
+        <TableRow
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell component="th" scope="row">
+            {'附屬建物'}
+          </TableCell>
+          <TableCell component="th" scope="row">
+            {`${calculateArea(props.subBuildingArea)}坪`}
+          </TableCell>
+        </TableRow>
+        <TableRow
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell component="th" scope="row">
+            {'陽台'}
+          </TableCell>
+          <TableCell component="th" scope="row">
+            {`${calculateArea(props.belconyArea)}坪`}
+          </TableCell>
+        </TableRow>
+      </>
+    )
+  }
+
   const renderBuildTable = () => {
+
+    if (!props.assetsDetail) return
+    const subBuilds = props.assetsDetail.builds.slice(1)
     return (
       <TableContainer component={Paper}>
         <Table size="small">
-          <TableHead sx={{ bgcolor: '#dddddd' }}>
+          <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
-              <TableCell>建物移轉面積</TableCell>
+              <TableCell colSpan={3} align='center'>建物移轉面積</TableCell>
               <TableCell>主要用途</TableCell>
               <TableCell>主要建材</TableCell>
               <TableCell>建物分層</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
+            {renderBuildFirstRow()}
 
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row" rowSpan={3}>
-                {'38.87坪'}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {'商業用'}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {'鋼筋混凝土'}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {'一層，騎樓'}
-              </TableCell>
-            </TableRow>
-
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row" rowSpan={3}>
-                {'38.87坪'}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {'商業用'}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {'鋼筋混凝土'}
-              </TableCell>
-              <TableCell component="th" scope="row">
-                {'一層，騎樓'}
-              </TableCell>
-            </TableRow>
-
-            {/* {props.assetsDetail &&
-              props.assetsDetail.lands.map((row, index) => (
+            {subBuilds.map((row) => (
+              <>
                 <TableRow
                   key={row.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell component="th" scope="row">
-                    {row.address}
-                  </TableCell>
-                  <TableCell>{row.landUse}</TableCell>
-                  <TableCell align="right">{row.landTransferArea}</TableCell>
-                  <TableCell align="right">{row.rightDenumerate}</TableCell>
-                  <TableCell align="right">{row.rightNumerate}</TableCell>
-                  <TableCell>{row.parcelNumber}</TableCell>
-                  <TableCell>{row.transferStatus}</TableCell>
+                  <TableCell align='center' colSpan={3}>{`${calculateArea(row.buildingTransferArea)}坪`}</TableCell>
+                  <TableCell sx={{ textOverflow: 'clip' }}>{row.usage}</TableCell>
+                  <TableCell>{row.material}</TableCell>
+                  <TableCell>{row.buildingLayer}</TableCell>
                 </TableRow>
-              ))} */}
+              </>
+
+            ))}
+
           </TableBody>
         </Table>
       </TableContainer>
@@ -212,7 +193,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
     return (
       <TableContainer component={Paper}>
         <Table size="small">
-          <TableHead sx={{ bgcolor: '#dddddd' }}>
+          <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
               <TableCell>車位類型</TableCell>
               <TableCell>價格</TableCell>
