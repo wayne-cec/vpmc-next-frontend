@@ -41,12 +41,12 @@ export const transactionTimeSet: { [key: number]: string } = {
   2: '2年內',
   3: '3年內',
   4: '4年內',
-  5: '5年內',
-  6: '6年內',
-  7: '7年內',
-  8: '8年內',
-  9: '9年內',
-  10: '10年內'
+  5: '5年內'
+  // 6: '6年內',
+  // 7: '7年內',
+  // 8: '8年內',
+  // 9: '9年內',
+  // 10: '10年內'
 }
 
 export const buildingTransactionAreaSet: { [key: number]: string } = {

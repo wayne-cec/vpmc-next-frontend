@@ -3,6 +3,7 @@ import { buildingTypeDecode } from '../../../components/CommiteeCard'
 import { urbanUsageSet } from '../../../lib/marketComapreConst'
 import { AssetDetailResponse } from '../../../store/services/types/apr'
 import { parseCommitee } from '../../../lib/parseCommitee'
+import { parkSpaceSet } from '../../../lib/marketComapreConst'
 import calculateArea from '../../../lib/calculateArea'
 import TabContext from '@mui/lab/TabContext'
 import TabPanel from '@mui/lab/TabPanel'
@@ -81,7 +82,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                     {row.address}
                   </TableCell>
                   <TableCell>{row.landUse}</TableCell>
-                  <TableCell align="right">{row.landTransferArea}</TableCell>
+                  <TableCell align="right">{calculateArea(row.landTransferArea)}坪</TableCell>
                   <TableCell align="right">{row.rightDenumerate}</TableCell>
                   <TableCell align="right">{row.rightNumerate}</TableCell>
                   <TableCell>{row.parcelNumber}</TableCell>
@@ -209,10 +210,10 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {row.parkingSpaceType}
+                    {parkSpaceSet[row.parkingSpaceType]}
                   </TableCell>
-                  <TableCell>{row.parkingSpacePrice}</TableCell>
-                  <TableCell align="right">{row.parkingSpaceTransferArea}</TableCell>
+                  <TableCell>{row.parkingSpacePrice / 10000}萬</TableCell>
+                  <TableCell align="right">{calculateArea(row.parkingSpaceTransferArea)}坪</TableCell>
                   <TableCell align="right">{row.locateLevel}</TableCell>
                 </TableRow>
               ))}
@@ -251,69 +252,102 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         {/* 坪數 */}
         <div className={style.priceChip}>
           <p>
-            <span className={style.transferBuildingArea}>{calculateArea(props.buildingTransferArea)}</span>
-            <span className={style.transferBuildingAreaUnit}>坪</span>
+            <span>房屋</span>
+            <span className={style.transferBuildingArea}>
+              {calculateArea(props.buildingTransferArea - props.parkingSpaceTransferArea)}
+            </span>
+            <span>坪</span>
           </p>
-          <p className={style.caption}>
-            含車位{calculateArea(props.parkingSpaceTransferArea)}坪
+          <p>
+            <span>車位</span>
+            <span>{calculateArea(props.parkingSpaceTransferArea)}</span>
+            <span>坪</span>
+          </p>
+          <p>
+            <span>總坪</span>
+            <span>{calculateArea(props.buildingTransferArea)}</span>
+            <span>坪</span>
           </p>
         </div>
 
         {/* 總價 */}
         <div className={style.priceChip}>
           <p>
-            <span className={style.transferBuildingArea}>{Math.round(props.price / 10000 * 10) / 10}</span>
-            <span className={style.transferBuildingAreaUnit}>萬</span>
+            <span>房價</span>
+            <span className={style.transferBuildingArea}>
+              {Math.round(props.priceWithoutParking / 10000 * 10) / 10}
+            </span>
+            <span>萬</span>
           </p>
-          <p className={style.caption}>
-            含車位{Math.round(props.parkingSpacePrice / 10000 * 10) / 10}萬
+          <p>
+            <span>車位</span>
+            {Math.round(props.parkingSpacePrice / 10000 * 10) / 10}
+            <span>萬</span>
+          </p>
+          <p>
+            <span>總價</span>
+            {Math.round(props.price / 10000 * 10) / 10}
+            <span>萬</span>
           </p>
         </div>
 
       </div>
       <div className={style.detailContainer}>
-
         <Grid container spacing={0}>
           <Grid item xs={2} className={style.gridContainer}>
             <span className={style.title}>格局:</span>
           </Grid>
-          <Grid item xs={5} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
             <span>{props.roomNumber}房{props.hallNumber}廳{props.bathNumber}衛</span>
           </Grid>
 
           <Grid item xs={2} className={style.gridContainer}>
-            <span className={style.title}>屋齡:</span>
+            <span className={style.title}>建築完成日:</span>
           </Grid>
-          <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center' }}>
-            <span>{getAge(props.completiontime)}年</span>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
+            <span>{moment(props.completiontime).format('YYYY-MM-DD')}</span>
           </Grid>
 
           <Grid item xs={2} className={style.gridContainer}>
             <span className={style.title}>標的:</span>
           </Grid>
-          <Grid item xs={5} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
             <span>{props.buildingAmount}建物{props.landAmount}土地{props.parkAmount}車位</span>
+          </Grid>
+
+          <Grid item xs={2} className={style.gridContainer}>
+            <span className={style.title}>交易屋齡:</span>
+          </Grid>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
+            <span>{getAge(props.completiontime)}年</span>
           </Grid>
 
           <Grid item xs={2} className={style.gridContainer}>
             <span className={style.title}>樓層:</span>
           </Grid>
-          <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
             <span>{props.transferFloor}/{props.floor}樓</span>
           </Grid>
 
           <Grid item xs={2} className={style.gridContainer}>
             <span className={style.title}>型態:</span>
           </Grid>
-          <Grid item xs={5} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
             <span>{buildingTypeDecode[props.buildingType]}</span>
           </Grid>
 
           <Grid item xs={2} className={style.gridContainer}>
             <span className={style.title}>分區:</span>
           </Grid>
-          <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center' }}>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
             <span>{urbanUsageSet[props.urbanLandUse]}</span>
+          </Grid>
+
+          <Grid item xs={2} className={style.gridContainer}>
+            <span className={style.title}>建材:</span>
+          </Grid>
+          <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
+            <span>{props.assetsDetail?.builds[0].material}</span>
           </Grid>
 
         </Grid>

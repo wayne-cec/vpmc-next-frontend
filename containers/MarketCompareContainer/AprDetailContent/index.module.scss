@@ -21,13 +21,17 @@
                 @apply text-red-500 text-base font-light;
             }
             .transferBuildingArea{
-                @apply text-3xl font-extrabold;
+                @apply text-2xl font-extrabold text-black;
             }
             .transferBuildingAreaUnit{
                 @apply text-base font-light;
             }
-            .caption{
-                @apply text-base ;
+            // .caption{
+            //     @apply text-base ;
+            //     color: #666;
+            // }
+            span{
+                @apply text-base;
                 color: #666;
             }
         }
