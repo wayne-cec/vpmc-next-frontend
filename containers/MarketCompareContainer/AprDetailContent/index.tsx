@@ -55,6 +55,7 @@ export interface IDetailAprInfo {
 
 const AprDetailContent = (props: IDetailAprInfo) => {
   const [tabValue, settabValue] = useState<string>('1')
+  const areaWithoutPark = props.buildingTransferArea - props.parkingSpaceTransferArea
 
   const renderLandTable = () => {
     return (
@@ -99,6 +100,9 @@ const AprDetailContent = (props: IDetailAprInfo) => {
     if (!props.assetsDetail) return
     const firstBuild = props.assetsDetail.builds.at(0)
     if (!firstBuild) return
+    const mainBuildRatio = Math.round(props.buildingArea / areaWithoutPark * 100)
+    const subBuildRatio = Math.round(props.subBuildingArea / areaWithoutPark * 100)
+    const belconyRatio = Math.round(props.belconyArea / areaWithoutPark * 100)
     return (
       <>
         <TableRow
@@ -116,6 +120,9 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           </TableCell>
           <TableCell component="th" scope="row">
             {`${calculateArea(props.buildingArea)}坪`}
+          </TableCell>
+          <TableCell component="th" scope="row">
+            {`${mainBuildRatio}%`}
           </TableCell>
           <TableCell component="th" scope="row" rowSpan={3}>
             {firstBuild.usage}
@@ -136,6 +143,9 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           <TableCell component="th" scope="row">
             {`${calculateArea(props.subBuildingArea)}坪`}
           </TableCell>
+          <TableCell component="th" scope="row">
+            {`${subBuildRatio}%`}
+          </TableCell>
         </TableRow>
         <TableRow
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -146,13 +156,15 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           <TableCell component="th" scope="row">
             {`${calculateArea(props.belconyArea)}坪`}
           </TableCell>
+          <TableCell component="th" scope="row">
+            {`${belconyRatio}%`}
+          </TableCell>
         </TableRow>
       </>
     )
   }
 
   const renderBuildTable = () => {
-
     if (!props.assetsDetail) return
     const subBuilds = props.assetsDetail.builds.slice(1)
     return (
@@ -160,7 +172,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         <Table size="small">
           <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
-              <TableCell colSpan={3} align='center'>建物移轉面積</TableCell>
+              <TableCell colSpan={4} align='center'>建物移轉面積</TableCell>
               <TableCell>主要用途</TableCell>
               <TableCell>主要建材</TableCell>
               <TableCell>建物分層</TableCell>
@@ -168,22 +180,30 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           </TableHead>
           <TableBody>
             {renderBuildFirstRow()}
-
             {subBuilds.map((row) => (
+              // const belconyRatio = Math.round(props.belconyArea / areaWithoutPark * 100)
               <>
                 <TableRow
                   key={row.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
                   <TableCell align='center' colSpan={3}>{`${calculateArea(row.buildingTransferArea)}坪`}</TableCell>
+
+                  <TableCell component="th" scope="row">
+                    {`${Math.round(row.buildingTransferArea / areaWithoutPark * 100)}%`}
+                  </TableCell>
                   <TableCell sx={{ textOverflow: 'clip' }}>{row.usage}</TableCell>
                   <TableCell>{row.material}</TableCell>
                   <TableCell>{row.buildingLayer}</TableCell>
                 </TableRow>
               </>
-
             ))}
-
+            <TableRow
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell align='center' colSpan={3}>備註</TableCell>
+              <TableCell colSpan={3}></TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
@@ -319,7 +339,17 @@ const AprDetailContent = (props: IDetailAprInfo) => {
             <span className={style.title}>交易屋齡:</span>
           </Grid>
           <Grid item xs={4} sx={{ display: 'flex', alignItems: 'center' }}>
-            <span>{getAge(props.completiontime)}年</span>
+            <span>
+              {
+                Math.round(moment
+                  .duration(moment(props.transactiontime, 'YYYY/MM/DD')
+                    .diff(moment(props.completiontime, 'YYYY/MM/DD'))
+                  ).asYears()
+                )
+                // getAge(props.completiontime)
+              }
+              年
+            </span>
           </Grid>
 
           <Grid item xs={2} className={style.gridContainer}>
