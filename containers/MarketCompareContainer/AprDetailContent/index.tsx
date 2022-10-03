@@ -261,7 +261,10 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         {/* 單價 */}
         <div className={style.priceChip}>
           <p>
-            <span className={style.unitPrice}>{Math.round((props.unitPrice * square) / 1000) / 10}</span>
+            <span className={style.unitPrice}>
+              {Math.round((props.unitPrice * square) / 1000) / 10}
+              {/* {props.unitPrice * square} */}
+            </span>
             <span className={style.unitPriceUnit}>萬/坪</span>
           </p>
           <p className={style.caption}>
@@ -271,44 +274,75 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
         {/* 坪數 */}
         <div className={style.priceChip}>
-          <p>
-            <span>房屋</span>
-            <span className={style.transferBuildingArea}>
-              {calculateArea(props.buildingTransferArea - props.parkingSpaceTransferArea)}
-            </span>
-            <span>坪</span>
-          </p>
-          <p>
-            <span>車位</span>
-            <span>{calculateArea(props.parkingSpaceTransferArea)}</span>
-            <span>坪</span>
-          </p>
-          <p>
-            <span>總坪</span>
-            <span>{calculateArea(props.buildingTransferArea)}</span>
-            <span>坪</span>
-          </p>
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>房屋</Grid>
+              <Grid xs={7}>
+                <span className={style.transferBuildingArea}>
+                  {calculateArea(props.buildingTransferArea - props.parkingSpaceTransferArea)}
+                </span>
+              </Grid>
+              <Grid xs={2}>坪</Grid>
+            </Grid>
+          </div>
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>車位</Grid>
+              <Grid xs={7}>
+                <span>{calculateArea(props.parkingSpaceTransferArea)}</span>
+              </Grid>
+              <Grid xs={2}>坪</Grid>
+            </Grid>
+          </div>
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>總坪</Grid>
+              <Grid xs={7}>
+                <span>{calculateArea(props.buildingTransferArea)}</span>
+              </Grid>
+              <Grid xs={2}>坪</Grid>
+            </Grid>
+          </div>
         </div>
 
         {/* 總價 */}
         <div className={style.priceChip}>
-          <p>
-            <span>房價</span>
-            <span className={style.transferBuildingArea}>
-              {Math.round(props.priceWithoutParking / 10000 * 10) / 10}
-            </span>
-            <span>萬</span>
-          </p>
-          <p>
-            <span>車位</span>
-            {Math.round(props.parkingSpacePrice / 10000 * 10) / 10}
-            <span>萬</span>
-          </p>
-          <p>
-            <span>總價</span>
-            {Math.round(props.price / 10000 * 10) / 10}
-            <span>萬</span>
-          </p>
+
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>房價</Grid>
+              <Grid xs={7}>
+                <span className={style.transferBuildingArea}>
+                  {Math.floor(Math.round(props.priceWithoutParking / 10000 * 10) / 10)}
+                </span>
+              </Grid>
+              <Grid xs={2}>萬</Grid>
+            </Grid>
+          </div>
+
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>車位</Grid>
+              <Grid xs={7}>
+                <span>
+                  {Math.floor(Math.round(props.parkingSpacePrice / 10000 * 10) / 10)}
+                </span>
+              </Grid>
+              <Grid xs={2}>萬</Grid>
+            </Grid>
+          </div>
+
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>總價</Grid>
+              <Grid xs={7}>
+                <span>
+                  {Math.floor(Math.round(props.price / 10000 * 10) / 10)}
+                </span>
+              </Grid>
+              <Grid xs={2}>萬</Grid>
+            </Grid>
+          </div>
         </div>
 
       </div>
