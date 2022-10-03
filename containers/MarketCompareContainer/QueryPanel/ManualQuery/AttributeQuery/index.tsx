@@ -4,29 +4,29 @@ import classNames from 'classnames'
 import MultiChipSelect from '../../../../../components/MultiChipSelect'
 import MarketCompareContext, { IMarketCompareContext } from '../../../MarketCompareContext'
 import {
-  assetTypeSet, transactionTimeSet, buildingTransactionAreaSet,
-  landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet
+  buildingTypeSet, transactionTimeSet, buildingTransactionAreaSet,
+  landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet, assetTypeSet
 } from '../../../../../lib/marketComapreConst'
 import {
   Grid, FormControl, InputLabel, Select,
   Checkbox, MenuItem, TextField
 } from '@mui/material'
-import { assetTypeMapping } from '../../../../../api/prod'
+import { AssetType, assetTypeMapping } from '../../../../../api/prod'
 
 export type AttributeQueryType = 'building' | 'parking' | 'land'
 
-const getAttributeQueryType = (
-  assetTypeMapping: { [key: number]: number },
-  marketCompareContext: IMarketCompareContext
-) => {
-  if (assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200) {
-    return 'building'
-  } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 100) {
-    return 'land'
-  } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 200) {
-    return 'parking'
-  }
-}
+// const getAttributeQueryType = (
+//   assetTypeMapping: { [key: number]: number },
+//   marketCompareContext: IMarketCompareContext
+// ) => {
+//   if (assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200) {
+//     return 'building'
+//   } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 100) {
+//     return 'land'
+//   } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 200) {
+//     return 'parking'
+//   }
+// }
 
 const AttributeQuery = () => {
   const marketCompareContext = useContext(MarketCompareContext)
@@ -38,7 +38,7 @@ const AttributeQuery = () => {
 
       <Grid container spacing={2}>
 
-        <Grid item xs={12}>
+        <Grid item xs={marketCompareContext.assetTypeCode === 'building' ? 6 : 12}>
           <FormControl size='small' fullWidth>
             <InputLabel id="asset-type">資產類型*</InputLabel>
             <Select
@@ -47,7 +47,7 @@ const AttributeQuery = () => {
               id="asset-type-select"
               value={marketCompareContext.assetTypeCode}
               onChange={(event) => {
-                marketCompareContext.onAssetTypeChange(Number(event.target.value))
+                marketCompareContext.onAssetTypeChange(event.target.value as AssetType)
               }}
               size='small'
               fullWidth
@@ -56,13 +56,44 @@ const AttributeQuery = () => {
                 Object.keys(assetTypeSet).map((assetCode, index) => {
                   return <MenuItem
                     key={index}
-                    value={assetCode}
-                  >{assetTypeSet[Number(assetCode)]}</MenuItem>
+                    value={assetTypeSet[assetCode]}
+                  >{assetCode}</MenuItem>
                 })
               }
             </Select>
           </FormControl>
         </Grid>
+
+        {
+          marketCompareContext.assetTypeCode === 'building' &&
+          <Grid item xs={6}>
+            <FormControl size='small' fullWidth>
+              <InputLabel id="building-type">建物類型*</InputLabel>
+              <Select
+                labelId="building-type"
+                label="建物類型"
+                id="building-type-select"
+                value={marketCompareContext.buildingTypeCode}
+                onChange={(event) => {
+                  marketCompareContext.onBuildingTypeChange(Number(event.target.value))
+                }}
+                size='small'
+                fullWidth
+              >
+                {
+                  Object.keys(buildingTypeSet).map((buildingTypeCode, index) => {
+                    return <MenuItem
+                      key={index}
+                      value={buildingTypeCode}
+                    >{buildingTypeSet[Number(buildingTypeCode)]}</MenuItem>
+                  })
+                }
+              </Select>
+            </FormControl>
+          </Grid>
+        }
+
+
 
         {/* 交易時間 */}
         <Grid item xs={2}>
@@ -106,7 +137,7 @@ const AttributeQuery = () => {
 
         {/* 建坪面積 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
+          marketCompareContext.assetTypeCode === 'building'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -153,7 +184,7 @@ const AttributeQuery = () => {
 
         {/* 地坪面積 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'land'
+          marketCompareContext.assetTypeCode === 'land'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -200,7 +231,7 @@ const AttributeQuery = () => {
 
         {/* 屋齡 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
+          marketCompareContext.assetTypeCode === 'building'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -246,7 +277,7 @@ const AttributeQuery = () => {
 
         {/* 車位類型 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'parking'
+          marketCompareContext.assetTypeCode === 'park'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -292,7 +323,7 @@ const AttributeQuery = () => {
 
         {/* 使用分區 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) !== 'parking'
+          marketCompareContext.assetTypeCode !== 'park'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -318,7 +349,7 @@ const AttributeQuery = () => {
 
         {/* 非都市土地分區 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) !== 'parking'
+          marketCompareContext.assetTypeCode !== 'park'
             ? <>
               {/* <Grid item xs={0}>
                 <Checkbox
@@ -359,7 +390,7 @@ const AttributeQuery = () => {
 
         {/* 建物總價 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
+          marketCompareContext.assetTypeCode === 'building'
             ? <>
               <Grid item xs={2}>
                 <Checkbox
@@ -415,7 +446,7 @@ const AttributeQuery = () => {
 
         {/* 建物單價 */}
         {
-          getAttributeQueryType(assetTypeMapping, marketCompareContext) === 'building'
+          marketCompareContext.assetTypeCode === 'building'
             ? <>
               <Grid item xs={2}>
                 <Checkbox

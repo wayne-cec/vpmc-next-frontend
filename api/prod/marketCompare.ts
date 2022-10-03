@@ -1,5 +1,7 @@
 import { IResult, IResultStatistics } from "./aprRegion"
 
+export type AssetType = 'land' | 'building' | 'park'
+
 export interface IMarketCompareResult {
   id: string
   transactiontime: string
@@ -25,12 +27,14 @@ export interface IMarketCompareResult {
   belconyArea: number
   landTransferArea: number
   parkingSpaceType: number
+  address: string
   longitude: number
   latitude: number
 }
 
 export interface IMarketCompare {
-  buildingType: number
+  assetType: AssetType
+  buildingType?: number
   longitude?: number
   latitude?: number
   bufferRadius?: number
@@ -77,6 +81,9 @@ export const assetTypeMapping: { [key: number]: number } = {
 }
 
 const buildMarketCompareUrl = (url: string, params: IMarketCompare): string => {
+  if (params.assetType === 'building') {
+    url += `&buildingType=${params.buildingType}`
+  }
   if (params.longitude && params.latitude && params.bufferRadius) {
     url += `&longitude=${params.longitude}&latitude=${params.latitude}&bufferRadius=${params.bufferRadius}`
   }
@@ -116,7 +123,7 @@ const buildMarketCompareUrl = (url: string, params: IMarketCompare): string => {
 export const marketCompare = async (params: IMarketCompare, token: string) => {
   const myHeaders = new Headers()
   myHeaders.append("authorization", token)
-  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?buildingType=${assetTypeMapping[params.buildingType]}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompare?assetType=${params.assetType}`
   url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',
@@ -131,7 +138,7 @@ export const marketCompare = async (params: IMarketCompare, token: string) => {
 export const marketCompareStatistic = async (params: IMarketCompare, token: string) => {
   const myHeaders = new Headers()
   myHeaders.append("authorization", token)
-  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?buildingType=${params.buildingType}`
+  let url = process.env.API_DOMAIN_PROD + `/api/Analysis/marketCompareStatistic?assetType=${params.assetType}`
   url = buildMarketCompareUrl(url, params)
   const response = await fetch(url, {
     method: 'GET',

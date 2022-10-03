@@ -9,7 +9,7 @@ import {
   Dialog, DialogContent, TextField
 } from '@mui/material'
 import {
-  assetTypeSet, urbanUsageSet
+  buildingTypeSet, urbanUsageSet
 } from '../../../../../lib/marketComapreConst'
 import { makeStyles } from '@mui/styles'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
@@ -64,7 +64,7 @@ const AttributeQueryIntelligence = () => {
     }
     const objectInfo: string[] = parsedCsv[2]
 
-    const assetTypeCodea = findKey(assetTypeSet, (o) => {
+    const assetTypeCodea = findKey(buildingTypeSet, (o) => {
       return o === objectInfo[3]
     })
     const urbanUsagea = findKey(urbanUsageSet, (o) => {
@@ -152,11 +152,11 @@ const AttributeQueryIntelligence = () => {
                     fullWidth
                   >
                     {
-                      Object.keys(assetTypeSet).map((assetCode, index) => {
+                      Object.keys(buildingTypeSet).map((assetCode, index) => {
                         return <MenuItem
                           key={index}
                           value={assetCode}
-                        >{assetTypeSet[Number(assetCode)]}</MenuItem>
+                        >{buildingTypeSet[Number(assetCode)]}</MenuItem>
                       })
                     }
                   </Select>

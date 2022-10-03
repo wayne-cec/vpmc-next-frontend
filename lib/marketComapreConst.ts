@@ -1,4 +1,4 @@
-// export const assetTypeSet: { [key: number]: string } = {
+// export const buildingTypeSet: { [key: number]: string } = {
 //   0: '住宅大樓',
 //   1: '辦公商業大樓',
 //   3: '公寓',
@@ -13,21 +13,27 @@
 //   2: '其他'
 // }
 
-export const assetTypeSet: { [key: number]: string } = {
+import { AssetType } from "../api/prod"
+
+export const assetTypeSet: { [key: string]: AssetType } = {
+  '土地': 'land',
+  '建物': 'building',
+  '停車位': 'park',
+}
+
+export const buildingTypeSet: { [key: number]: string } = {
   0: '住宅大樓',
-  1: '土地',
-  2: '停車位',
-  3: '辦公商業大樓',
-  4: '公寓',
-  5: '華廈',
-  6: '套房',
-  7: '透天厝',
-  8: '店面',
-  9: '廠辦',
-  10: '倉庫',
-  11: '工廠',
-  12: '農舍',
-  13: '其他'
+  1: '辦公商業大樓',
+  3: '公寓',
+  4: '華廈',
+  5: '套房',
+  6: '透天厝',
+  7: '店面',
+  8: '廠辦',
+  9: '倉庫',
+  10: '工廠',
+  11: '農舍',
+  2: '其他'
 }
 
 export const transactionTimeSet: { [key: number]: string } = {
@@ -35,12 +41,12 @@ export const transactionTimeSet: { [key: number]: string } = {
   2: '2年內',
   3: '3年內',
   4: '4年內',
-  5: '5年內',
-  6: '6年內',
-  7: '7年內',
-  8: '8年內',
-  9: '9年內',
-  10: '10年內'
+  5: '5年內'
+  // 6: '6年內',
+  // 7: '7年內',
+  // 8: '8年內',
+  // 9: '9年內',
+  // 10: '10年內'
 }
 
 export const buildingTransactionAreaSet: { [key: number]: string } = {

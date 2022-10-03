@@ -4,13 +4,13 @@
         @apply flex;
         .chip{
             @apply py-1 px-2 rounded-md bg-main-primary
-            text-white my-2 mr-2;
+            text-white my-2 mr-2 text-sm;
     
         }
     }
     .priceContainer{
-        @apply w-[600px] h-[100px] bg-transparent 
-        flex justify-between mt-2;
+        @apply h-[100px] bg-transparent 
+        flex justify-around mt-2;
         .priceChip{
             @apply bg-blue-600 bg-opacity-10 w-[190px] h-full
             rounded-md flex items-center justify-center flex-col;
@@ -21,25 +21,29 @@
                 @apply text-red-500 text-base font-light;
             }
             .transferBuildingArea{
-                @apply text-3xl font-extrabold;
+                @apply text-2xl font-extrabold text-black;
             }
             .transferBuildingAreaUnit{
                 @apply text-base font-light;
             }
-            .caption{
-                @apply text-base ;
+            // .caption{
+            //     @apply text-base ;
+            //     color: #666;
+            // }
+            span{
+                @apply text-base;
                 color: #666;
             }
         }
     }
 
     .detailContainer{
-        @apply w-[600px] h-fit bg-transparent
-        mt-4;
+        @apply  h-fit bg-transparent
+        mt-4 px-14;
     }
 
     .AreaDetailContainer{
-        @apply w-[600px] h-fit bg-transparent
+        @apply w-[full] h-fit bg-transparent
         mt-4;
         .heading{
             @apply flex items-center justify-between
