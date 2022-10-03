@@ -156,7 +156,7 @@ const AprV2: NextPage = () => {
                     {
                       countyGraphPending
                         ? <div className={style.loader}></div>
-                        : <Image src={'/aprRegion/search.png'} width='30px' height='30px' />
+                        : <Image src={'/aprRegion/search.png'} width='30px' height='30px' alt='' />
                     }
                   </div>
                 </Grid>
@@ -224,6 +224,7 @@ const AprV2: NextPage = () => {
             </div>
             <div className={style.footer}>
               <Image
+                alt=''
                 className={style.drawerBtn}
                 src={drawerBtn} width='30px' height='30px'
                 onMouseMove={() => {
