@@ -53,6 +53,18 @@ export interface IDetailAprInfo {
   assetsDetail: AssetDetailResponse | undefined
 }
 
+export enum landTransferStatusType {
+  partial = 0,
+  entire = 1,
+  none = 3
+}
+
+export const landTransferStatusTypeMap: { [key: number]: string } = {
+  0: '持分移轉',
+  1: '全筆移轉',
+  3: '無資料'
+}
+
 const AprDetailContent = (props: IDetailAprInfo) => {
   const [tabValue, settabValue] = useState<string>('1')
   const areaWithoutPark = props.buildingTransferArea - props.parkingSpaceTransferArea
@@ -64,12 +76,12 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
               <TableCell>土地位置</TableCell>
-              <TableCell>使用分區或編定</TableCell>
-              <TableCell align="right">土地移轉面積</TableCell>
-              <TableCell align="right">權利人持分分母</TableCell>
-              <TableCell align="right">權利人持分分子</TableCell>
               <TableCell>地號</TableCell>
-              <TableCell>移轉情形</TableCell>
+              <TableCell align="right">土地移轉面積</TableCell>
+              {/* <TableCell align="right">權利人持分分母</TableCell>
+              <TableCell align="right">權利人持分分子</TableCell>
+              <TableCell>移轉情形</TableCell> */}
+              <TableCell>使用分區或編定</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -82,12 +94,20 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                   <TableCell component="th" scope="row">
                     {row.address}
                   </TableCell>
-                  <TableCell>{row.landUse}</TableCell>
-                  <TableCell align="right">{calculateArea(row.landTransferArea)}坪</TableCell>
-                  <TableCell align="right">{row.rightDenumerate}</TableCell>
-                  <TableCell align="right">{row.rightNumerate}</TableCell>
                   <TableCell>{row.parcelNumber}</TableCell>
-                  <TableCell>{row.transferStatus}</TableCell>
+                  <TableCell align="right">
+                    <div>
+                      <span>{calculateArea(row.landTransferArea)}坪</span>
+                      <span className='ml-1'>{landTransferStatusTypeMap[row.transferStatus]}</span>
+                    </div>
+                    <div>
+                      <span>({row.rightNumerate}/{row.rightDenumerate})</span>
+                    </div>
+                  </TableCell>
+                  {/* <TableCell align="right">{row.rightDenumerate}</TableCell>
+                  <TableCell align="right">{row.rightNumerate}</TableCell>
+                  <TableCell>{landTransferStatusTypeMap[row.transferStatus]}</TableCell> */}
+                  <TableCell>{row.landUse}</TableCell>
                 </TableRow>
               ))}
           </TableBody>
