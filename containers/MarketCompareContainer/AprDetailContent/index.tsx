@@ -78,9 +78,6 @@ const AprDetailContent = (props: IDetailAprInfo) => {
               <TableCell>土地位置</TableCell>
               <TableCell>地號</TableCell>
               <TableCell align="right">土地移轉面積</TableCell>
-              {/* <TableCell align="right">權利人持分分母</TableCell>
-              <TableCell align="right">權利人持分分子</TableCell>
-              <TableCell>移轉情形</TableCell> */}
               <TableCell>使用分區或編定</TableCell>
             </TableRow>
           </TableHead>
@@ -104,9 +101,6 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                       <span>({row.rightNumerate}/{row.rightDenumerate})</span>
                     </div>
                   </TableCell>
-                  {/* <TableCell align="right">{row.rightDenumerate}</TableCell>
-                  <TableCell align="right">{row.rightNumerate}</TableCell>
-                  <TableCell>{landTransferStatusTypeMap[row.transferStatus]}</TableCell> */}
                   <TableCell>{row.landUse}</TableCell>
                 </TableRow>
               ))}
@@ -145,13 +139,15 @@ const AprDetailContent = (props: IDetailAprInfo) => {
             {`${mainBuildRatio}%`}
           </TableCell>
           <TableCell component="th" scope="row" rowSpan={3}>
-            {firstBuild.usage}
-          </TableCell>
-          <TableCell component="th" scope="row" rowSpan={3}>
             {firstBuild.material}
           </TableCell>
           <TableCell component="th" scope="row" rowSpan={3}>
             {firstBuild.buildingLayer}
+          </TableCell>
+          <TableCell component="th" scope="row" rowSpan={3}
+            sx={{ width: '275px' }}
+          >
+            {firstBuild.usage}
           </TableCell>
         </TableRow>
         <TableRow
@@ -192,10 +188,11 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         <Table size="small">
           <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
-              <TableCell colSpan={4} align='center'>建物移轉面積</TableCell>
-              <TableCell>主要用途</TableCell>
+              <TableCell colSpan={3} align='center'>建物移轉面積</TableCell>
+              <TableCell>比例</TableCell>
               <TableCell>主要建材</TableCell>
               <TableCell>建物分層</TableCell>
+              <TableCell>主要用途</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -207,14 +204,14 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                   key={row.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell align='center' colSpan={3}>{`${calculateArea(row.buildingTransferArea)}坪`}</TableCell>
+                  <TableCell align='center' colSpan={3}>{`共有${calculateArea(row.buildingTransferArea)}坪`}</TableCell>
 
                   <TableCell component="th" scope="row">
                     {`${Math.round(row.buildingTransferArea / areaWithoutPark * 100)}%`}
                   </TableCell>
-                  <TableCell sx={{ textOverflow: 'clip' }}>{row.usage}</TableCell>
                   <TableCell>{row.material}</TableCell>
                   <TableCell>{row.buildingLayer}</TableCell>
+                  <TableCell sx={{ textOverflow: 'clip' }}>{row.usage}</TableCell>
                 </TableRow>
               </>
             ))}
