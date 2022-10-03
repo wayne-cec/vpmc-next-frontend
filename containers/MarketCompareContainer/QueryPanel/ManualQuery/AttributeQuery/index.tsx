@@ -80,14 +80,50 @@ const AttributeQuery = () => {
                 size='small'
                 fullWidth
               >
-                {
+                {/* {
                   Object.keys(buildingTypeSet).map((buildingTypeCode, index) => {
                     return <MenuItem
                       key={index}
                       value={buildingTypeCode}
                     >{buildingTypeSet[Number(buildingTypeCode)]}</MenuItem>
                   })
-                }
+                } */}
+                <MenuItem
+                  value={0}
+                >住宅大樓</MenuItem>
+                <MenuItem
+                  value={4}
+                >華廈</MenuItem>
+                <MenuItem
+                  value={3}
+                >公寓</MenuItem>
+                <MenuItem
+                  value={5}
+                >套房</MenuItem>
+                <MenuItem
+                  value={6}
+                >透天厝</MenuItem>
+                <MenuItem
+                  value={7}
+                >店面</MenuItem>
+                <MenuItem
+                  value={1}
+                >辦公商業大樓</MenuItem>
+                <MenuItem
+                  value={8}
+                >廠辦</MenuItem>
+                <MenuItem
+                  value={9}
+                >倉庫</MenuItem>
+                <MenuItem
+                  value={10}
+                >工廠</MenuItem>
+                <MenuItem
+                  value={11}
+                >農舍</MenuItem>
+                <MenuItem
+                  value={2}
+                >其他</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -306,14 +342,35 @@ const AttributeQuery = () => {
                     // autoFocus={isParkSpaceFiltered}
                     disabled={!marketCompareContext.isParkSpaceFiltered}
                   >
-                    {
+                    {/* {
                       Object.keys(parkSpaceSet).map((assetCode, index) => {
                         return <MenuItem
                           key={index}
                           value={assetCode}
                         >{parkSpaceSet[Number(assetCode)]}</MenuItem>
                       })
-                    }
+                    } */}
+                    <MenuItem
+                      value={6}
+                    >一樓平面</MenuItem>
+                    <MenuItem
+                      value={2}
+                    >坡道平面</MenuItem>
+                    <MenuItem
+                      value={3}
+                    >升降平面</MenuItem>
+                    <MenuItem
+                      value={5}
+                    >坡道機械</MenuItem>
+                    <MenuItem
+                      value={4}
+                    >升降機械</MenuItem>
+                    <MenuItem
+                      value={1}
+                    >塔式車位</MenuItem>
+                    <MenuItem
+                      value={7}
+                    >其他</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
