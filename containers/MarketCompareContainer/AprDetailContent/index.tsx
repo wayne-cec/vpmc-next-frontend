@@ -112,7 +112,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
   const renderBuildFirstRow = () => {
     if (!props.assetsDetail) return
-    const firstBuild = props.assetsDetail.builds.at(0)
+    const firstBuild = props.assetsDetail.builds.filter(b => !b.usage.includes('共有')).at(0)
     if (!firstBuild) return
     const mainBuildRatio = Math.round(props.buildingArea / areaWithoutPark * 100)
     const subBuildRatio = Math.round(props.subBuildingArea / areaWithoutPark * 100)
@@ -182,7 +182,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
   const renderBuildTable = () => {
     if (!props.assetsDetail) return
-    const subBuilds = props.assetsDetail.builds.slice(1)
+    const subBuilds = props.assetsDetail.builds.filter(b => b.usage.includes('共有'))
     return (
       <TableContainer component={Paper}>
         <Table size="small">

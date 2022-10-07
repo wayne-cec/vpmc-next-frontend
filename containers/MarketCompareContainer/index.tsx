@@ -18,7 +18,6 @@ import {
   DialogTitle, Button
 } from '@mui/material'
 import { IMarketCompare } from '../../api/prod'
-import { parseCommitee } from '../../lib/parseCommitee'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../store/slice/user'
 import { useLazyGetAssetDetailByAprIdQuery } from '../../store/services/apr'
