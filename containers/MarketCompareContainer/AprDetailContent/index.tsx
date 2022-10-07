@@ -183,7 +183,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
   const renderBuildTable = () => {
     if (!props.assetsDetail) return
-    const subBuilds = props.assetsDetail.builds.filter(b => b.usage.includes('共有'))
+    const subBuilds = props.assetsDetail.builds
     return (
       <TableContainer component={Paper}>
         <Table size="small">
@@ -198,6 +198,18 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           </TableHead>
           <TableBody>
             {renderBuildFirstRow()}
+          </TableBody>
+
+          <TableHead sx={{ bgcolor: '#E8EFFD' }}>
+            <TableRow>
+              <TableCell colSpan={3} align='center'>建物移轉面積</TableCell>
+              <TableCell>比例</TableCell>
+              <TableCell>主要建材</TableCell>
+              <TableCell>建物分層</TableCell>
+              <TableCell>主要用途</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {subBuilds.map((row) => (
               // const belconyRatio = Math.round(props.belconyArea / areaWithoutPark * 100)
               <>
@@ -205,7 +217,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                   key={row.id}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                 >
-                  <TableCell align='center' colSpan={3}>{`共有${calculateArea(row.buildingTransferArea)}坪`}</TableCell>
+                  <TableCell align='center' colSpan={3}>{`${calculateArea(row.buildingTransferArea)}坪`}</TableCell>
 
                   <TableCell component="th" scope="row">
                     {`${Math.round(row.buildingTransferArea / areaWithoutPark * 100)}%`}
@@ -223,6 +235,8 @@ const AprDetailContent = (props: IDetailAprInfo) => {
               <TableCell colSpan={3}></TableCell>
             </TableRow>
           </TableBody>
+
+
         </Table>
       </TableContainer>
     )
