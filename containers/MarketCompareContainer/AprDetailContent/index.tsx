@@ -22,6 +22,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Divider from '@mui/material/Divider'
+import classNames from 'classnames'
 
 const square = 3.305785
 
@@ -268,9 +269,14 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
         {/* {(props.organization !== '' ? props.organization : '無管委會')} */}
         {
-          props.organization !== '無管委會' && <span className={style.chip}>
-            {parseCommitee(props.organization)}
-          </span>
+          props.organization !== '無管委會'
+            ? <span className={style.chip}>
+              {parseCommitee(props.organization)}
+            </span>
+            : <span className={classNames({
+              [style.chip]: true,
+              [style.disabled]: true
+            })}>無管委會</span>
         }
       </div>
       <div className={style.priceContainer}>
