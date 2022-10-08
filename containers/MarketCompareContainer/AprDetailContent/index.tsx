@@ -130,16 +130,16 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         <TableRow
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={4}>
             {'主建物'}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={1}>
             {`${calculateArea(props.buildingArea)}坪`}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={2}>
             {`${mainBuildRatio}%`}
           </TableCell>
-          <TableCell component="th" scope="row" rowSpan={3}>
+          {/* <TableCell component="th" scope="row" rowSpan={3}>
             {firstBuild.material}
           </TableCell>
           <TableCell component="th" scope="row" rowSpan={3}>
@@ -149,31 +149,31 @@ const AprDetailContent = (props: IDetailAprInfo) => {
             sx={{ width: '275px' }}
           >
             {firstBuild.usage}
-          </TableCell>
+          </TableCell> */}
         </TableRow>
         <TableRow
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={4}>
             {'附屬建物'}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={1}>
             {`${calculateArea(props.subBuildingArea)}坪`}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={2}>
             {`${subBuildRatio}%`}
           </TableCell>
         </TableRow>
         <TableRow
-          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={4}>
             {'陽台'}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={1}>
             {`${calculateArea(props.belconyArea)}坪`}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={2}>
             {`${belconyRatio}%`}
           </TableCell>
         </TableRow>
@@ -189,11 +189,11 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         <Table size="small">
           <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
-              <TableCell colSpan={3} align='center'>建物移轉面積</TableCell>
-              <TableCell>比例</TableCell>
-              <TableCell>主要建材</TableCell>
+              <TableCell colSpan={6} align='center'>建物移轉面積</TableCell>
+              <TableCell sx={{ width: '385px' }}>比例</TableCell>
+              {/* <TableCell>主要建材</TableCell>
               <TableCell>建物分層</TableCell>
-              <TableCell>主要用途</TableCell>
+              <TableCell>主要用途</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -235,7 +235,6 @@ const AprDetailContent = (props: IDetailAprInfo) => {
               <TableCell colSpan={3}></TableCell>
             </TableRow>
           </TableBody>
-
 
         </Table>
       </TableContainer>
