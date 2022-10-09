@@ -16,6 +16,7 @@ export interface IUserLogsProcessed {
 export interface IUserInfo {
   userId: string
   email: string
+  alias: string
   phoneNumber: string
   createdDate: string
   isActive: boolean

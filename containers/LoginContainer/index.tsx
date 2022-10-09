@@ -29,7 +29,7 @@ const LoginContainer = () => {
     setbounce(false)
     const { statusCode, responseContent } = await api.prod.authenticate(email, password)
     if (statusCode === 200) {
-      console.log(responseContent)
+      // console.log(responseContent)
       dispatch(
         setUserToken(responseContent.token)
       )

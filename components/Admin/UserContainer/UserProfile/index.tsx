@@ -4,7 +4,8 @@ import { selectUser } from '../../../../store/slice/user'
 import { IRole } from '../../../../api/prod/role'
 import { IUserInfo } from '../../../../api/prod'
 import { useSelector } from 'react-redux'
-import { useState, useRef } from 'react'
+import { useState } from 'react'
+import BadgeIcon from '@mui/icons-material/Badge'
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration'
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone'
 import SecurityIcon from '@mui/icons-material/Security'
@@ -16,7 +17,7 @@ import api from '../../../../api'
 import moment from 'moment'
 import className from 'classnames'
 import { isEqual } from 'lodash'
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
 interface IUserProfile {
   userInfo: IUserInfo | undefined
@@ -221,6 +222,14 @@ const UserProfile = ({
         userInfo &&
         <div className={style.InfoConatiner}>
           <Grid container spacing={2}>
+            <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center', color: 'gray' }}>
+              <BadgeIcon />
+              <p>姓名</p>
+            </Grid>
+            <Grid item xs={6}>
+              <p>{userInfo.alias}</p>
+            </Grid>
+
             <Grid item xs={6} sx={{ display: 'flex', alignItems: 'center', color: 'gray' }}>
               <EmailIcon />
               <p>電子郵件</p>
