@@ -85,7 +85,7 @@ export interface IMarketCompareContext {
   zoomId: { id: string } | null
   pending: boolean
   onZoomIdChange: (value: { id: string } | null) => void
-  setpending: (value: boolean) => void
+  onPendingChange: (value: boolean) => void
   onDetailAprChange: (id: string) => void
   onShow: (value: boolean) => void
   onCountyRadioClick: () => void
@@ -179,14 +179,14 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   zoomId: null,
   pending: false,
   onZoomIdChange: (value) => { },
-  setpending: (value) => { },
+  onPendingChange: (value) => { },
   onDetailAprChange: (id) => { },
   onShow: (value) => { },
   onCountyRadioClick: () => { },
   onCountyChange: (county) => { },
   onTownChange: (town) => { },
   handleCoordinateSelect: () => { },
-  onCoordinateSelect: () => { }
+  onCoordinateSelect: (longitude, latitude) => { }
 })
 
 export default MarketCompareContext

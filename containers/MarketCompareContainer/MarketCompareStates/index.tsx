@@ -75,7 +75,7 @@ const useMarketCompareStates = () => {
   const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
   const [assetsDetail, setassetDetail] = useState<AssetDetailResponse | undefined>(undefined)
 
-  const handleCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
+  const handleMapCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
     setlongitude(longitude)
     setlatitude(latitude)
     setisCoordinateSelectorActive(false)
@@ -274,6 +274,164 @@ const useMarketCompareStates = () => {
     }
   }
 
+
+  const onUploadClick = (value: boolean) => {
+    setuploadPanelOpen(value)
+  }
+
+  const onCoordinatorSelectorClick = (value: boolean) => {
+    setisCoordinateSelectorActive(value)
+  }
+
+  const onSpatialQueryTypeChange = setspatialQueryType
+
+
+  const onBufferRadiusChange = (value: number) => {
+    setbufferRadius(value)
+  }
+  const onSketchModeChange = (value: PolygonSketchMode) => {
+    setsketchMode(value)
+  }
+
+  const onDraw = () => {
+    setsketchMode('draw')
+  }
+  const onClear = () => {
+    setspatialQueryType('clear')
+  }
+  const onAssetTypeChange = (value: AssetType) => {
+    setassetTypeCode(value)
+  }
+  const onBuildingTypeChange = (value: number) => {
+    setbuildingTypeCode(value)
+  }
+
+  const onTransactionTimeFilteredChange = () => {
+    setisTransactionTimeFiltered(prev => !prev)
+    settransactionTime(1)
+  }
+  const onTransactionTimeSelect = (value: number) => {
+    settransactionTime(value)
+    setisTransactionTimeFosced(true)
+  }
+  const onBuildingAreaFilteredChange = () => {
+    setisBuildingAreaFiltered(prev => !prev)
+    setbuildingTransferArea(0)
+  }
+  const onBuildingAreaSelect = (value: number) => {
+    setbuildingTransferArea(value)
+    setisBuildingAreaFosced(true)
+  }
+  const onLandAreaFilteredChange = () => {
+    setisLandAreaFiltered(prev => !prev)
+    setlandTransferArea(0)
+  }
+  const onLandAreaSelect = (value: number) => {
+    setlandTransferArea(value)
+    setisLandAreaFosced(true)
+  }
+  const onAgeFilteredChange = () => {
+    setisAgeFiltered(prev => !prev)
+    setage(0)
+  }
+  const onAgeSelect = (value: number) => {
+    setage(value)
+    setisAgeFosced(true)
+  }
+  const onParkSpaceTypeFilteredChange = () => {
+    setisParkSpaceFiltered(prev => !prev)
+    setparkSpaceType(0)
+  }
+  const onParkSpaceTypeSelect = (value: number) => {
+    setparkSpaceType(value)
+    setisParkSpaceFosced(true)
+  }
+  const onUrbanLaudUseFilteredChange = () => {
+    setisUrbanUsageFiltered(prev => !prev)
+    seturbanLandUse([0])
+  }
+  const onUrbanLaudUseSelect = (value: number[]) => {
+    seturbanLandUse(value)
+    setisUrbanUsageFosced(true)
+  }
+  const onPriceFilteredChange = () => {
+    setisPriceFiltered(prev => !prev)
+  }
+  const onMinPriceChange = (value: number) => {
+    setminPrice(value)
+  }
+  const onMaxPriceChange = (value: number) => {
+    setmaxPrice(value)
+  }
+
+  const onUnitPriceFilteredChange = () => {
+    setisUnitPriceFiltered(prev => !prev)
+  }
+  const onMinUnitPriceChange = (value: number) => {
+    setminUnitPrice(value)
+  }
+  const onMaxUnitPriceChange = (value: number) => {
+    setmaxUnitPrice(value)
+  }
+  const onCustomizeParamBtnClick = () => {
+    setmsgOpen(true)
+    seterrorTitle('訊息')
+    seterrorContent('自定義參數功能尚未開發')
+  }
+  const onZoomIdChange = (value: {
+    id: string;
+  } | null) => {
+    setzoomId(value)
+  }
+
+  const onPendingChange = (value: boolean) => {
+    setpending(value)
+  }
+
+  const onDetailAprChange = (value: string) => {
+    setdetailAprId({
+      id: value
+    })
+  }
+
+  const onShow = (value: boolean) => {
+    setdetailPanelShow(value)
+  }
+  const onResultPanelClose = () => {
+    setfilteredResults(null)
+  }
+
+  const onCountyRadioClick = () => {
+    setmsgOpen(true)
+    seterrorTitle('警告')
+    seterrorContent('此方法會調出大量資料，請謹慎使用。')
+  }
+
+  const onCountyChange = (county: string) => {
+    setcounty(county)
+    reFetchTownData(county)
+  }
+  const onTownChange = (towns: string[]) => {
+    settowns(towns)
+  }
+
+  const handleCoordinateSelect = (
+    longitude: number | null,
+    latitude: number | null
+  ) => {
+    if (longitude)
+      setlongitude(longitude)
+    if (latitude)
+      setlatitude(latitude)
+  }
+
+  const onCoordinateSelect = (
+    longitude: number | undefined,
+    latitude: number | undefined
+  ) => {
+    handleMapCoordinateSelect(longitude, latitude)
+  }
+
   return {
     longitude, setlongitude,
     latitude, setlatitude,
@@ -334,13 +492,51 @@ const useMarketCompareStates = () => {
     townData, settownData,
     uploadPanelOpen, setuploadPanelOpen,
     assetsDetail, setassetDetail,
-    handleCoordinateSelect,
+    handleMapCoordinateSelect,
     handleFormSubmit,
     handleShowQueryPanel,
     handleShowResultPanel,
     handleGetCommiteeByAprId,
     handleErrorDialogClose,
-    reFetchTownData
+    reFetchTownData,
+    onUploadClick,
+    onCoordinatorSelectorClick,
+    onSpatialQueryTypeChange,
+    onBufferRadiusChange,
+    onSketchModeChange,
+    onDraw,
+    onClear,
+    onAssetTypeChange,
+    onBuildingTypeChange,
+    onTransactionTimeFilteredChange,
+    onTransactionTimeSelect,
+    onBuildingAreaFilteredChange,
+    onBuildingAreaSelect,
+    onLandAreaFilteredChange,
+    onLandAreaSelect,
+    onAgeFilteredChange,
+    onAgeSelect,
+    onParkSpaceTypeFilteredChange,
+    onParkSpaceTypeSelect,
+    onUrbanLaudUseFilteredChange,
+    onUrbanLaudUseSelect,
+    onPriceFilteredChange,
+    onMinPriceChange,
+    onMaxPriceChange,
+    onUnitPriceFilteredChange,
+    onMinUnitPriceChange,
+    onMaxUnitPriceChange,
+    onCustomizeParamBtnClick,
+    onZoomIdChange,
+    onPendingChange,
+    onDetailAprChange,
+    onShow,
+    onResultPanelClose,
+    onCountyRadioClick,
+    onCountyChange,
+    onTownChange,
+    handleCoordinateSelect,
+    onCoordinateSelect
   }
 }
 
