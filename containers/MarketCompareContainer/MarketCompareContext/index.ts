@@ -8,8 +8,8 @@ export interface IMarketCompareContext {
   resultPanelShow: boolean
   longitude?: number
   latitude?: number
-  locatedCounty?: string
-  locatedTown?: string
+  locatedCounty: string | null
+  locatedTown: string | null
   isSelectorActive: boolean
   isTransactionTimeFiltered: boolean
   isBuildingAreaFiltered: boolean
@@ -32,18 +32,18 @@ export interface IMarketCompareContext {
   assetTypeCode: AssetType
   buildingTypeCode: number
   bufferRadius: number
-  transactiontime?: number
-  buildingTransferArea?: number
-  landTransferArea?: number
-  age?: number
-  parkSpaceType?: number
-  urbanLandUse?: number[]
-  polygonGoejson?: string
+  transactiontime: number | null
+  buildingTransferArea: number | null
+  landTransferArea: number | null
+  age: number | null
+  parkSpaceType: number | null
+  urbanLandUse: number[] | undefined
+  polygonGoejson: string | null
   minPrice?: number
   maxPrice?: number
   minUnitPrice?: number
   maxUnitPrice?: number
-  filteredResults: IMarketCompareResult[]
+  filteredResults: IMarketCompareResult[] | null
   spatialQueryType: SpatialQueryType
   sketchMode: PolygonSketchMode
   graphData?: IGraphData
@@ -102,8 +102,8 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   resultPanelShow: false,
   longitude: undefined,
   latitude: undefined,
-  locatedCounty: undefined,
-  locatedTown: undefined,
+  locatedCounty: null,
+  locatedTown: null,
   isSelectorActive: false,
   isTransactionTimeFiltered: false,
   isBuildingAreaFiltered: false,
@@ -126,13 +126,13 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   assetTypeCode: 'building',
   buildingTypeCode: 0,
   bufferRadius: 300,
-  transactiontime: undefined,
-  buildingTransferArea: undefined,
-  landTransferArea: undefined,
-  age: undefined,
-  parkSpaceType: undefined,
+  transactiontime: null,
+  buildingTransferArea: null,
+  landTransferArea: null,
+  age: null,
+  parkSpaceType: null,
   urbanLandUse: undefined,
-  polygonGoejson: undefined,
+  polygonGoejson: null,
   minPrice: undefined,
   maxPrice: undefined,
   minUnitPrice: undefined,

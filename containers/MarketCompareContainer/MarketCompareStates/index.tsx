@@ -5,8 +5,16 @@ import { IMarketCompareResult } from '../../../api/prod'
 import { SpatialQueryType } from '..'
 import { IDetailAprInfo } from '../AprDetailContent'
 import { AssetDetailResponse } from '../../../store/services/types/apr'
+import api from '../../../api'
+import { IMarketCompare } from '../../../api/prod'
+import moment from 'moment'
+import { useSelector } from 'react-redux'
+import { selectUser } from '../../../store/slice/user'
+
+const square = 3.305785
 
 const useMarketCompareStates = () => {
+  const userInfo = useSelector(selectUser)
   const [longitude, setlongitude] = useState<number | undefined>(undefined)
   const [latitude, setlatitude] = useState<number | undefined>(undefined)
   const [locatedCounty, setlocatedCounty] = useState<string | null>(null)
@@ -38,7 +46,7 @@ const useMarketCompareStates = () => {
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
   const [age, setage] = useState<number | null>(null)
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
-  const [urbanLandUse, seturbanLandUse] = useState<number[] | null>(null)
+  const [urbanLandUse, seturbanLandUse] = useState<number[] | undefined>(undefined)
   const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
   const [minPrice, setminPrice] = useState<number | undefined>(0)
   const [maxPrice, setmaxPrice] = useState<number | undefined>(2000)
@@ -66,6 +74,206 @@ const useMarketCompareStates = () => {
   const [townData, settownData] = useState<ITownData | null>(null)
   const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
   const [assetsDetail, setassetDetail] = useState<AssetDetailResponse | undefined>(undefined)
+
+  const handleCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
+    setlongitude(longitude)
+    setlatitude(latitude)
+    setisCoordinateSelectorActive(false)
+    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude!, latitude!)
+    if (statusCode === 200) {
+      setlocatedCounty(responseContent.countyname)
+      setlocatedTown(responseContent.townname)
+    } else {
+      setlocatedCounty(null)
+      setlocatedTown(null)
+    }
+  }
+
+  const handleFormSubmit = async () => {
+    setpending(true)
+    setfilteredResults(null)
+    if (assetTypeCode === null) {
+      setmsgOpen(true)
+      seterrorTitle('警告')
+      seterrorContent('請輸入資產類別')
+      setpending(false)
+      return
+    }
+    if (
+      minPrice &&
+      maxPrice &&
+      minPrice > maxPrice
+    ) {
+      setmsgOpen(true)
+      seterrorTitle('錯誤')
+      seterrorContent('價格上限不能低於下限')
+      setpending(false)
+      return
+    }
+    if (
+      minUnitPrice
+      && maxUnitPrice
+      && minUnitPrice > maxUnitPrice
+    ) {
+      setmsgOpen(true)
+      seterrorTitle('錯誤')
+      seterrorContent('價格上限不能低於下限')
+      setpending(false)
+      return
+    }
+    // alert(spatialQueryType)
+    const params: IMarketCompare = {
+      assetType: assetTypeCode,
+      buildingType: buildingTypeCode
+    }
+    if (
+      longitude !== undefined &&
+      latitude !== undefined &&
+      bufferRadius !== null &&
+      spatialQueryType === 'buffer'
+    ) {
+      params.longitude = longitude
+      params.latitude = latitude
+      params.bufferRadius = bufferRadius
+    } else if (
+      polygonGoejson !== null &&
+      spatialQueryType !== 'clear' &&
+      spatialQueryType !== 'buffer'
+    ) {
+      params.geojson = polygonGoejson
+    } else if (sketchMode === 'county') {
+      params.county = county!
+      params.town = towns.join(',')
+    } else {
+      setmsgOpen(true)
+      seterrorTitle('警告')
+      seterrorContent('至少選擇一種空間查詢方法，並輸入參數。')
+      setpending(false)
+      return
+    }
+
+    if (isTransactionTimeFiltered && transactiontime) {
+      const dateNow = new Date()
+      params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
+      params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
+    }
+    if (isBuildingAreaFiltered && buildingTransferArea !== null) {
+      if (buildingTransferArea === 0) {
+        params.buildingAreaStart = 0
+        params.buildingAreaEnd = 25 * square
+      } else if (buildingTransferArea === 1) {
+        params.buildingAreaStart = 25 * square
+        params.buildingAreaEnd = 50 * square
+      } else if (buildingTransferArea === 2) {
+        params.buildingAreaStart = 50 * square
+        params.buildingAreaEnd = 80 * square
+      } else if (buildingTransferArea === 3) {
+        params.buildingAreaStart = 80 * square
+        params.buildingAreaEnd = 10000 * square
+      }
+    }
+    if (isLandAreaFiltered && landTransferArea !== null) {
+      if (landTransferArea === 0) {
+        params.landAreaStart = 0
+        params.landAreaEnd = 50 * square
+      } else if (landTransferArea === 1) {
+        params.landAreaStart = 50 * square
+        params.landAreaEnd = 200 * square
+      } else if (landTransferArea === 2) {
+        params.landAreaStart = 200 * square
+        params.landAreaEnd = 100000 * square
+      }
+    }
+    if (isAgeFiltered && age !== null) {
+      if (age === 0) {
+        params.ageStart = 0
+        params.ageEnd = 5
+      } else if (age === 1) {
+        params.ageStart = 5
+        params.ageEnd = 10
+      } else if (age === 2) {
+        params.ageStart = 10
+        params.ageEnd = 20
+      } else if (age === 3) {
+        params.ageStart = 20
+        params.ageEnd = 30
+      } else if (age === 4) {
+        params.ageStart = 30
+        params.ageEnd = 500
+      }
+    }
+    if (isParkSpaceFiltered && parkSpaceType) {
+      params.parkingSpaceType = parkSpaceType
+    }
+    if (isUrbanUsageFiltered && urbanLandUse) {
+      params.urbanLandUse = urbanLandUse
+    }
+    if (isPriceFiltered) {
+      params.minPrice = minPrice
+      params.maxPrice = maxPrice
+    }
+    if (isUnitPriceFiltered) {
+      params.minUnitPrice = minUnitPrice
+      params.maxUnitPrice = maxUnitPrice
+    }
+
+    const { statusCode, responseContent } = await api.prod.marketCompare(params, userInfo.token)
+    if (statusCode === 200) {
+      console.log(responseContent)
+      setfilteredResults(responseContent)
+      const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params, userInfo.token)
+      if (statusCode === 200) {
+        setgraphData(responseContent2)
+        setpending(false)
+        setqueryPanelShow(false)
+        setresultPanelShow(true)
+      } else {
+        setmsgOpen(true)
+        seterrorTitle('錯誤')
+        seterrorContent('伺服器錯誤，統計圖表資料請求失敗，請聯繫開發人員')
+        setpending(false)
+      }
+    } else {
+      setfilteredResults(null)
+      setmsgOpen(true)
+      seterrorTitle('錯誤')
+      seterrorContent('伺服器錯誤，查詢失敗，請聯繫開發人員')
+      setpending(false)
+    }
+  }
+
+  const handleShowQueryPanel = () => {
+    setqueryPanelShow(prev => !prev)
+    setresultPanelShow(false)
+  }
+
+  const handleShowResultPanel = () => {
+    setresultPanelShow(prev => !prev)
+    setqueryPanelShow(false)
+  }
+
+  const handleGetCommiteeByAprId = async (id: string) => {
+    const { statusCode, responseContent } = await api.prod.getCommiteeByAprId(id)
+    if (statusCode === 200) {
+      return responseContent.organization
+    }
+    return undefined
+  }
+
+  const handleErrorDialogClose = () => {
+    setmsgOpen(false)
+    seterrorTitle('')
+    seterrorContent('')
+  }
+
+  const reFetchTownData = async (county: string) => {
+    const { statusCode, responseContent2 } = await api.prod.listTownsByCounty(county)
+    if (statusCode === 200) {
+      settowns([responseContent2['鄉鎮市區'][0].name])
+      settownData(responseContent2)
+    }
+  }
+
   return {
     longitude, setlongitude,
     latitude, setlatitude,
@@ -125,7 +333,14 @@ const useMarketCompareStates = () => {
     countyData, setcountyData,
     townData, settownData,
     uploadPanelOpen, setuploadPanelOpen,
-    assetsDetail, setassetDetail
+    assetsDetail, setassetDetail,
+    handleCoordinateSelect,
+    handleFormSubmit,
+    handleShowQueryPanel,
+    handleShowResultPanel,
+    handleGetCommiteeByAprId,
+    handleErrorDialogClose,
+    reFetchTownData
   }
 }
 

@@ -2,31 +2,18 @@ import React, { useContext } from 'react'
 import style from './index.module.scss'
 import classNames from 'classnames'
 import MultiChipSelect from '../../../../../components/MultiChipSelect'
-import MarketCompareContext, { IMarketCompareContext } from '../../../MarketCompareContext'
+import MarketCompareContext from '../../../MarketCompareContext'
 import {
-  buildingTypeSet, transactionTimeSet, buildingTransactionAreaSet,
-  landTransactionAreaSet, ageSet, parkSpaceSet, urbanUsageSet, assetTypeSet
+  transactionTimeSet, buildingTransactionAreaSet,
+  landTransactionAreaSet, ageSet, urbanUsageSet, assetTypeSet
 } from '../../../../../lib/marketComapreConst'
 import {
   Grid, FormControl, InputLabel, Select,
   Checkbox, MenuItem, TextField
 } from '@mui/material'
-import { AssetType, assetTypeMapping } from '../../../../../api/prod'
+import { AssetType } from '../../../../../api/prod'
 
 export type AttributeQueryType = 'building' | 'parking' | 'land'
-
-// const getAttributeQueryType = (
-//   assetTypeMapping: { [key: number]: number },
-//   marketCompareContext: IMarketCompareContext
-// ) => {
-//   if (assetTypeMapping[marketCompareContext.assetTypeCode] !== 100 && assetTypeMapping[marketCompareContext.assetTypeCode] !== 200) {
-//     return 'building'
-//   } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 100) {
-//     return 'land'
-//   } else if (assetTypeMapping[marketCompareContext.assetTypeCode] === 200) {
-//     return 'parking'
-//   }
-// }
 
 const AttributeQuery = () => {
   const marketCompareContext = useContext(MarketCompareContext)
@@ -140,11 +127,6 @@ const AttributeQuery = () => {
         </Grid>
         <Grid item xs={10}>
           <FormControl size='small' fullWidth>
-            {/* {
-              marketCompareContext.isTransactionTimeFiltered && !marketCompareContext.isTransactionTimeFosced
-                ? <></>
-                : <InputLabel id="transaction-time">交易時間</InputLabel>
-            } */}
             <InputLabel id="transaction-time">交易時間</InputLabel>
             <Select
               labelId="transaction-time"
@@ -153,7 +135,6 @@ const AttributeQuery = () => {
               size='small'
               value={marketCompareContext.isTransactionTimeFiltered ? marketCompareContext.transactiontime : ''}
               disabled={!marketCompareContext.isTransactionTimeFiltered}
-              // autoFocus={isTransactionTimeFiltered}
               onChange={(event) => {
                 marketCompareContext.onTransactionTimeSelect(Number(event.target.value))
               }}
@@ -408,24 +389,7 @@ const AttributeQuery = () => {
         {
           marketCompareContext.assetTypeCode !== 'park'
             ? <>
-              {/* <Grid item xs={0}>
-                <Checkbox
-                  checked={false}
-                  onClick={() => { }}
-                  disabled
-                />
-              </Grid> */}
               <Grid item xs={5}>
-                {/* <MultiChipSelect
-                  placeholder='非都市土地分區'
-                  urbanLandUse={undefined}
-                  urbanUsageSet={urbanUsageSet}
-                  isUrbanUsageFiltered={false}
-                  isUrbanUsageFosced={false}
-                  onChange={(value) => {
-                    marketCompareContext.onUrbanLaudUseSelect(value)
-                  }}
-                /> */}
                 <FormControl size='small' fullWidth>
                   <InputLabel id="aaa">非都市土地分區</InputLabel>
                   <Select
