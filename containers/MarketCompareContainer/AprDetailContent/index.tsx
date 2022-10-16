@@ -118,6 +118,8 @@ const AprDetailContent = (props: IDetailAprInfo) => {
     const mainBuildRatio = Math.round(props.buildingArea / areaWithoutPark * 100)
     const subBuildRatio = Math.round(props.subBuildingArea / areaWithoutPark * 100)
     const belconyRatio = Math.round(props.belconyArea / areaWithoutPark * 100)
+    const mutualArea = props.buildingTransferArea - (props.buildingArea + props.subBuildingArea + props.belconyArea)
+    const mutualRatio = Math.round(mutualArea / areaWithoutPark * 100)
     return (
       <>
         <TableRow
@@ -175,6 +177,17 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           </TableCell>
           <TableCell component="th" scope="row" colSpan={2}>
             {`${belconyRatio}%`}
+          </TableCell>
+        </TableRow>
+
+        <TableRow
+        // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell component="th" scope="row" colSpan={6}>
+            {`共有部分${calculateArea(mutualArea)}坪`}
+          </TableCell>
+          <TableCell component="th" scope="row" colSpan={2}>
+            {`${mutualRatio}%`}
           </TableCell>
         </TableRow>
       </>
