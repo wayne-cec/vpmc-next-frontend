@@ -43,11 +43,15 @@ const WithNavFooterProtected = function <P extends { [k: string]: any }> (Compon
     return (
       <>
         <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
-          <Header />
-          <div className="content-container">
-            <Component {...props} />
-          </div>
-          <Footer />
+          {
+            isAuthenticated ? <>
+              <Header />
+              <div className="content-container">
+                <Component {...props} />
+              </div>
+              <Footer />
+            </> : null
+          }
         </AuthContext.Provider>
       </>
     )

@@ -39,9 +39,11 @@ const WithNothingProtected = function <P extends { [k: string]: any }> (Componen
     return (
       <>
         <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
-          <div className="content-container">
-            <Component {...props} />
-          </div>
+          {
+            isAuthenticated ? <div className="content-container">
+              <Component {...props} />
+            </div> : null
+          }
         </AuthContext.Provider>
       </>
     )

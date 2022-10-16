@@ -42,10 +42,14 @@ const WithNavProtected = function <P extends { [k: string]: any }> (Component: R
     return (
       <>
         <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
-          <Header />
-          <div className="content-container">
-            <Component {...props} />
-          </div>
+          {
+            isAuthenticated ? <>
+              <Header />
+              <div className="content-container">
+                <Component {...props} />
+              </div>
+            </> : null
+          }
         </AuthContext.Provider>
       </>
     )

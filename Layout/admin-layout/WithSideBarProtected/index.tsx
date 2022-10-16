@@ -80,11 +80,14 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
     }, [userInfo.token])
     return (
       <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
-        <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-          {/* <CssBaseline /> */}
-          <RwdSideBar toggled={toggled} isBreakPointHit={isBreakPointHit} />
-          <Component {...props} />
-        </Box>
+        {
+          isAuthenticated ?
+            <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+              {/* <CssBaseline /> */}
+              <RwdSideBar toggled={toggled} isBreakPointHit={isBreakPointHit} />
+              <Component {...props} />
+            </Box> : null
+        }
       </AuthContext.Provider>
     )
   }
