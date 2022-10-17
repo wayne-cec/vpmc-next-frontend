@@ -21,6 +21,7 @@ import { IMarketCompare } from '../../api/prod'
 import { useSelector } from 'react-redux'
 import { selectUser } from '../../store/slice/user'
 import { useLazyGetAssetDetailByAprIdQuery } from '../../store/services/apr'
+import CustomizeParamsPanel from './CustomizeParamsPanel'
 
 const square = 3.305785
 
@@ -86,6 +87,72 @@ const MarketCompareContainer = () => {
     fetchDefaultCountyData()
   }, [])
 
+  const renderCustomizePanel = () => {
+    return (
+      <Dialog
+        open={mcStates.customizePanelOpen}
+        onClose={() => { mcStates.setcustomizePanelOpen(false) }}
+      >
+        <DialogTitle>自定義參數</DialogTitle>
+        <CustomizeParamsPanel />
+      </Dialog>
+    )
+  }
+
+  const renderResultPanel = () => {
+    return (
+      <Dialog
+        open={mcStates.detailPanelShow}
+        onClose={() => {
+          mcStates.setdetailPanelShow(false)
+        }}
+      >
+        <DialogTitle
+          sx={{ paddingBottom: '0px' }}
+        >
+          {mcStates.detailAprInfo && mcStates.detailAprInfo.address}
+        </DialogTitle>
+        <DialogContent sx={{ width: '900px' }}>
+          {mcStates.detailAprInfo && <AprDetailContent
+            {...mcStates.detailAprInfo}
+          />}
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              mcStates.setdetailPanelShow(false)
+            }}
+          >
+            確認
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
+  const renderErrorPanel = () => {
+    return (
+      <Dialog
+        open={mcStates.msgOpen}
+        onClose={mcStates.handleErrorDialogClose}
+      >
+        <DialogTitle>
+          {mcStates.errorTitle}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {mcStates.errorContent}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={mcStates.handleErrorDialogClose}>
+            確認
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+
   return (
     <>
       <Head>
@@ -94,118 +161,7 @@ const MarketCompareContainer = () => {
         <link rel="icon" href="/yuantai.ico" />
       </Head>
       <MarketCompareContext.Provider
-        value={{
-          ...mcStates,
-          onUploadClick: (value) => { mcStates.setuploadPanelOpen(value) },
-          onCoordinatorSelectorClick: (value) => { mcStates.setisCoordinateSelectorActive(value) },
-          onSpatialQueryTypeChange: mcStates.setspatialQueryType,
-          onBufferRadiusChange: (value) => { mcStates.setbufferRadius(value) },
-          onSketchModeChange: (value) => { mcStates.setsketchMode(value) },
-          onDraw: () => { mcStates.setsketchMode('draw') },
-          onClear: () => { mcStates.setspatialQueryType('clear') },
-          onAssetTypeChange: (value) => { mcStates.setassetTypeCode(value) },
-          onBuildingTypeChange: (value) => { mcStates.setbuildingTypeCode(value) },
-          onTransactionTimeFilteredChange: () => {
-            mcStates.setisTransactionTimeFiltered(prev => !prev)
-            mcStates.settransactionTime(1)
-          },
-          onTransactionTimeSelect: (value) => {
-            mcStates.settransactionTime(value)
-            mcStates.setisTransactionTimeFosced(true)
-          },
-          onBuildingAreaFilteredChange: () => {
-            mcStates.setisBuildingAreaFiltered(prev => !prev)
-            mcStates.setbuildingTransferArea(0)
-          },
-          onBuildingAreaSelect: (value) => {
-            mcStates.setbuildingTransferArea(value)
-            mcStates.setisBuildingAreaFosced(true)
-          },
-          onLandAreaFilteredChange: () => {
-            mcStates.setisLandAreaFiltered(prev => !prev)
-            mcStates.setlandTransferArea(0)
-          },
-          onLandAreaSelect: (value) => {
-            mcStates.setlandTransferArea(value)
-            mcStates.setisLandAreaFosced(true)
-          },
-          onAgeFilteredChange: () => {
-            mcStates.setisAgeFiltered(prev => !prev)
-            mcStates.setage(0)
-          },
-          onAgeSelect: (value) => {
-            mcStates.setage(value)
-            mcStates.setisAgeFosced(true)
-          },
-          onParkSpaceTypeFilteredChange: () => {
-            mcStates.setisParkSpaceFiltered(prev => !prev)
-            mcStates.setparkSpaceType(0)
-          },
-          onParkSpaceTypeSelect: (value) => {
-            mcStates.setparkSpaceType(value)
-            mcStates.setisParkSpaceFosced(true)
-          },
-          onUrbanLaudUseFilteredChange: () => {
-            mcStates.setisUrbanUsageFiltered(prev => !prev)
-            mcStates.seturbanLandUse([0])
-          },
-          onUrbanLaudUseSelect: (value) => {
-            mcStates.seturbanLandUse(value)
-            mcStates.setisUrbanUsageFosced(true)
-          },
-          onPriceFilteredChange: () => {
-            mcStates.setisPriceFiltered(prev => !prev)
-          },
-          onMinPriceChange: (value) => {
-            mcStates.setminPrice(value)
-          },
-          onMaxPriceChange: (value) => {
-            mcStates.setmaxPrice(value)
-          },
-
-          onUnitPriceFilteredChange: () => {
-            mcStates.setisUnitPriceFiltered(prev => !prev)
-          },
-          onMinUnitPriceChange: (value) => {
-            mcStates.setminUnitPrice(value)
-          },
-          onMaxUnitPriceChange: (value) => {
-            mcStates.setmaxUnitPrice(value)
-          },
-          onCustomizeParamBtnClick: () => {
-            mcStates.setmsgOpen(true)
-            mcStates.seterrorTitle('訊息')
-            mcStates.seterrorContent('自定義參數功能尚未開發')
-          },
-          zoomId: mcStates.zoomId,
-          pending: mcStates.pending,
-          onZoomIdChange: (value) => { mcStates.setzoomId(value) },
-          setpending: (value) => { mcStates.setpending(value) },
-          onDetailAprChange: (id) => { mcStates.setdetailAprId({ id: id }) },
-          onShow: (value) => { mcStates.setdetailPanelShow(value) },
-          onResultPanelClose: () => { mcStates.setfilteredResults(null) },
-          onCountyRadioClick: () => {
-            mcStates.setmsgOpen(true)
-            mcStates.seterrorTitle('警告')
-            mcStates.seterrorContent('此方法會調出大量資料，請謹慎使用。')
-          },
-          onCountyChange: (county) => {
-            mcStates.setcounty(county)
-            mcStates.reFetchTownData(county)
-          },
-          onTownChange: (towns) => {
-            mcStates.settowns(towns)
-          },
-          handleCoordinateSelect: (longitude, latitude) => {
-            if (longitude)
-              mcStates.setlongitude(longitude)
-            if (latitude)
-              mcStates.setlatitude(latitude)
-          },
-          onCoordinateSelect: (longitude, latitude) => {
-            mcStates.handleCoordinateSelect(longitude, latitude)
-          }
-        }}
+        value={{ ...mcStates }}
       >
         <div className={style.main}>
           <PanelContainer>
@@ -229,7 +185,7 @@ const MarketCompareContainer = () => {
           <div className={style.content}>
             <div className={style.mapContainer}>
               <MarketMapContainer
-                onCoordinateSelect={mcStates.handleCoordinateSelect}
+                onCoordinateSelect={mcStates.handleMapCoordinateSelect}
                 onSketchModeChange={mcStates.setsketchMode}
                 onGeojsonChange={mcStates.setpolygonGoejson}
                 onSpatialQueryTypeChange={mcStates.setspatialQueryType}
@@ -237,55 +193,12 @@ const MarketCompareContainer = () => {
             </div>
           </div>
         </div>
+
+
+        {renderCustomizePanel()}
+        {renderResultPanel()}
+        {renderErrorPanel()}
       </MarketCompareContext.Provider>
-      <Dialog
-        open={mcStates.msgOpen}
-        onClose={mcStates.handleErrorDialogClose}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">
-          {mcStates.errorTitle}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            {mcStates.errorContent}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={mcStates.handleErrorDialogClose}>
-            確認
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={mcStates.detailPanelShow}
-        onClose={() => {
-          mcStates.setdetailPanelShow(false)
-        }}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title"
-          sx={{ paddingBottom: '0px' }}
-        >
-          {mcStates.detailAprInfo && mcStates.detailAprInfo.address}
-        </DialogTitle>
-
-        <DialogContent sx={{ width: '900px' }}>
-          {
-            mcStates.detailAprInfo && <AprDetailContent
-              {...mcStates.detailAprInfo}
-            />
-          }
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={() => {
-            mcStates.setdetailPanelShow(false)
-          }}>
-            確認
-          </Button>
-        </DialogActions>
-      </Dialog>
     </>
   )
 }

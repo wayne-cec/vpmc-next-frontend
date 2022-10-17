@@ -20,6 +20,7 @@ const useMarketCompareStates = () => {
   const [locatedCounty, setlocatedCounty] = useState<string | null>(null)
   const [locatedTown, setlocatedTown] = useState<string | null>(null)
   const [isSelectorActive, setisCoordinateSelectorActive] = useState<boolean>(false)
+
   const [isTransactionTimeFiltered, setisTransactionTimeFiltered] = useState<boolean>(false)
   const [isBuildingAreaFiltered, setisBuildingAreaFiltered] = useState<boolean>(false)
   const [isLandAreaFiltered, setisLandAreaFiltered] = useState<boolean>(false)
@@ -28,6 +29,13 @@ const useMarketCompareStates = () => {
   const [isUrbanUsageFiltered, setisUrbanUsageFiltered] = useState<boolean>(false)
   const [isPriceFiltered, setisPriceFiltered] = useState<boolean>(false)
   const [isUnitPriceFiltered, setisUnitPriceFiltered] = useState<boolean>(false)
+
+  const [isTransactionTimeCustomize, setisTransactionTimeCustomize] = useState<boolean>(false)
+  const [isBuildingAreaCustomize, setisBuildingAreaCustomize] = useState<boolean>(false)
+  const [isLandAreaCustomize, setisLandAreaCustomize] = useState<boolean>(false)
+  const [isAgeCustomize, setisAgeCustomize] = useState<boolean>(false)
+
+
   const [isTransactionTimeFosced, setisTransactionTimeFosced] = useState<boolean>(false)
   const [isBuildingAreaFosced, setisBuildingAreaFosced] = useState<boolean>(false)
   const [isLandAreaFosced, setisLandAreaFosced] = useState<boolean>(false)
@@ -36,15 +44,23 @@ const useMarketCompareStates = () => {
   const [isUrbanUsageFosced, setisUrbanUsageFosced] = useState<boolean>(false)
   const [isPriceFocused] = useState<boolean>(false)
   const [isUnitPriceFocused] = useState<boolean>(false)
+
   const [isBuildingAreaCheckable] = useState<boolean>(true)
   const [isLandAreaCheckable] = useState<boolean>(true)
   const [assetTypeCode, setassetTypeCode] = useState<AssetType>('building')
   const [buildingTypeCode, setbuildingTypeCode] = useState<number>(0)
   const [bufferRadius, setbufferRadius] = useState<number>(300)
+
   const [transactiontime, settransactionTime] = useState<number | null>(null)
+  const [transactiontimeend, settransactiontimeend] = useState<number>(0)
+
   const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
+  const [buildingTransferAreaInterval, setbuildingTransferAreaInterval] = useState<number[]>([0, 100])
   const [landTransferArea, setlandTransferArea] = useState<number | null>(null)
+  const [landAreaInterval, setlandAreaInterval] = useState<number[]>([0, 50])
   const [age, setage] = useState<number | null>(null)
+  const [ageInterval, setageInterval] = useState<number[]>([0, 10])
+
   const [parkSpaceType, setparkSpaceType] = useState<number | null>(null)
   const [urbanLandUse, seturbanLandUse] = useState<number[] | undefined>(undefined)
   const [polygonGoejson, setpolygonGoejson] = useState<string | null>(null)
@@ -74,20 +90,7 @@ const useMarketCompareStates = () => {
   const [townData, settownData] = useState<ITownData | null>(null)
   const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
   const [assetsDetail, setassetDetail] = useState<AssetDetailResponse | undefined>(undefined)
-
-  const handleMapCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
-    setlongitude(longitude)
-    setlatitude(latitude)
-    setisCoordinateSelectorActive(false)
-    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude!, latitude!)
-    if (statusCode === 200) {
-      setlocatedCounty(responseContent.countyname)
-      setlocatedTown(responseContent.townname)
-    } else {
-      setlocatedCounty(null)
-      setlocatedTown(null)
-    }
-  }
+  const [customizePanelOpen, setcustomizePanelOpen] = useState<boolean>(false)
 
   const handleFormSubmit = async () => {
     setpending(true)
@@ -157,6 +160,7 @@ const useMarketCompareStates = () => {
       params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
       params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
     }
+
     if (isBuildingAreaFiltered && buildingTransferArea !== null) {
       if (buildingTransferArea === 0) {
         params.buildingAreaStart = 0
@@ -242,6 +246,20 @@ const useMarketCompareStates = () => {
     }
   }
 
+  const handleMapCoordinateSelect = async (longitude: number | undefined, latitude: number | undefined) => {
+    setlongitude(longitude)
+    setlatitude(latitude)
+    setisCoordinateSelectorActive(false)
+    const { statusCode, responseContent } = await api.prod.getCountyTownNameByCoordinate(longitude!, latitude!)
+    if (statusCode === 200) {
+      setlocatedCounty(responseContent.countyname)
+      setlocatedTown(responseContent.townname)
+    } else {
+      setlocatedCounty(null)
+      setlocatedTown(null)
+    }
+  }
+
   const handleShowQueryPanel = () => {
     setqueryPanelShow(prev => !prev)
     setresultPanelShow(false)
@@ -274,7 +292,6 @@ const useMarketCompareStates = () => {
     }
   }
 
-
   const onUploadClick = (value: boolean) => {
     setuploadPanelOpen(value)
   }
@@ -285,10 +302,10 @@ const useMarketCompareStates = () => {
 
   const onSpatialQueryTypeChange = setspatialQueryType
 
-
   const onBufferRadiusChange = (value: number) => {
     setbufferRadius(value)
   }
+
   const onSketchModeChange = (value: PolygonSketchMode) => {
     setsketchMode(value)
   }
@@ -296,70 +313,128 @@ const useMarketCompareStates = () => {
   const onDraw = () => {
     setsketchMode('draw')
   }
+
   const onClear = () => {
     setspatialQueryType('clear')
   }
+
   const onAssetTypeChange = (value: AssetType) => {
     setassetTypeCode(value)
   }
+
   const onBuildingTypeChange = (value: number) => {
     setbuildingTypeCode(value)
+  }
+
+  const onTransactionTimeCustomizeChange = () => {
+    setisTransactionTimeCustomize(prev => !prev)
   }
 
   const onTransactionTimeFilteredChange = () => {
     setisTransactionTimeFiltered(prev => !prev)
     settransactionTime(1)
   }
+
   const onTransactionTimeSelect = (value: number) => {
     settransactionTime(value)
     setisTransactionTimeFosced(true)
   }
+
+  const onTransactionTimeCustomize = (startDate: string, endDate: string) => {
+    const dateNow = new Date()
+    //   params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
+    //   params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
+
+    const startDateDelta = moment
+      .duration(moment(dateNow, 'YYYY/MM/DD HH:mm')
+        .diff(moment(startDate, 'YYYY/MM/DD HH:mm'))
+      ).asDays;
+    console.log(startDateDelta)
+  }
+
   const onBuildingAreaFilteredChange = () => {
     setisBuildingAreaFiltered(prev => !prev)
     setbuildingTransferArea(0)
   }
+
   const onBuildingAreaSelect = (value: number) => {
     setbuildingTransferArea(value)
     setisBuildingAreaFosced(true)
   }
+
+  const onBuildingAreaCustomize = (min: number, max: number) => {
+    setbuildingTransferAreaInterval([min, max])
+  }
+
+  const onBuildingAreaCustomizeChange = () => {
+    setisBuildingAreaCustomize(prev => !prev)
+  }
+
   const onLandAreaFilteredChange = () => {
     setisLandAreaFiltered(prev => !prev)
     setlandTransferArea(0)
   }
+
+  const onLandAreaCustomize = (min: number, max: number) => {
+    setlandAreaInterval([min, max])
+  }
+
+  const onLandAreaCustomizeChange = () => {
+    setisLandAreaCustomize(prev => !prev)
+  }
+
+
   const onLandAreaSelect = (value: number) => {
     setlandTransferArea(value)
     setisLandAreaFosced(true)
   }
+
   const onAgeFilteredChange = () => {
     setisAgeFiltered(prev => !prev)
     setage(0)
   }
+
   const onAgeSelect = (value: number) => {
     setage(value)
     setisAgeFosced(true)
   }
+
+  const onAgeCustomize = (min: number, max: number) => {
+    setageInterval([min, max])
+  }
+
+  const onAgeCustomizeChange = () => {
+    setisAgeCustomize(prev => !prev)
+  }
+
   const onParkSpaceTypeFilteredChange = () => {
     setisParkSpaceFiltered(prev => !prev)
     setparkSpaceType(0)
   }
+
   const onParkSpaceTypeSelect = (value: number) => {
     setparkSpaceType(value)
     setisParkSpaceFosced(true)
   }
+
   const onUrbanLaudUseFilteredChange = () => {
     setisUrbanUsageFiltered(prev => !prev)
     seturbanLandUse([0])
   }
+
   const onUrbanLaudUseSelect = (value: number[]) => {
     seturbanLandUse(value)
     setisUrbanUsageFosced(true)
   }
+
   const onPriceFilteredChange = () => {
     setisPriceFiltered(prev => !prev)
   }
+
   const onMinPriceChange = (value: number) => {
     setminPrice(value)
   }
+
   const onMaxPriceChange = (value: number) => {
     setmaxPrice(value)
   }
@@ -367,17 +442,19 @@ const useMarketCompareStates = () => {
   const onUnitPriceFilteredChange = () => {
     setisUnitPriceFiltered(prev => !prev)
   }
+
   const onMinUnitPriceChange = (value: number) => {
     setminUnitPrice(value)
   }
+
   const onMaxUnitPriceChange = (value: number) => {
     setmaxUnitPrice(value)
   }
+
   const onCustomizeParamBtnClick = () => {
-    setmsgOpen(true)
-    seterrorTitle('訊息')
-    seterrorContent('自定義參數功能尚未開發')
+    setcustomizePanelOpen(true)
   }
+
   const onZoomIdChange = (value: {
     id: string;
   } | null) => {
@@ -397,6 +474,7 @@ const useMarketCompareStates = () => {
   const onShow = (value: boolean) => {
     setdetailPanelShow(value)
   }
+
   const onResultPanelClose = () => {
     setfilteredResults(null)
   }
@@ -411,6 +489,7 @@ const useMarketCompareStates = () => {
     setcounty(county)
     reFetchTownData(county)
   }
+
   const onTownChange = (towns: string[]) => {
     settowns(towns)
   }
@@ -430,6 +509,10 @@ const useMarketCompareStates = () => {
     latitude: number | undefined
   ) => {
     handleMapCoordinateSelect(longitude, latitude)
+  }
+
+  const onCustomizePanelOpen = (value: boolean) => {
+    setcustomizePanelOpen(value)
   }
 
   return {
@@ -536,7 +619,28 @@ const useMarketCompareStates = () => {
     onCountyChange,
     onTownChange,
     handleCoordinateSelect,
-    onCoordinateSelect
+    onCoordinateSelect,
+    customizePanelOpen, setcustomizePanelOpen,
+    transactiontimeend, settransactiontimeend,
+
+
+    onTransactionTimeCustomize,
+    onTransactionTimeCustomizeChange,
+    isTransactionTimeCustomize,
+
+    onBuildingAreaCustomize,
+    onBuildingAreaCustomizeChange,
+    isBuildingAreaCustomize,
+
+    onAgeCustomize,
+    onAgeCustomizeChange,
+    isAgeCustomize,
+
+    onLandAreaCustomize,
+    onLandAreaCustomizeChange,
+    isLandAreaCustomize,
+
+    onCustomizePanelOpen
   }
 }
 

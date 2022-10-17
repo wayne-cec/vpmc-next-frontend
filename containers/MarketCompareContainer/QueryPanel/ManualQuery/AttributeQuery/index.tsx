@@ -67,14 +67,6 @@ const AttributeQuery = () => {
                 size='small'
                 fullWidth
               >
-                {/* {
-                  Object.keys(buildingTypeSet).map((buildingTypeCode, index) => {
-                    return <MenuItem
-                      key={index}
-                      value={buildingTypeCode}
-                    >{buildingTypeSet[Number(buildingTypeCode)]}</MenuItem>
-                  })
-                } */}
                 <MenuItem
                   value={0}
                 >住宅大樓</MenuItem>
@@ -115,8 +107,6 @@ const AttributeQuery = () => {
             </FormControl>
           </Grid>
         }
-
-
 
         {/* 交易時間 */}
         <Grid item xs={2}>
@@ -165,11 +155,6 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {/* {
-                    marketCompareContext.isBuildingAreaFiltered && !marketCompareContext.isBuildingAreaFosced
-                      ? <></>
-                      : <InputLabel id="building-transfer-area">建坪面積</InputLabel>
-                  } */}
                   <InputLabel id="building-transfer-area">建坪面積</InputLabel>
                   <Select
                     labelId="building-transfer-area"
@@ -212,11 +197,6 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {/* {
-                    marketCompareContext.isLandAreaFiltered && !marketCompareContext.isLandAreaFosced
-                      ? <></>
-                      : <InputLabel id="land-transfer-area">地坪面積</InputLabel>
-                  } */}
                   <InputLabel id="land-transfer-area">地坪面積</InputLabel>
                   <Select
                     labelId="land-transfer-area"
@@ -228,7 +208,6 @@ const AttributeQuery = () => {
                     onChange={(event) => {
                       marketCompareContext.onLandAreaSelect(Number(event.target.value))
                     }}
-                    // autoFocus={isLandAreaFiltered}
                     disabled={!marketCompareContext.isLandAreaFiltered}
                   >
                     {
@@ -258,11 +237,6 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {/* {
-                    marketCompareContext.isAgeFiltered && !marketCompareContext.isAgeFosced
-                      ? <></>
-                      : <InputLabel id="age">屋齡</InputLabel>
-                  } */}
                   <InputLabel id="age">屋齡</InputLabel>
                   <Select
                     labelId="age"
@@ -274,7 +248,6 @@ const AttributeQuery = () => {
                       marketCompareContext.onAgeSelect(Number(event.target.value))
                     }}
                     disabled={!marketCompareContext.isAgeFiltered}
-                    // autoFocus={isAgeFiltered}
                     fullWidth
                   >
                     {
@@ -304,11 +277,6 @@ const AttributeQuery = () => {
               </Grid>
               <Grid item xs={10}>
                 <FormControl size='small' fullWidth>
-                  {/* {
-                    marketCompareContext.isParkSpaceFiltered && !marketCompareContext.isParkSpaceFosced
-                      ? <></>
-                      : <InputLabel id="park-space">車位類型</InputLabel>
-                  } */}
                   <InputLabel id="park-space">車位類型</InputLabel>
                   <Select
                     labelId="park-space"
@@ -320,17 +288,8 @@ const AttributeQuery = () => {
                     onChange={(event) => {
                       marketCompareContext.onParkSpaceTypeSelect(Number(event.target.value))
                     }}
-                    // autoFocus={isParkSpaceFiltered}
                     disabled={!marketCompareContext.isParkSpaceFiltered}
                   >
-                    {/* {
-                      Object.keys(parkSpaceSet).map((assetCode, index) => {
-                        return <MenuItem
-                          key={index}
-                          value={assetCode}
-                        >{parkSpaceSet[Number(assetCode)]}</MenuItem>
-                      })
-                    } */}
                     <MenuItem
                       value={6}
                     >一樓平面</MenuItem>
