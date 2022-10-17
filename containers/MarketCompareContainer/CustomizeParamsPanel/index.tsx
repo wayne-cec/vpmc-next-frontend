@@ -28,6 +28,30 @@ const CustomizeParamsPanel = () => {
 
   const handleSetCustomizeParam = () => {
     marketCompareContext.onCustomizePanelOpen(false)
+
+    if (marketCompareContext.isTransactionTimeCustomize) {
+      marketCompareContext.onTransactionTimeCustomize(
+        startDate.toString(), endDate.toString()
+      )
+    }
+
+    if (marketCompareContext.isBuildingAreaCustomize) {
+      marketCompareContext.onBuildingAreaCustomize(
+        minBuildingArea, maxBuildingArea
+      )
+    }
+
+    if (marketCompareContext.isLandAreaCustomize) {
+      marketCompareContext.onLandAreaCustomize(
+        minLandArea, maxLandArea
+      )
+    }
+
+    if (marketCompareContext.isAgeCustomize) {
+      marketCompareContext.onAgeCustomize(
+        minAge, maxAge
+      )
+    }
   }
 
   return (

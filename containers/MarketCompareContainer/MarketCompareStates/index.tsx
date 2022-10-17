@@ -53,6 +53,8 @@ const useMarketCompareStates = () => {
 
   const [transactiontime, settransactionTime] = useState<number | null>(null)
   const [transactiontimeend, settransactiontimeend] = useState<number>(0)
+  const [transactionTimeStartString, settransactionTimeStartString] = useState<string>('')
+  const [transactionTimeEndString, settransactionTimeEndString] = useState<string>('')
 
   const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
   const [buildingTransferAreaInterval, setbuildingTransferAreaInterval] = useState<number[]>([0, 100])
@@ -160,7 +162,6 @@ const useMarketCompareStates = () => {
       params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
       params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
     }
-
     if (isBuildingAreaFiltered && buildingTransferArea !== null) {
       if (buildingTransferArea === 0) {
         params.buildingAreaStart = 0
@@ -219,6 +220,23 @@ const useMarketCompareStates = () => {
     if (isUnitPriceFiltered) {
       params.minUnitPrice = minUnitPrice
       params.maxUnitPrice = maxUnitPrice
+    }
+
+    if (isTransactionTimeCustomize) {
+      params.transactionTimeStart = moment(transactionTimeStartString).format('YYYY/MM/DD')
+      params.transactionTimeEnd = moment(transactionTimeEndString).format('YYYY/MM/DD')
+    }
+    if (isBuildingAreaCustomize) {
+      params.buildingAreaStart = buildingTransferAreaInterval[0] * square
+      params.buildingAreaEnd = buildingTransferAreaInterval[1] * square
+    }
+    if (isLandAreaCustomize) {
+      params.landAreaStart = landAreaInterval[0] * square
+      params.landAreaEnd = landAreaInterval[1] * square
+    }
+    if (isAgeCustomize) {
+      params.ageStart = ageInterval[0]
+      params.ageEnd = ageInterval[1]
     }
 
     const { statusCode, responseContent } = await api.prod.marketCompare(params, userInfo.token)
@@ -341,15 +359,8 @@ const useMarketCompareStates = () => {
   }
 
   const onTransactionTimeCustomize = (startDate: string, endDate: string) => {
-    const dateNow = new Date()
-    //   params.transactionTimeStart = moment(dateNow).add(-transactiontime, 'year').format('YYYY/MM/DD')
-    //   params.transactionTimeEnd = moment(dateNow).format('YYYY/MM/DD')
-
-    const startDateDelta = moment
-      .duration(moment(dateNow, 'YYYY/MM/DD HH:mm')
-        .diff(moment(startDate, 'YYYY/MM/DD HH:mm'))
-      ).asDays;
-    console.log(startDateDelta)
+    settransactionTimeStartString(moment(startDate).format('YYYY/MM/DD'))
+    settransactionTimeEndString(moment(endDate).format('YYYY/MM/DD'))
   }
 
   const onBuildingAreaFilteredChange = () => {
@@ -640,7 +651,13 @@ const useMarketCompareStates = () => {
     onLandAreaCustomizeChange,
     isLandAreaCustomize,
 
-    onCustomizePanelOpen
+    onCustomizePanelOpen,
+
+    transactionTimeStartString,
+    transactionTimeEndString,
+    buildingTransferAreaInterval,
+    landAreaInterval,
+    ageInterval
   }
 }
 

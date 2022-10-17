@@ -114,6 +114,11 @@ export interface IMarketCompareContext {
   isLandAreaCustomize: boolean
 
   onCustomizePanelOpen: (value: boolean) => void
+  transactionTimeStartString: string
+  transactionTimeEndString: string
+  buildingTransferAreaInterval: number[]
+  landAreaInterval: number[]
+  ageInterval: number[]
 }
 
 const MarketCompareContext = createContext<IMarketCompareContext>({
@@ -224,7 +229,12 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   onLandAreaCustomizeChange: () => { },
   isLandAreaCustomize: false,
 
-  onCustomizePanelOpen: (value) => { }
+  onCustomizePanelOpen: (value) => { },
+  transactionTimeStartString: '',
+  transactionTimeEndString: '',
+  buildingTransferAreaInterval: [],
+  landAreaInterval: [],
+  ageInterval: []
 })
 
 export default MarketCompareContext
