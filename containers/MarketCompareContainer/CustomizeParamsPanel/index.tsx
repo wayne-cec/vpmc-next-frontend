@@ -4,27 +4,28 @@ import Checkbox from '@mui/material/Checkbox'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
 import Button from '@mui/material/Button'
-
-
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
 import MarketCompareContext from '../MarketCompareContext'
 import { useContext, useState } from 'react'
-
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs'
 import TextField from '@mui/material/TextField'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker'
 
-const CustomizeParamsPanel = () => {
+const CustomizeParamsPanel = ({
+  open
+}: { open: boolean }) => {
   const marketCompareContext = useContext(MarketCompareContext)
-  const [startDate, setstartDate] = useState<Dayjs>(dayjs('2014-04-29T21:11:54'))
-  const [endDate, setendDate] = useState<Dayjs>(dayjs('2018-04-29T21:11:54'))
-  const [minBuildingArea, setminBuildingArea] = useState<number>(0)
-  const [maxBuildingArea, setmaxBuildingArea] = useState<number>(100)
-  const [minAge, setminAge] = useState<number>(0)
-  const [maxAge, setmaxAge] = useState<number>(80)
-  const [minLandArea, setminLandArea] = useState<number>(0)
-  const [maxLandArea, setmaxLandArea] = useState<number>(0)
+  const [startDate, setstartDate] = useState<Dayjs>(dayjs(marketCompareContext.transactionTimeStartString))
+  const [endDate, setendDate] = useState<Dayjs>(dayjs(marketCompareContext.transactionTimeEndString))
+  const [minBuildingArea, setminBuildingArea] = useState<number>(marketCompareContext.buildingTransferAreaInterval[0])
+  const [maxBuildingArea, setmaxBuildingArea] = useState<number>(marketCompareContext.buildingTransferAreaInterval[1])
+  const [minAge, setminAge] = useState<number>(marketCompareContext.ageInterval[0])
+  const [maxAge, setmaxAge] = useState<number>(marketCompareContext.ageInterval[1])
+  const [minLandArea, setminLandArea] = useState<number>(marketCompareContext.landAreaInterval[0])
+  const [maxLandArea, setmaxLandArea] = useState<number>(marketCompareContext.landAreaInterval[1])
 
   const handleSetCustomizeParam = () => {
     marketCompareContext.onCustomizePanelOpen(false)
@@ -55,7 +56,11 @@ const CustomizeParamsPanel = () => {
   }
 
   return (
-    <>
+    <Dialog
+      open={open}
+      onClose={handleSetCustomizeParam}
+    >
+      <DialogTitle>自定義參數</DialogTitle>
       <DialogContent>
         <div className={style.CustomizeParamsPanel}>
           <Grid container spacing={2}>
@@ -225,7 +230,7 @@ const CustomizeParamsPanel = () => {
           確認
         </Button>
       </DialogActions>
-    </>
+    </Dialog>
   )
 }
 

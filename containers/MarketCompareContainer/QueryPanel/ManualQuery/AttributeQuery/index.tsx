@@ -9,9 +9,13 @@ import {
 } from '../../../../../lib/marketComapreConst'
 import {
   Grid, FormControl, InputLabel, Select,
-  Checkbox, MenuItem, TextField
+  Checkbox, MenuItem, TextField, Chip
 } from '@mui/material'
 import { AssetType } from '../../../../../api/prod'
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth'
+import ApartmentIcon from '@mui/icons-material/Apartment'
+import TerrainIcon from '@mui/icons-material/Terrain'
+import CakeIcon from '@mui/icons-material/Cake'
 
 export type AttributeQueryType = 'building' | 'parking' | 'land'
 
@@ -111,9 +115,16 @@ const AttributeQuery = () => {
         {/* 交易時間 */}
         {
           marketCompareContext.isTransactionTimeCustomize
-            ? <Grid item xs={12}>
-              <span>{`交易時間自訂 ${marketCompareContext.transactionTimeStartString} 至 ${marketCompareContext.transactionTimeEndString}`}</span>
-            </Grid>
+            ? <>
+              <Grid item xs={4}>
+                <span>交易時間自訂</span>
+              </Grid>
+              <Grid item xs={8} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Chip icon={<CalendarMonthIcon />} label={marketCompareContext.transactionTimeStartString} />
+                <span>至</span>
+                <Chip icon={<CalendarMonthIcon />} label={marketCompareContext.transactionTimeEndString} />
+              </Grid>
+            </>
             : <>
               <Grid item xs={2}>
                 <Checkbox
@@ -155,9 +166,16 @@ const AttributeQuery = () => {
           marketCompareContext.assetTypeCode === 'building'
           && (
             marketCompareContext.isBuildingAreaCustomize
-              ? <Grid item xs={12}>
-                <span>{`建坪自訂 ${marketCompareContext.buildingTransferAreaInterval[0]}坪 至 ${marketCompareContext.buildingTransferAreaInterval[1]}坪`}</span>
-              </Grid>
+              ? <>
+                <Grid item xs={4}>
+                  <span>建坪自訂</span>
+                </Grid>
+                <Grid item xs={8} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Chip icon={<ApartmentIcon />} label={`${marketCompareContext.buildingTransferAreaInterval[0]}坪`} />
+                  <span>至</span>
+                  <Chip icon={<ApartmentIcon />} label={`${marketCompareContext.buildingTransferAreaInterval[1]}坪`} />
+                </Grid>
+              </>
               : <>
                 <Grid item xs={2}>
                   <Checkbox
@@ -202,9 +220,16 @@ const AttributeQuery = () => {
           marketCompareContext.assetTypeCode === 'land'
           && (
             marketCompareContext.isLandAreaCustomize
-              ? <Grid item xs={12}>
-                <span>{`地坪自訂 ${marketCompareContext.landAreaInterval[0]}坪 至 ${marketCompareContext.landAreaInterval[1]}坪`}</span>
-              </Grid>
+              ? <>
+                <Grid item xs={4}>
+                  <span>地坪自訂</span>
+                </Grid>
+                <Grid item xs={8} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Chip icon={<TerrainIcon />} label={`${marketCompareContext.landAreaInterval[0]}坪`} />
+                  <span>至</span>
+                  <Chip icon={<TerrainIcon />} label={`${marketCompareContext.landAreaInterval[1]}坪`} />
+                </Grid>
+              </>
               : <>
                 <Grid item xs={2}>
                   <Checkbox
@@ -248,9 +273,16 @@ const AttributeQuery = () => {
           marketCompareContext.assetTypeCode === 'building'
           && (
             marketCompareContext.isAgeCustomize
-              ? <Grid item xs={12}>
-                <span>{`屋齡自訂 ${marketCompareContext.ageInterval[0]}年 至 ${marketCompareContext.ageInterval[1]}年`}</span>
-              </Grid>
+              ? <>
+                <Grid item xs={4}>
+                  <span>屋齡自訂</span>
+                </Grid>
+                <Grid item xs={8} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Chip icon={<CakeIcon />} label={`${marketCompareContext.ageInterval[0]}年`} />
+                  <span>至</span>
+                  <Chip icon={<CakeIcon />} label={`${marketCompareContext.ageInterval[1]}年`} />
+                </Grid>
+              </>
               : <>
                 <Grid item xs={2}>
                   <Checkbox

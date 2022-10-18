@@ -53,8 +53,8 @@ const useMarketCompareStates = () => {
 
   const [transactiontime, settransactionTime] = useState<number | null>(null)
   const [transactiontimeend, settransactiontimeend] = useState<number>(0)
-  const [transactionTimeStartString, settransactionTimeStartString] = useState<string>('')
-  const [transactionTimeEndString, settransactionTimeEndString] = useState<string>('')
+  const [transactionTimeStartString, settransactionTimeStartString] = useState<string>('2015-04-29')
+  const [transactionTimeEndString, settransactionTimeEndString] = useState<string>('2018-04-29')
 
   const [buildingTransferArea, setbuildingTransferArea] = useState<number | null>(null)
   const [buildingTransferAreaInterval, setbuildingTransferAreaInterval] = useState<number[]>([0, 100])

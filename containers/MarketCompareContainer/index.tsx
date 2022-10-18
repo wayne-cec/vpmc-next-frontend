@@ -88,15 +88,7 @@ const MarketCompareContainer = () => {
   }, [])
 
   const renderCustomizePanel = () => {
-    return (
-      <Dialog
-        open={mcStates.customizePanelOpen}
-        onClose={() => { mcStates.setcustomizePanelOpen(false) }}
-      >
-        <DialogTitle>自定義參數</DialogTitle>
-        <CustomizeParamsPanel />
-      </Dialog>
-    )
+    return <CustomizeParamsPanel open={mcStates.customizePanelOpen} />
   }
 
   const renderResultPanel = () => {
