@@ -64,6 +64,7 @@ const WithSideBarProtected = function <P extends { [k: string]: any }> (Componen
           dispatch(
             setUserProfile(responseContent)
           )
+
           setisAuthenticated(true)
           const { statusCode2, responseContent2 } = await api.prod.listRoles(userInfo.token)
           if (statusCode2 === 200) {
