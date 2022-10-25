@@ -1,7 +1,7 @@
 import style from '../../styles/Home.module.scss'
 import PageHeader from '../../components/PageHeader'
 import classNames from 'classnames'
-import WithNavFooter from '../../layout/front-layout/WithNavFooter'
+import WithNavFooter from '../../Layout/front-layout/WithNavFooter'
 import 'animate.css'
 
 const HomeContainer = () => {

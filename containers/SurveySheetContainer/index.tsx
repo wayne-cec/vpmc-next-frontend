@@ -1,4 +1,4 @@
-import WithNavProtected from "../../layout/front-layout/WithNavProtected"
+import WithNavProtected from "../../Layout/front-layout/WithNavProtected"
 import style from './index.module.scss'
 
 const SurveySheetContainer = () => {
