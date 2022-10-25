@@ -3,10 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectUser, setUserProfile, setUserRoles } from '../../../store/slice/user'
 import { AuthContext } from '../../AuthContext'
 import Header from '../../../components/Header'
+import Footer from '../../../components/Footer'
 import api from '../../../api'
 import Router from 'next/router'
 
-const WithNavProtected = function <P extends { [k: string]: any }> (Component: React.ComponentType<P>) {
+const WithNavFooterProtected = function <P extends { [k: string]: any }> (Component: React.ComponentType<P>) {
   const wrappedComponent = (props: P) => {
     const dispatch = useDispatch()
     const userInfo = useSelector(selectUser)
@@ -42,10 +43,15 @@ const WithNavProtected = function <P extends { [k: string]: any }> (Component: R
     return (
       <>
         <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
-          <Header />
-          <div className="content-container">
-            <Component {...props} />
-          </div>
+          {
+            isAuthenticated ? <>
+              <Header />
+              <div className="content-container">
+                <Component {...props} />
+              </div>
+              <Footer />
+            </> : null
+          }
         </AuthContext.Provider>
       </>
     )
@@ -53,4 +59,4 @@ const WithNavProtected = function <P extends { [k: string]: any }> (Component: R
   return wrappedComponent
 }
 
-export default WithNavProtected
+export default WithNavFooterProtected

@@ -5,7 +5,9 @@
         .chip{
             @apply py-1 px-2 rounded-md bg-main-primary
             text-white my-2 mr-2 text-sm;
-    
+            &.disabled{
+                @apply bg-border;
+            }
         }
     }
     .priceContainer{
@@ -21,7 +23,7 @@
                 @apply text-red-500 text-base font-light;
             }
             .transferBuildingArea{
-                @apply text-2xl font-extrabold text-black;
+                @apply text-xl font-extrabold text-black;
             }
             .transferBuildingAreaUnit{
                 @apply text-base font-light;

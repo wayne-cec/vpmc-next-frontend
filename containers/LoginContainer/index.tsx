@@ -5,7 +5,7 @@ import VpnKeyIcon from '@mui/icons-material/VpnKey'
 import Router from 'next/router'
 import api from '../../api'
 import Image from 'next/image'
-import WithNothingLayout from '../../layout/utility-layout/WithNothingLayout'
+import WithNothingLayout from '../../Layout/utility-layout/WithNothingLayout'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { setUserToken } from '../../store/slice/user'
@@ -29,7 +29,7 @@ const LoginContainer = () => {
     setbounce(false)
     const { statusCode, responseContent } = await api.prod.authenticate(email, password)
     if (statusCode === 200) {
-      console.log(responseContent)
+      // console.log(responseContent)
       dispatch(
         setUserToken(responseContent.token)
       )

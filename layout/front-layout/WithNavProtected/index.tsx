@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectUser, setUserProfile, setUserRoles } from '../../../store/slice/user'
 import { AuthContext } from '../../AuthContext'
-import Router from 'next/router'
+import Header from '../../../components/Header'
 import api from '../../../api'
+import Router from 'next/router'
 
-const WithNothingProtected = function <P extends { [k: string]: any }> (Component: React.ComponentType<P>) {
+const WithNavProtected = function <P extends { [k: string]: any }> (Component: React.ComponentType<P>) {
   const wrappedComponent = (props: P) => {
     const dispatch = useDispatch()
     const userInfo = useSelector(selectUser)
@@ -18,6 +19,7 @@ const WithNothingProtected = function <P extends { [k: string]: any }> (Componen
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
+        console.log(responseContent)
         if (statusCode === 200) {
           dispatch(
             setUserProfile(responseContent)
@@ -36,12 +38,18 @@ const WithNothingProtected = function <P extends { [k: string]: any }> (Componen
       }
       validateToken()
     }, [userInfo.token])
+
     return (
       <>
         <AuthContext.Provider value={{ isAuthenticated: isAuthenticated }}>
-          <div className="content-container">
-            <Component {...props} />
-          </div>
+          {
+            isAuthenticated ? <>
+              <Header />
+              <div className="content-container">
+                <Component {...props} />
+              </div>
+            </> : null
+          }
         </AuthContext.Provider>
       </>
     )
@@ -49,4 +57,4 @@ const WithNothingProtected = function <P extends { [k: string]: any }> (Componen
   return wrappedComponent
 }
 
-export default WithNothingProtected
+export default WithNavProtected

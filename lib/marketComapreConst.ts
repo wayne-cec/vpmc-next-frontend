@@ -16,19 +16,19 @@
 import { AssetType } from "../api/prod"
 
 export const assetTypeSet: { [key: string]: AssetType } = {
-  '土地': 'land',
   '建物': 'building',
+  '土地': 'land',
   '停車位': 'park',
 }
 
 export const buildingTypeSet: { [key: number]: string } = {
   0: '住宅大樓',
-  1: '辦公商業大樓',
-  3: '公寓',
   4: '華廈',
+  3: '公寓',
   5: '套房',
   6: '透天厝',
   7: '店面',
+  1: '辦公商業大樓',
   8: '廠辦',
   9: '倉庫',
   10: '工廠',
@@ -71,12 +71,12 @@ export const ageSet: { [key: number]: string } = {
 }
 
 export const parkSpaceSet: { [key: number]: string } = {
-  1: '塔式車位',
+  6: '一樓平面',
   2: '坡道平面',
   3: '升降平面',
-  4: '升降機械',
   5: '坡道機械',
-  6: '一樓平面',
+  4: '升降機械',
+  1: '塔式車位',
   7: '其他'
 }
 

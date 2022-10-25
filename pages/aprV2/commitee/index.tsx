@@ -2,7 +2,7 @@
 import { useState, useEffect, createContext, useContext } from 'react'
 import { ICommitee } from '../../../components/MapContainer/AprV2Map'
 import { ICommiteeAprDetail } from '../../../store/slice/commitee'
-import WithNavProtected from '../../../layout/front-layout/WithNavProtected'
+import WithNavProtected from '../../../Layout/front-layout/WithNavProtected'
 import { IAprRegionGraphDisplayData } from '../../../api/prod'
 import { ICountyData, ITownData } from '../../../api/prod'
 import { Grid } from '@mui/material'

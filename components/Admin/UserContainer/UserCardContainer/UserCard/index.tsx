@@ -41,7 +41,7 @@ const UserCard = ({
         </Grid>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>
-          <p>{userInfo.email}</p>
+          <p>{userInfo.alias}</p>
         </Grid>
 
         <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start' }}>

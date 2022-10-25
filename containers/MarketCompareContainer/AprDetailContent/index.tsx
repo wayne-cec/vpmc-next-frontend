@@ -22,6 +22,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Divider from '@mui/material/Divider'
+import classNames from 'classnames'
 
 const square = 3.305785
 
@@ -53,6 +54,18 @@ export interface IDetailAprInfo {
   assetsDetail: AssetDetailResponse | undefined
 }
 
+export enum landTransferStatusType {
+  partial = 0,
+  entire = 1,
+  none = 3
+}
+
+export const landTransferStatusTypeMap: { [key: number]: string } = {
+  0: '持分移轉',
+  1: '全筆移轉',
+  3: '無資料'
+}
+
 const AprDetailContent = (props: IDetailAprInfo) => {
   const [tabValue, settabValue] = useState<string>('1')
   const areaWithoutPark = props.buildingTransferArea - props.parkingSpaceTransferArea
@@ -64,12 +77,9 @@ const AprDetailContent = (props: IDetailAprInfo) => {
           <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
               <TableCell>土地位置</TableCell>
-              <TableCell>使用分區或編定</TableCell>
-              <TableCell align="right">土地移轉面積</TableCell>
-              <TableCell align="right">權利人持分分母</TableCell>
-              <TableCell align="right">權利人持分分子</TableCell>
               <TableCell>地號</TableCell>
-              <TableCell>移轉情形</TableCell>
+              <TableCell align="right">土地移轉面積</TableCell>
+              <TableCell>使用分區或編定</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -82,12 +92,17 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                   <TableCell component="th" scope="row">
                     {row.address}
                   </TableCell>
-                  <TableCell>{row.landUse}</TableCell>
-                  <TableCell align="right">{calculateArea(row.landTransferArea)}坪</TableCell>
-                  <TableCell align="right">{row.rightDenumerate}</TableCell>
-                  <TableCell align="right">{row.rightNumerate}</TableCell>
                   <TableCell>{row.parcelNumber}</TableCell>
-                  <TableCell>{row.transferStatus}</TableCell>
+                  <TableCell align="right">
+                    <div>
+                      <span>{calculateArea(row.landTransferArea)}坪</span>
+                      <span className='ml-1'>{landTransferStatusTypeMap[row.transferStatus]}</span>
+                    </div>
+                    <div>
+                      <span>({row.rightNumerate}/{row.rightDenumerate})</span>
+                    </div>
+                  </TableCell>
+                  <TableCell>{row.landUse}</TableCell>
                 </TableRow>
               ))}
           </TableBody>
@@ -98,11 +113,13 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
   const renderBuildFirstRow = () => {
     if (!props.assetsDetail) return
-    const firstBuild = props.assetsDetail.builds.at(0)
+    const firstBuild = props.assetsDetail.builds.filter(b => !b.usage.includes('共有')).at(0)
     if (!firstBuild) return
     const mainBuildRatio = Math.round(props.buildingArea / areaWithoutPark * 100)
     const subBuildRatio = Math.round(props.subBuildingArea / areaWithoutPark * 100)
     const belconyRatio = Math.round(props.belconyArea / areaWithoutPark * 100)
+    const mutualArea = props.buildingTransferArea - (props.buildingArea + props.subBuildingArea + props.belconyArea)
+    const mutualRatio = Math.round(mutualArea / areaWithoutPark * 100)
     return (
       <>
         <TableRow
@@ -115,49 +132,62 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         <TableRow
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={4}>
             {'主建物'}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={1}>
             {`${calculateArea(props.buildingArea)}坪`}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={2}>
             {`${mainBuildRatio}%`}
           </TableCell>
-          <TableCell component="th" scope="row" rowSpan={3}>
-            {firstBuild.usage}
-          </TableCell>
-          <TableCell component="th" scope="row" rowSpan={3}>
+          {/* <TableCell component="th" scope="row" rowSpan={3}>
             {firstBuild.material}
           </TableCell>
           <TableCell component="th" scope="row" rowSpan={3}>
             {firstBuild.buildingLayer}
           </TableCell>
+          <TableCell component="th" scope="row" rowSpan={3}
+            sx={{ width: '275px' }}
+          >
+            {firstBuild.usage}
+          </TableCell> */}
         </TableRow>
         <TableRow
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={4}>
             {'附屬建物'}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={1}>
             {`${calculateArea(props.subBuildingArea)}坪`}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={2}>
             {`${subBuildRatio}%`}
           </TableCell>
         </TableRow>
         <TableRow
-          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={4}>
             {'陽台'}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={1}>
             {`${calculateArea(props.belconyArea)}坪`}
           </TableCell>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" colSpan={2}>
             {`${belconyRatio}%`}
+          </TableCell>
+        </TableRow>
+
+        <TableRow
+        // sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+        >
+          <TableCell component="th" scope="row" colSpan={6}>
+            {`共有部分${calculateArea(mutualArea)}坪`}
+          </TableCell>
+          <TableCell component="th" scope="row" colSpan={2}>
+            {`${mutualRatio}%`}
           </TableCell>
         </TableRow>
       </>
@@ -166,20 +196,33 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
   const renderBuildTable = () => {
     if (!props.assetsDetail) return
-    const subBuilds = props.assetsDetail.builds.slice(1)
+    const subBuilds = props.assetsDetail.builds
     return (
       <TableContainer component={Paper}>
         <Table size="small">
           <TableHead sx={{ bgcolor: '#E8EFFD' }}>
             <TableRow>
-              <TableCell colSpan={4} align='center'>建物移轉面積</TableCell>
-              <TableCell>主要用途</TableCell>
-              <TableCell>主要建材</TableCell>
+              <TableCell colSpan={6} align='center'>建物移轉面積</TableCell>
+              <TableCell sx={{ width: '385px' }}>比例</TableCell>
+              {/* <TableCell>主要建材</TableCell>
               <TableCell>建物分層</TableCell>
+              <TableCell>主要用途</TableCell> */}
             </TableRow>
           </TableHead>
           <TableBody>
             {renderBuildFirstRow()}
+          </TableBody>
+
+          <TableHead sx={{ bgcolor: '#E8EFFD' }}>
+            <TableRow>
+              <TableCell colSpan={3} align='center'>建物移轉面積</TableCell>
+              <TableCell>比例</TableCell>
+              <TableCell>主要建材</TableCell>
+              <TableCell>建物分層</TableCell>
+              <TableCell>主要用途</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {subBuilds.map((row) => (
               // const belconyRatio = Math.round(props.belconyArea / areaWithoutPark * 100)
               <>
@@ -192,9 +235,9 @@ const AprDetailContent = (props: IDetailAprInfo) => {
                   <TableCell component="th" scope="row">
                     {`${Math.round(row.buildingTransferArea / areaWithoutPark * 100)}%`}
                   </TableCell>
-                  <TableCell sx={{ textOverflow: 'clip' }}>{row.usage}</TableCell>
                   <TableCell>{row.material}</TableCell>
                   <TableCell>{row.buildingLayer}</TableCell>
+                  <TableCell sx={{ textOverflow: 'clip' }}>{row.usage}</TableCell>
                 </TableRow>
               </>
             ))}
@@ -205,6 +248,7 @@ const AprDetailContent = (props: IDetailAprInfo) => {
               <TableCell colSpan={3}></TableCell>
             </TableRow>
           </TableBody>
+
         </Table>
       </TableContainer>
     )
@@ -251,9 +295,14 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
         {/* {(props.organization !== '' ? props.organization : '無管委會')} */}
         {
-          props.organization !== '無管委會' && <span className={style.chip}>
-            {parseCommitee(props.organization)}
-          </span>
+          props.organization !== '無管委會'
+            ? <span className={style.chip}>
+              {parseCommitee(props.organization)}
+            </span>
+            : <span className={classNames({
+              [style.chip]: true,
+              [style.disabled]: true
+            })}>無管委會</span>
         }
       </div>
       <div className={style.priceContainer}>
@@ -261,7 +310,10 @@ const AprDetailContent = (props: IDetailAprInfo) => {
         {/* 單價 */}
         <div className={style.priceChip}>
           <p>
-            <span className={style.unitPrice}>{Math.round((props.unitPrice * square) / 1000) / 10}</span>
+            <span className={style.unitPrice}>
+              {Math.round((props.unitPrice * square) / 1000) / 10}
+              {/* {props.unitPrice * square} */}
+            </span>
             <span className={style.unitPriceUnit}>萬/坪</span>
           </p>
           <p className={style.caption}>
@@ -271,44 +323,75 @@ const AprDetailContent = (props: IDetailAprInfo) => {
 
         {/* 坪數 */}
         <div className={style.priceChip}>
-          <p>
-            <span>房屋</span>
-            <span className={style.transferBuildingArea}>
-              {calculateArea(props.buildingTransferArea - props.parkingSpaceTransferArea)}
-            </span>
-            <span>坪</span>
-          </p>
-          <p>
-            <span>車位</span>
-            <span>{calculateArea(props.parkingSpaceTransferArea)}</span>
-            <span>坪</span>
-          </p>
-          <p>
-            <span>總坪</span>
-            <span>{calculateArea(props.buildingTransferArea)}</span>
-            <span>坪</span>
-          </p>
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>房屋</Grid>
+              <Grid xs={7}>
+                <span className={style.transferBuildingArea}>
+                  {calculateArea(props.buildingTransferArea - props.parkingSpaceTransferArea)}
+                </span>
+              </Grid>
+              <Grid xs={2}>坪</Grid>
+            </Grid>
+          </div>
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>車位</Grid>
+              <Grid xs={7}>
+                <span>{calculateArea(props.parkingSpaceTransferArea)}</span>
+              </Grid>
+              <Grid xs={2}>坪</Grid>
+            </Grid>
+          </div>
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>總坪</Grid>
+              <Grid xs={7}>
+                <span>{calculateArea(props.buildingTransferArea)}</span>
+              </Grid>
+              <Grid xs={2}>坪</Grid>
+            </Grid>
+          </div>
         </div>
 
         {/* 總價 */}
         <div className={style.priceChip}>
-          <p>
-            <span>房價</span>
-            <span className={style.transferBuildingArea}>
-              {Math.round(props.priceWithoutParking / 10000 * 10) / 10}
-            </span>
-            <span>萬</span>
-          </p>
-          <p>
-            <span>車位</span>
-            {Math.round(props.parkingSpacePrice / 10000 * 10) / 10}
-            <span>萬</span>
-          </p>
-          <p>
-            <span>總價</span>
-            {Math.round(props.price / 10000 * 10) / 10}
-            <span>萬</span>
-          </p>
+
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>房價</Grid>
+              <Grid xs={7}>
+                <span className={style.transferBuildingArea}>
+                  {Math.floor(Math.round(props.priceWithoutParking / 10000 * 10) / 10)}
+                </span>
+              </Grid>
+              <Grid xs={2}>萬</Grid>
+            </Grid>
+          </div>
+
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>車位</Grid>
+              <Grid xs={7}>
+                <span>
+                  {Math.floor(Math.round(props.parkingSpacePrice / 10000 * 10) / 10)}
+                </span>
+              </Grid>
+              <Grid xs={2}>萬</Grid>
+            </Grid>
+          </div>
+
+          <div className='w-full px-4'>
+            <Grid container spacing={0} sx={{ alignItems: 'center' }}>
+              <Grid xs={3}>總價</Grid>
+              <Grid xs={7}>
+                <span>
+                  {Math.floor(Math.round(props.price / 10000 * 10) / 10)}
+                </span>
+              </Grid>
+              <Grid xs={2}>萬</Grid>
+            </Grid>
+          </div>
         </div>
 
       </div>

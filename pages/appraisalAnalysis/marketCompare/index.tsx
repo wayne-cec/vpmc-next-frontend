@@ -1,6 +1,15 @@
 import React from 'react'
-import type { NextPage } from 'next'
 import MarketCompareContainer from '../../../containers/MarketCompareContainer'
+import { GetServerSideProps, NextPage } from 'next'
+
+export const getServerSideProps: GetServerSideProps<{}, {}> = async (context) => {
+
+  console.log('=========================')
+  console.log(context.req.cookies)
+  return {
+    props: {}
+  }
+}
 
 const MarketCompare: NextPage = () => {
   return <MarketCompareContainer />
