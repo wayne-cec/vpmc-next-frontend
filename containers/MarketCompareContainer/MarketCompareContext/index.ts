@@ -2,14 +2,14 @@ import { createContext } from 'react'
 import { AssetType, ICountyData, IGraphData, IMarketCompareResult, ITownData } from '../../../api/prod'
 import { SpatialQueryType } from '..'
 import { PolygonSketchMode } from '../../../components/PolygonSketch'
-
+import { Dispatch, SetStateAction } from 'react'
 export interface IMarketCompareContext {
   queryPanelShow: boolean
   resultPanelShow: boolean
   longitude?: number
   latitude?: number
-  locatedCounty?: string
-  locatedTown?: string
+  locatedCounty: string | null
+  locatedTown: string | null
   isSelectorActive: boolean
   isTransactionTimeFiltered: boolean
   isBuildingAreaFiltered: boolean
@@ -32,18 +32,19 @@ export interface IMarketCompareContext {
   assetTypeCode: AssetType
   buildingTypeCode: number
   bufferRadius: number
-  transactiontime?: number
-  buildingTransferArea?: number
-  landTransferArea?: number
-  age?: number
-  parkSpaceType?: number
-  urbanLandUse?: number[]
-  polygonGoejson?: string
+  transactiontime: number | null
+  transactiontimeend: number
+  buildingTransferArea: number | null
+  landTransferArea: number | null
+  age: number | null
+  parkSpaceType: number | null
+  urbanLandUse: number[] | undefined
+  polygonGoejson: string | null
   minPrice?: number
   maxPrice?: number
   minUnitPrice?: number
   maxUnitPrice?: number
-  filteredResults: IMarketCompareResult[]
+  filteredResults: IMarketCompareResult[] | null
   spatialQueryType: SpatialQueryType
   sketchMode: PolygonSketchMode
   graphData?: IGraphData
@@ -85,7 +86,7 @@ export interface IMarketCompareContext {
   zoomId: { id: string } | null
   pending: boolean
   onZoomIdChange: (value: { id: string } | null) => void
-  setpending: (value: boolean) => void
+  onPendingChange: (value: boolean) => void
   onDetailAprChange: (id: string) => void
   onShow: (value: boolean) => void
   onCountyRadioClick: () => void
@@ -95,6 +96,29 @@ export interface IMarketCompareContext {
   handleCoordinateSelect: (longitude: number | null, latitude: number | null) => void
   // 正式資料
   onCoordinateSelect: (longitude: number | undefined, latitude: number | undefined) => void
+
+  onTransactionTimeCustomize: (startDate: string, endDate: string) => void
+  onTransactionTimeCustomizeChange: () => void
+  isTransactionTimeCustomize: boolean
+
+  onBuildingAreaCustomize: (min: number, max: number) => void
+  onBuildingAreaCustomizeChange: () => void
+  isBuildingAreaCustomize: boolean
+
+  onAgeCustomize: (min: number, max: number) => void
+  onAgeCustomizeChange: () => void
+  isAgeCustomize: boolean
+
+  onLandAreaCustomize: (min: number, max: number) => void
+  onLandAreaCustomizeChange: () => void
+  isLandAreaCustomize: boolean
+
+  onCustomizePanelOpen: (value: boolean) => void
+  transactionTimeStartString: string
+  transactionTimeEndString: string
+  buildingTransferAreaInterval: number[]
+  landAreaInterval: number[]
+  ageInterval: number[]
 }
 
 const MarketCompareContext = createContext<IMarketCompareContext>({
@@ -102,8 +126,8 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   resultPanelShow: false,
   longitude: undefined,
   latitude: undefined,
-  locatedCounty: undefined,
-  locatedTown: undefined,
+  locatedCounty: null,
+  locatedTown: null,
   isSelectorActive: false,
   isTransactionTimeFiltered: false,
   isBuildingAreaFiltered: false,
@@ -126,13 +150,14 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   assetTypeCode: 'building',
   buildingTypeCode: 0,
   bufferRadius: 300,
-  transactiontime: undefined,
-  buildingTransferArea: undefined,
-  landTransferArea: undefined,
-  age: undefined,
-  parkSpaceType: undefined,
+  transactiontime: null,
+  transactiontimeend: 0,
+  buildingTransferArea: null,
+  landTransferArea: null,
+  age: null,
+  parkSpaceType: null,
   urbanLandUse: undefined,
-  polygonGoejson: undefined,
+  polygonGoejson: null,
   minPrice: undefined,
   maxPrice: undefined,
   minUnitPrice: undefined,
@@ -179,14 +204,37 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   zoomId: null,
   pending: false,
   onZoomIdChange: (value) => { },
-  setpending: (value) => { },
+  onPendingChange: (value) => { },
   onDetailAprChange: (id) => { },
   onShow: (value) => { },
   onCountyRadioClick: () => { },
   onCountyChange: (county) => { },
   onTownChange: (town) => { },
   handleCoordinateSelect: () => { },
-  onCoordinateSelect: () => { }
+  onCoordinateSelect: (longitude, latitude) => { },
+
+  onTransactionTimeCustomize: () => { },
+  onTransactionTimeCustomizeChange: () => { },
+  isTransactionTimeCustomize: false,
+
+  onBuildingAreaCustomize: (min, max) => { },
+  onBuildingAreaCustomizeChange: () => { },
+  isBuildingAreaCustomize: false,
+
+  onAgeCustomize: (min, max) => { },
+  onAgeCustomizeChange: () => { },
+  isAgeCustomize: false,
+
+  onLandAreaCustomize: (min, max) => { },
+  onLandAreaCustomizeChange: () => { },
+  isLandAreaCustomize: false,
+
+  onCustomizePanelOpen: (value) => { },
+  transactionTimeStartString: '',
+  transactionTimeEndString: '',
+  buildingTransferAreaInterval: [],
+  landAreaInterval: [],
+  ageInterval: []
 })
 
 export default MarketCompareContext
