@@ -186,7 +186,6 @@ const MarketCompareContainer = () => {
           </div>
         </div>
 
-
         {renderCustomizePanel()}
         {renderResultPanel()}
         {renderErrorPanel()}

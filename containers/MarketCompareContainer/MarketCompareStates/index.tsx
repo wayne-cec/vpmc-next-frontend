@@ -93,6 +93,11 @@ const useMarketCompareStates = () => {
   const [uploadPanelOpen, setuploadPanelOpen] = useState<boolean>(false)
   const [assetsDetail, setassetDetail] = useState<AssetDetailResponse | undefined>(undefined)
   const [customizePanelOpen, setcustomizePanelOpen] = useState<boolean>(false)
+  const [highlightIds, sethighlightIds] = useState<string[]>([])
+
+  const onResultsHightlight = (ids: string[]) => {
+    sethighlightIds(ids)
+  }
 
   const handleFormSubmit = async () => {
     setpending(true)
@@ -657,7 +662,9 @@ const useMarketCompareStates = () => {
     transactionTimeEndString,
     buildingTransferAreaInterval,
     landAreaInterval,
-    ageInterval
+    ageInterval,
+
+    highlightIds, onResultsHightlight
   }
 }
 
