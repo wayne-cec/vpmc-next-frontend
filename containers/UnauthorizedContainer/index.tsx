@@ -1,5 +1,5 @@
 import style from './index.module.scss'
-import WithNavFooter from '../../Layout/front-layout/WithNavFooter'
+import WithNavFooter from '../../layout/front-layout/WithNavFooter'
 
 const UnauthorizedContainer = () => {
   return (

@@ -1,5 +1,5 @@
 import Header from '../../../components/Admin/Header'
-import WithSideBarProtected from '../../../Layout/admin-layout/WithSideBarProtected'
+import WithSideBarProtected from '../../../layout/admin-layout/WithSideBarProtected'
 import { Box, AppBar, Tabs, Tab } from '@mui/material'
 import { useDispatch, useSelector } from 'react-redux'
 import { onToggle } from '../../../store/slice/sideBar'

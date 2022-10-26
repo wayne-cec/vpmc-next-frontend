@@ -4,7 +4,7 @@ import Image from 'next/image'
 import classNames from 'classnames'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
-import WithNothingProtected from '../../Layout/utility-layout/WithNothingProtected'
+import WithNothingProtected from '../../layout/utility-layout/WithNothingProtected'
 import {
   Dialog, DialogTitle, DialogContent,
   TextField, DialogActions, Button
