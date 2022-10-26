@@ -2,7 +2,7 @@ import React from 'react'
 import style from './index.module.scss'
 import Router from 'next/router'
 import { appraisalAnalysis } from '../Header'
-import { useAuth } from '../../Layout/AuthContext'
+import { useAuth } from '../../layout/AuthContext'
 
 const renderContent = (index: number, link: {
   name: string
