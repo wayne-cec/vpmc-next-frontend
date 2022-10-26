@@ -330,7 +330,7 @@ const AttributeQueryIntelligence = () => {
                 id="non-urban-use-select"
                 // value={0}
                 onChange={(event) => {
-                  console.log(Number(event.target.value))
+                  // console.log(Number(event.target.value))
                 }}
                 size='small'
                 disabled

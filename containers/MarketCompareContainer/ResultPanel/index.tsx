@@ -56,7 +56,7 @@ const ResultPanel = () => {
               </Box>
 
               <TabPanel value="1" sx={{ padding: '0px' }}>
-                <ResultTable data={marketCompareContext.filteredResults} />
+                <ResultTable />
               </TabPanel>
 
               <TabPanel value="2" sx={{ padding: '0px' }}>

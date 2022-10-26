@@ -83,12 +83,18 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   }
 
   const handleZoomToId = async (zoomId: { id: string } | null) => {
-    // (await asyncMapView).zoom = 20;
     if (!aprLayer || !map) return
-
-    // selectedAprLayer.graphics = new Collection()
     let ind = 0;
     for (let i = 0; i < aprLayer.graphics.length; i++) {
+      if (marketCompareContext.highlightIds.includes(aprLayer.graphics.at(i).attributes.id)) {
+        aprLayer.graphics.at(i).symbol = new PictureMarkerSymbol({
+          url: '/aprRegion/home-highlight.png',
+          width: '80px',
+          height: '80px'
+        })
+        aprLayer.graphics.reorder(aprLayer.graphics.at(i), aprLayer.graphics.length - 1)
+        continue
+      }
       if (aprLayer.graphics.at(i).attributes.id === zoomId?.id) {
         aprLayer.graphics.at(i).symbol = new PictureMarkerSymbol({
           url: '/aprRegion/home-selected.png',
@@ -105,8 +111,26 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
       }
     }
     aprLayer.graphics.reorder(aprLayer.graphics.at(ind), aprLayer.graphics.length - 1)
+  }
 
-
+  const handleHighlightResult = async (ids: string[]) => {
+    if (!aprLayer || !map) return
+    for (let i = 0; i < aprLayer.graphics.length; i++) {
+      if (ids.includes(aprLayer.graphics.at(i).attributes.id)) {
+        aprLayer.graphics.at(i).symbol = new PictureMarkerSymbol({
+          url: '/aprRegion/home-highlight.png',
+          width: '80px',
+          height: '80px'
+        })
+        aprLayer.graphics.reorder(aprLayer.graphics.at(i), aprLayer.graphics.length - 1)
+      } else {
+        aprLayer.graphics.at(i).symbol = new PictureMarkerSymbol({
+          url: '/aprRegion/home.png',
+          width: '30px',
+          height: '30px'
+        })
+      }
+    }
   }
 
   const handleAprClick = async (event: any) => {
@@ -346,6 +370,11 @@ const MarketCompareMap = (props: IMarketCompareMap) => {
   useEffect(() => {
     handleZoomToId(zoomId)
   }, [zoomId])
+
+  useEffect(() => {
+    handleHighlightResult(marketCompareContext.highlightIds)
+  }, [marketCompareContext.highlightIds])
+
 
   return (
     <>

@@ -3,7 +3,7 @@ import style from './index.module.scss'
 import classNames from 'classnames'
 import Router from 'next/router'
 import { appraisalAnalysis } from '../index'
-import { useAuth } from '../../../Layout/AuthContext'
+import { useAuth } from '../../../layout/AuthContext'
 import { useDispatch } from 'react-redux'
 import { setUserToken } from '../../../store/slice/user'
 

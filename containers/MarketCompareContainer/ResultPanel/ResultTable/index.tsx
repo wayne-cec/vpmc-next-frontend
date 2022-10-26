@@ -44,14 +44,16 @@ export interface Data {
   latitude: number
 }
 
-export interface IResultTable {
-  data: IMarketCompareResult[]
-}
 
 const square = 3.305785
 
-const ResultTable = (props: IResultTable) => {
-  const { onZoomIdChange, onDetailAprChange } = useContext(MarketCompareContext)
+const ResultTable = () => {
+  const {
+    filteredResults,
+    onZoomIdChange,
+    onDetailAprChange,
+    onResultsHightlight
+  } = useContext(MarketCompareContext)
   const [selected, setSelected] = useState<readonly string[]>([])
   const [orderBy, setOrderBy] = useState<keyof Data>('price')
   const [renderRows, setrenderRows] = useState<Data[]>([])
@@ -85,7 +87,7 @@ const ResultTable = (props: IResultTable) => {
 
   const handleRowSelect = (event: React.MouseEvent<unknown>, id: string) => {
     const selectedIndex = selected.indexOf(id)
-    let newSelected: readonly string[] = []
+    let newSelected: string[] = []
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, id)
     } else if (selectedIndex === 0) {
@@ -99,6 +101,7 @@ const ResultTable = (props: IResultTable) => {
       )
     }
     setSelected(newSelected)
+    onResultsHightlight(newSelected)
   }
 
   const handleGetCommiteeByAprId = async (id: string) => {
@@ -110,10 +113,11 @@ const ResultTable = (props: IResultTable) => {
   }
 
   const handleLoadingData = async () => {
+    if (!filteredResults) return
     setpending(true)
     const newRows: Data[] = []
-    for (let i = 0; i < props.data.length; i++) {
-      const row: Data = { ...props.data[i], organization: 'a' }
+    for (let i = 0; i < filteredResults.length; i++) {
+      const row: Data = { ...filteredResults[i], organization: 'a' }
       newRows.push(row)
     }
     setrows([...newRows])
@@ -153,7 +157,7 @@ const ResultTable = (props: IResultTable) => {
 
   useEffect(() => {
     handleLoadingData()
-  }, [props.data])
+  }, [filteredResults])
 
   useEffect(() => {
     handleChangPage()

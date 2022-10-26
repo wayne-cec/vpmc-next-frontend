@@ -10,7 +10,7 @@ import AprDetailContent from './AprDetailContent'
 import MarketCompareContext from './MarketCompareContext'
 import PanelContainer from '../../components/PanelContainer'
 import PanelButton from '../../components/PanelContainer/PanelButton'
-import WithNavProtected from '../../Layout/front-layout/WithNavProtected'
+import WithNavProtected from '../../layout/front-layout/WithNavProtected'
 import useMarketCompareStates from './MarketCompareStates'
 import {
   Dialog, DialogActions,
@@ -60,7 +60,7 @@ const MarketCompareContainer = () => {
       const response = await trigger({
         id: mcStates.detailAprId.id
       })
-      console.log(response.data)
+      // console.log(response.data)
       mcStates.setassetDetail(response.data)
       mcStates.setdetailPanelShow(true)
       mcStates.setdetailAprInfo({
@@ -185,7 +185,6 @@ const MarketCompareContainer = () => {
             </div>
           </div>
         </div>
-
 
         {renderCustomizePanel()}
         {renderResultPanel()}

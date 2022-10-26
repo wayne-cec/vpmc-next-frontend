@@ -4,8 +4,8 @@ import { GetServerSideProps, NextPage } from 'next'
 
 export const getServerSideProps: GetServerSideProps<{}, {}> = async (context) => {
 
-  console.log('=========================')
-  console.log(context.req.cookies)
+  // console.log('=========================')
+  // console.log(context.req.cookies)
   return {
     props: {}
   }

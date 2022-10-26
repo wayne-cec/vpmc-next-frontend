@@ -1,5 +1,5 @@
 import Header from '../../../components/Admin/Header'
-import WithSideBarProtected from '../../../Layout/admin-layout/WithSideBarProtected'
+import WithSideBarProtected from '../../../layout/admin-layout/WithSideBarProtected'
 import MUIDataTable, { MUIDataTableColumnDef } from 'mui-datatables'
 import { Box } from '@mui/material'
 import { useDispatch } from 'react-redux'

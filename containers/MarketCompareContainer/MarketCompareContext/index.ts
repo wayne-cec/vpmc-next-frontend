@@ -2,7 +2,7 @@ import { createContext } from 'react'
 import { AssetType, ICountyData, IGraphData, IMarketCompareResult, ITownData } from '../../../api/prod'
 import { SpatialQueryType } from '..'
 import { PolygonSketchMode } from '../../../components/PolygonSketch'
-import { Dispatch, SetStateAction } from 'react'
+
 export interface IMarketCompareContext {
   queryPanelShow: boolean
   resultPanelShow: boolean
@@ -96,29 +96,26 @@ export interface IMarketCompareContext {
   handleCoordinateSelect: (longitude: number | null, latitude: number | null) => void
   // 正式資料
   onCoordinateSelect: (longitude: number | undefined, latitude: number | undefined) => void
-
   onTransactionTimeCustomize: (startDate: string, endDate: string) => void
   onTransactionTimeCustomizeChange: () => void
   isTransactionTimeCustomize: boolean
-
   onBuildingAreaCustomize: (min: number, max: number) => void
   onBuildingAreaCustomizeChange: () => void
   isBuildingAreaCustomize: boolean
-
   onAgeCustomize: (min: number, max: number) => void
   onAgeCustomizeChange: () => void
   isAgeCustomize: boolean
-
   onLandAreaCustomize: (min: number, max: number) => void
   onLandAreaCustomizeChange: () => void
   isLandAreaCustomize: boolean
-
   onCustomizePanelOpen: (value: boolean) => void
   transactionTimeStartString: string
   transactionTimeEndString: string
   buildingTransferAreaInterval: number[]
   landAreaInterval: number[]
   ageInterval: number[]
+  highlightIds: string[]
+  onResultsHightlight: (ids: string[]) => void
 }
 
 const MarketCompareContext = createContext<IMarketCompareContext>({
@@ -234,7 +231,9 @@ const MarketCompareContext = createContext<IMarketCompareContext>({
   transactionTimeEndString: '',
   buildingTransferAreaInterval: [],
   landAreaInterval: [],
-  ageInterval: []
+  ageInterval: [],
+  highlightIds: [],
+  onResultsHightlight: (value) => { }
 })
 
 export default MarketCompareContext

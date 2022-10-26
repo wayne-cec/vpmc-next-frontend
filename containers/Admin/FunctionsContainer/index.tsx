@@ -1,5 +1,5 @@
 import Header from '../../../components/Admin/Header'
-import WithSideBarProtected from '../../../Layout/admin-layout/WithSideBarProtected'
+import WithSideBarProtected from '../../../layout/admin-layout/WithSideBarProtected'
 import { useDispatch } from 'react-redux'
 import { onToggle } from '../../../store/slice/sideBar'
 import { Box, Typography } from '@mui/material'
