@@ -54,7 +54,7 @@ const LoginContainer = () => {
     const decode = jwt_decode(credentialResponse.credential) as { email: string }
     const { statusCode, responseContent } = await api.prod.googleAuth(decode.email, credentialResponse.credential)
     if (statusCode === 200) {
-      console.log(responseContent)
+      // console.log(responseContent)
       dispatch(
         setUserToken(responseContent.token)
       )

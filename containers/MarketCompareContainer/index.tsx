@@ -60,7 +60,7 @@ const MarketCompareContainer = () => {
       const response = await trigger({
         id: mcStates.detailAprId.id
       })
-      console.log(response.data)
+      // console.log(response.data)
       mcStates.setassetDetail(response.data)
       mcStates.setdetailPanelShow(true)
       mcStates.setdetailAprInfo({

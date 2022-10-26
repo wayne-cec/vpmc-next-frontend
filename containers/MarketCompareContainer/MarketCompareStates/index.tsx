@@ -241,7 +241,7 @@ const useMarketCompareStates = () => {
 
     const { statusCode, responseContent } = await api.prod.marketCompare(params, userInfo.token)
     if (statusCode === 200) {
-      console.log(responseContent)
+      // console.log(responseContent)
       setfilteredResults(responseContent)
       const { statusCode, responseContent2 } = await api.prod.marketCompareStatistic(params, userInfo.token)
       if (statusCode === 200) {
