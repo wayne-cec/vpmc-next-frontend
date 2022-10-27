@@ -3,12 +3,14 @@ FROM node:19-alpine AS deps
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY package.json yarn.lock ./
+# yarn.lock
+COPY package.json  ./
 RUN yarn -v
 RUN yarn config get registry
 # RUN yarn set version stable
 RUN yarn config set registry https://registry.npm.taobao.org
-RUN yarn install --frozen-lockfile --network-timeout 600000
+RUN yarn install  
+# --frozen-lockfile
 
 # If using npm with a `package-lock.json` comment out above and use below instead
 # COPY package.json package-lock.json ./ 
