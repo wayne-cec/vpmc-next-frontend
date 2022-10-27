@@ -8,7 +8,7 @@ RUN yarn -v
 RUN yarn config get registry
 # RUN yarn set version stable
 RUN yarn config set registry https://registry.npm.taobao.org
-RUN yarn install --frozen-lockfile 
+RUN yarn install --frozen-lockfile --network-timeout 600000
 
 # If using npm with a `package-lock.json` comment out above and use below instead
 # COPY package.json package-lock.json ./ 
