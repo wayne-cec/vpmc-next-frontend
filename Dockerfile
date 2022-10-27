@@ -4,7 +4,9 @@ FROM node:19-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 COPY package.json yarn.lock ./
-RUN yarn set version stable
+RUN yarn -v
+RUN yarn config get registry
+# RUN yarn set version stable
 RUN yarn install --frozen-lockfile 
 
 # If using npm with a `package-lock.json` comment out above and use below instead
