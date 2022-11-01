@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vpmc-next-frontend
+  name: vpmc-next-frontend
+  namespace: poc-jim-chang-vpmc-com-tw
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vpmc-next-frontend
+  template:
+    metadata:
+      labels:
+        app: vpmc-next-frontend
+    spec:
+      containers:
+        - image: __IMAGE__
+          imagePullPolicy: IfNotPresent
+          name: vpmc-next-frontend
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+      imagePullSecrets:
+      - name: my-harbor
+
