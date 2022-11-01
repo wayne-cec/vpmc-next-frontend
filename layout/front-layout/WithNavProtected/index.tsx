@@ -19,7 +19,7 @@ const WithNavProtected = function <P extends { [k: string]: any }> (Component: R
           return
         }
         const { statusCode, responseContent } = await api.prod.validateToken(userInfo.token)
-        console.log(responseContent)
+        // console.log(responseContent)
         if (statusCode === 200) {
           dispatch(
             setUserProfile(responseContent)

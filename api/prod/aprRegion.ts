@@ -36,8 +36,8 @@ export const getTownInfo = async (county: string, town: string) => {
     url: process.env.API_DOMAIN_PROD + `/api/Apr/getTownInfo?county=${county}&town=${town}`,
     onDownloadProgress (progressEvent) {
       let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-      console.log(progressEvent.lengthComputable)
-      console.log(percentCompleted);
+      // console.log(progressEvent.lengthComputable)
+      // console.log(percentCompleted);
     }
   })
   const statusCode = response.status
